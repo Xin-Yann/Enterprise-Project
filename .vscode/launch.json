@@ -8,7 +8,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Open home.html",
-            "url": "http://localhost:8080/html/addexam.html"
+            "url": "http://localhost:8080/html/home-1.html"
         }
     ]
 }
