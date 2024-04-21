@@ -9,6 +9,7 @@ const db = getFirestore();
 const auth = getAuth();
 
 document.getElementById('signIn').addEventListener('click', () => {
+  event.preventDefault();
   // Get email and password from input fields
   const email = document.getElementById('Email').value;
   const password = document.getElementById('Password').value;
@@ -20,14 +21,14 @@ document.getElementById('signIn').addEventListener('click', () => {
       const user = userCredential.user;
       fetchUserdata();
       console.log('Signed in user:', user);
-      window.location.href = "/html/home-1.html";
+      window.location.href = "/html/home.html";
     })
     .catch((error) => {
       // Handle sign-in errors
       const errorCode = error.code;
       const errorMessage = error.message;
       console.error('Sign-in error:', errorCode, errorMessage);
-      // Display error message to the user
+      window.alert("Invalid email or password. Please try again.");
     });
 });
 
