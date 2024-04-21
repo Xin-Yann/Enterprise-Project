@@ -221,8 +221,7 @@ button,
 [type="button"],
 [type="reset"],
 [type="submit"] {
-  -webkit-appearance: button;
-  appearance: button;
+  -webkit-appearance: button; }
 
 button:not(:disabled),
 [type="button"]:not(:disabled),
@@ -247,8 +246,7 @@ input[type="date"],
 input[type="time"],
 input[type="datetime-local"],
 input[type="month"] {
-  -webkit-appearance: listbox;
-  appearance: listbox; }
+  -webkit-appearance: listbox; }
 
 textarea {
   overflow: auto;
@@ -280,8 +278,7 @@ progress {
 
 [type="search"] {
   outline-offset: -2px;
-  -webkit-appearance: none;
-  appearance: none; }
+  -webkit-appearance: none; }
 
 [type="search"]::-webkit-search-decoration {
   -webkit-appearance: none; }
@@ -8204,7 +8201,7 @@ h1, h2, h3, h4, h5,
 .login-wrap {
   position: relative;
   background: #fff h3;
-    font-weight: 300; }
+    background-font-weight: 300; }
 
 .form-group {
   position: relative; }
@@ -8344,5 +8341,3 @@ h1, h2, h3, h4, h5,
         border: 1px solid transparent;
         background: #e3b04b;
         color: #fff; }
-      }
-    
