@@ -4,11 +4,19 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "type": "chrome",
             "request": "launch",
             "name": "Open home.html",
             "url": "http://localhost:8080/html/home.html"
+        }
+        ,
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open staff-login.html",
+            "url": "http://localhost:8081/html/staff/staff-login.html"
         }
     ]
 }

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/css/nav.css">
     <link rel="stylesheet" href="/css/cart.css">
     <script type="module" src="/js/firebase-configs.js"></script>
+    
     <style>
         .counter {
             display: flex;
@@ -37,7 +38,6 @@
 <body>
     <div class="overflow-hidden">
 
-
         <div class="header">
             <div class="container" id="myHeader">
                 <!--mobile-menu-->
@@ -55,28 +55,28 @@
 
                     <div class="menu-icon">
                         <div class="search">
-                            <span style="cursor:pointer"><a href="cart.html"><i
+                            <span style="cursor:pointer"><a href="/html/cart.html"><i
                                         class="fa fa-shopping-bag"></i></a></span>
-                            <span style="cursor:pointer"><a href="cart.php"><i class="fa fa-user"></i></a></span>
-                            <span style="cursor:pointer"><a href="home.html"><i class="fa fa-sign-out"></i></a></span>
+                            <span style="cursor:pointer"><i class="fa fa-user" id="pro"></i></span>
+                            <span style="cursor:pointer"><i class="fa fa-sign-out" id="Logout"></i></span>
 
                         </div>
                     </div>
                 </div>
 
-
                 <!--desktop-menu-->
                 <div class="row pt-4" id="menu">
+
                     <div class="col-lg-8">
                         <a href="home.html">
                             <img src="/image/logo.png" height="80" width="auto" />
                         </a>
-                        <h2 class="title px-2 pt-2">Pet Mart</h2>
+                        <h1 class="title px-2 pt-2">Pet Mart</h1>
                     </div>
 
                     <div class="col-lg-4">
-                        <span style="cursor:pointer"><a href="cart.html"><i class="fa fa-shopping-bag"></i></a></span>
-                        <span style="cursor:pointer"><a href="login-1.html"><i class="fa fa-user"></i></a></span>
+                        <span style="cursor:pointer"><a href="/html/cart.html"><i class="fa fa-shopping-bag"></i></a></span>
+                        <span style="cursor:pointer"><i class="fa fa-user" id="profile"></i></span>
                         <span style="cursor:pointer"><i class="fa fa-sign-out" id="signOut"></i></span>
                     </div>
                 </div>
@@ -203,8 +203,7 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
     <script src="/5007CEM/public_html/js/aos.js" type="text/javascript" defer></script>
-    <script type="module" src="/js/logout.js"></script>
-    <script type="module" src="/js/login3.js"></script>    
+    <script type="module" src="/js/logout.js"></script> 
 </body>
 
 </html>
