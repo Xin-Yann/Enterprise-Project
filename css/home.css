@@ -1,0 +1,403 @@
+/* Alert Mess */
+.alert {
+    padding: 20px;
+    background-color: #04AA6D;
+    color: white;
+}
+
+.closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.closebtn:hover {
+    color: black;
+}
+
+/*Banner*/
+.banner {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.banner h1 {
+    font-size: 70px;
+    font-family: 'Catty Pillow Demo';
+}
+
+.banner-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #dbe4d5;
+    width: 100%;
+}
+
+.banner-head {
+    display: inline-block;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    margin: 0 auto 30px;
+    text-transform: uppercase;
+    line-height: 38px;
+    font-size: 1.395rem;
+    font-weight: 600;
+}
+
+.banner img {
+    width: 50%;
+}
+
+.btn-lg {
+    width: 300px;
+    height: 50px;
+    border-radius: 1.3rem !important;
+    background-color: white !important;
+    color: #01647a !important;
+    left: 27%;
+    position: relative;
+}
+
+.btn-lg:hover {
+    background-color: #01647a !important;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px !important;
+    color: white !important;
+}
+
+/*slider*/
+.mySlides:first-child {
+    display: block;
+}
+
+.mySlides:not(:first-child) {
+    display: none;
+}
+
+.slideshow-container {
+    max-width: 1520px;
+    position: relative;
+    margin: auto;
+}
+
+.prev,
+.next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 16px;
+    margin-top: -22px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+}
+
+.next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.prev:hover,
+.next:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.text {
+    color: #f2f2f2;
+    font-size: 15px;
+    padding: 8px 12px;
+    position: absolute;
+    bottom: 8px;
+    width: 100%;
+    text-align: center;
+}
+
+.numbertext {
+    color: #f2f2f2;
+    font-size: 12px;
+    padding: 8px 12px;
+    position: absolute;
+    top: 0;
+}
+
+.active,
+.dot:hover {
+    background-color: #717171;
+}
+
+.fade {
+    animation-name: fade;
+
+}
+
+.fade:not(.show) {
+    opacity: 1 !important;
+}
+
+@keyframes fade {
+    from {
+        opacity: .4
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@media only screen and (max-width: 300px) {
+
+    .prev,
+    .next,
+    .text {
+        font-size: 11px
+    }
+}
+
+
+/*about*/
+.about-title {
+    font-family: Catty Pillow Demo;
+    font-size: 70px;
+}
+
+.about-us {
+    filter: brightness(70%);
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.about {
+    position: absolute;
+    top: 20%;
+    left: 23%;
+    width: 55%;
+    height: 55%;
+    background: #88694e;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.about-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.about btn {
+    width: 30%;
+}
+
+
+
+.btn-secondary-1 {
+    background-color: white !important;
+    color: #88694e !important;
+}
+
+.btn-secondary-1 a:hover {
+    text-decoration: none;
+    color: #88694e
+}
+
+.btn-secondary-1 a {
+    color: #88694e;
+}
+
+/*cart*/
+.cart {
+    width: 0;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    right: -400px;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: right 0.3s ease-in-out;
+}
+
+.cart.active {
+    right: 0;
+}
+
+.cart a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #ffff;
+    display: block;
+    transition: 0.3s;
+}
+
+.cart a:hover {
+    color: #f1f1f1;
+}
+
+.cart .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.btn-secondary {
+    background-color: white !important;
+    color: #88694e !important;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #88694e;
+    overflow-x: hidden;
+    transition: 0.5s;
+    color: #ffff;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #ffff;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+/*Contact*/
+.content {
+    padding: 60px 20px 0px 20px;
+}
+
+.contact {
+    background-color: #a5ecfa;
+    color: #01647a;
+}
+
+.contact-content {
+    display: flex;
+    justify-content: center;
+}
+
+.contact-title {
+    font-family: 'Catty Pillow Demo';
+    font-size: 60px;
+    font-weight: 500;
+}
+
+.card .img-wrapper {
+    max-width: 100%;
+    height: 13em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card img {
+    max-height: 100%;
+}
+
+/*arrow-right*/
+
+.fa-arrow-right {
+    transition: transform 0.3s ease;
+    padding-top: 64px;
+}
+
+.fa-arrow-right:hover {
+    transform: translateX(10px);
+}
+
+.arrow {
+    display: flex;
+}
+
+/*mobile*/
+@media screen and (max-width: 767px) {
+
+    /*banner*/
+    .banner img {
+        width: 100%;
+        height: 400px;
+    }
+
+    .banner {
+        display: block;
+    }
+
+    .banner-content {
+        padding: 40px 0 40px 0;
+    }
+
+
+    .banner h1 {
+        font-size: 50px;
+    }
+
+    .btn-lg {
+        position: relative;
+        left: 10%;
+    }
+
+    .container {
+        display: inline-block;
+        max-width: 100%;
+    }
+
+    .card .img-wrapper {
+        height: 17em;
+    }
+
+    .about-us {
+        display: block;
+        padding-bottom: 40px;
+        filter: none;
+    }
+
+    .about-us img {
+        display: none;
+    }
+
+    .dropdown fa {
+        padding-left: 30px;
+        color: white !important;
+    }
+
+}
+
+@media screen and (min-width: 768px) {
+    #mobile-menu-button {
+        display: none;
+    }
+
+
+}

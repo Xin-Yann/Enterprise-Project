@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Mart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/nav.css">
+    <script type="module" src="/js/firebase-configs.js"></script>
+    
+</head>
+
+<body>
+    <div class="overflow-hidden">  
+        <div class="header">
+            <div class="container" id="myHeader">
+                <!--mobile-menu-->
+                <div class="d-flex d-lg-none justify-content-between menu-btn">
+                    <span id="mobile-menu-button" class="open-button" onclick="openNav()">
+                        <i class="fa fa-bars"></i>
+                    </span>
+
+                    <div class="pl-5">
+                        <a href="home.html">
+                            <img src="/image/logo.png" height="70" width="70" />
+                        </a>
+                    </div>
+
+
+                    <div class="menu-icon">
+                        <div class="search">
+                            <span style="cursor:pointer"><a href="/html/user/cart.html"><i
+                                        class="fa fa-shopping-bag"></i></a></span>
+                            <span style="cursor:pointer"><i class="fa fa-user" id="pro"></i></span>
+                            <span style="cursor:pointer"><i class="fa fa-sign-out" id="Logout"></i></span>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!--desktop-menu-->
+                <div class="row pt-4" id="menu">
+
+                    <div class="col-lg-8">
+                        <a href="home.html">
+                            <img src="/image/logo.png" height="80" width="auto" />
+                        </a>
+                        <h1 class="title px-2 pt-2">Pet Mart</h1>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <span style="cursor:pointer"><a href="/html/cart.html"><i class="fa fa-shopping-bag"></i></a></span>
+                        <span style="cursor:pointer"><i class="fa fa-user" id="profile"></i></span>
+                        <span style="cursor:pointer"><i class="fa fa-sign-out" id="signOut"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="menu pt-5" id="mySidenav">
+                <a href="javascript:void(0)" id="mobile-menu-button" class="closebtn" onclick="closeNav()">&times;</a>
+                <a href="home.html">Home</a>
+                <div class="dropdown">
+                    <a href="product.php">All Product</a>
+                    <svg fill="#000000" height="24" viewBox="0 1 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z"></path>
+                        <path d="M0-.75h24v24H0z" fill="none"></path>
+                    </svg>
+                    <div class="dropdown-content" id="menu">
+                        <a href="product.php#cakes">Dog</a>
+                        <a href="product.php#cookies">Cat</a>
+                        <a href="product.php#tarts">Hamster & Rabbits</a>
+                        <a href="product.php#pastry">Birds</a>
+                        <a href="product.php#savouries">Fish & Aquatics</a>
+                    </div>
+                </div>
+
+                <a href="customize.php">Offer Details</a>
+                <a href="customize.php">Order History</a>
+                <a href="">Contact Us</a>
+            </div>
+
+        </div>
+
+        <!--slider-->
+        <div class="slideshow-container pt-5" id="demo">
+
+            <div class="mySlides fade">
+                <div class="numbertext">1 / 2</div>
+                <div class="banner">
+                    <img src="" />
+                    <div class="banner-content px-5">
+                        <h4 class="banner-head"></h4>
+                        <h1 class="pb-3 text-capitalize text-center">
+
+                        </h1>
+                        <a href="" class="btn btn-lg">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mySlides fade">
+                <div class="numbertext">2 / 2</div>
+                <div class="banner">
+                    <img src="" />
+                    <div class="banner-content px-5">
+                        <h4 class="banner-head"></h4>
+                        <h1 class="pb-3 text-capitalize text-center">
+
+                        </h1>
+                        <a href="" class="btn btn-lg">Customize</a>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <ul class="carousel-indicators">
+                <li data-target="#demo" data-slide-to="0" class="active"></li>
+                <li data-target="#demo" data-slide-to="1"></li>
+            </ul>
+        </div>
+
+        <div class="container pt-5">
+            <hr />
+        </div>
+
+        <!--About us-->
+        <div class="about-us pt-3">
+            <div class="container py-5" style="display: flex; flex-direction: row-reverse;">
+                <img src="/image/about.jpg" style="width: 50%; border-radius: 20px;">
+                <div class="about-content text-justify px-5">
+                    <h1 class="about-title pb-4">About Us</h1>
+                    <p>
+                        Our Pet Supplies Store is dedicated to providing high-quality products for pets and their
+                        owners.
+                        We offer a variety of items, including nutritious food, toys, treats, and daily essentials for
+                        pets,
+                        all meeting safety, durability, and affordability standards. We understand the responsibility of
+                        pet owners and strive to provide exceptional service, helping create lasting memories with pets.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!--Contact Us-->
+        <div class="contact py-5">
+            <div class="container text-center">
+                <div class="contact-content pb-2">
+                    <h1 class="contact-title pr-3">Contact Us</h1>
+                    <img src="" style="width: 50px; height: 50px;" />
+                </div>
+                <p>For more information or if you have questions please feel free to contact us.</p>
+                <button class="btn btn-secondary-1"><a href="contact.php">Contact Us</a></button>
+            </div>
+        </div>
+
+        <!--Best Seller-->
+        <div class="container pb-5">
+            <div class="arrow">
+                <h1 class="title pt-5">Best Seller Product</h1>
+                <a href="product.php#best">
+                    <i class="fa fa-arrow-right" data-mdb-toggle="animation" data-mdb-animation-reset="true"
+                        data-mdb-animation="slide-out-right"></i>
+                </a>
+            </div>
+            <div class="row justify-content-center pb-4">
+
+            </div>
+        </div>
+
+        <iframe src="/html/footer.html" frameborder="0" width="100%" height="451"></iframe>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    
+    <script type="module" src="/js/logout.js"></script>
+</body>
+
+</html>
