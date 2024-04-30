@@ -107,7 +107,7 @@
     top: 0;
 }
 
-.active,
+
 .dot:hover {
     background-color: #717171;
 }
@@ -145,6 +145,7 @@
 .about-title {
     font-family: Catty Pillow Demo;
     font-size: 70px;
+    color: #01647a;
 }
 
 .about-us {
@@ -178,7 +179,6 @@
 .about btn {
     width: 30%;
 }
-
 
 
 .btn-secondary-1 {
@@ -281,27 +281,57 @@
     color: #01647a;
 }
 
-.contact-content {
-    display: flex;
-    justify-content: center;
+.container {
+    position: relative;
 }
 
-.contact-title {
-    font-family: 'Catty Pillow Demo';
-    font-size: 60px;
-    font-weight: 500;
+.image {
+    display: block;
+    width: 400px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.card .img-wrapper {
-    max-width: 100%;
-    height: 13em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
 }
 
-.card img {
-    max-height: 100%;
+.overlay:hover {
+    opacity: 1;
+    background-image: linear-gradient(transparent, rgba(1, 100, 122, 0.8));
+    width: 400px;
+}
+
+.overlay:hover .text {
+    opacity: 1;
+}
+
+.column:hover .overlay {
+    opacity: 1;
+}
+
+.text {
+    color: white;
+    font-size: 18px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: left;
+    opacity: 0;
 }
 
 /*arrow-right*/
@@ -319,6 +349,38 @@
     display: flex;
 }
 
+/*best seller*/
+.item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    width: 90%;
+    max-width: 500px;
+}
+
+.item img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.item p {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.btn-primary{
+    background-color: #01647a !important;
+    color: white !important;
+    border-color: #01647a !important;
+}
+
+.btn-primary:hover {
+    background-color: #cdf4fd !important;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px !important;
+    color: #01647a !important;
+}
 /*mobile*/
 @media screen and (max-width: 767px) {
 

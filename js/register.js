@@ -28,7 +28,7 @@ document.getElementById('signUp').addEventListener('click', async () => {
     const lowercase = /[a-z]/;
     
     if (password.length < 8 || !uppercase.test(password) || !lowercase.test(password)) {
-      throw new Error('Password must be at least 8 characters long and contain at least one uppercase and one lowercase character');
+      window.alert("Password must be at least 8 characters long and contain at least one uppercase and one lowercase character");
     }
 
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -48,7 +48,7 @@ document.getElementById('signUp').addEventListener('click', async () => {
     console.log('User created with email: ', userCredential.user.email);
     console.log('Document written with ID: ', docRef.id);
     console.log('Password hash:', hashpass);
-    window.location.href = "/html/home-1.html";
+    window.location.href = "/html/home.html";
     //document.getElementById('output').innerText = 'Data added to Firestore!';
   } catch (e) {
     console.error('Error adding document: ', e);
@@ -56,8 +56,6 @@ document.getElementById('signUp').addEventListener('click', async () => {
   }
 
   console.log('Password hash:', password);
-
-
 });
 
 

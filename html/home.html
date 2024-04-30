@@ -9,14 +9,34 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
-    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/css/home-1.css">
     <link rel="stylesheet" href="/css/nav.css">
     <script type="module" src="/js/firebase-configs.js"></script>
-    
+    <style>
+       .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cart-item-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 5px;
+            font-size: 12px;
+        }
+    </style>
+
 </head>
 
 <body>
-    <div class="overflow-hidden">  
+    <div class="overflow-hidden">
         <div class="header">
             <div class="container" id="myHeader">
                 <div class="row pt-4" id="menu">
@@ -29,7 +49,10 @@
                     </div>
 
                     <div class="col-lg-4">
-                        <span style="cursor:pointer"><i class="fa fa-shopping-bag" id="cart"></i></a></span>
+                        <div id="cartIcon" class="cart-icon">
+                            <a href="/html/cart.html"><i class="fa fa-shopping-bag"></i></a>
+                            <span id="cartItemCount" class="cart-item-count">0</span>
+                        </div>
                         <span style="cursor:pointer"><i class="fa fa-user" id="profile"></i></span>
                         <span style="cursor:pointer"><i class="fa fa-sign-out" id="signOut"></i></span>
                     </div>
@@ -121,33 +144,99 @@
             </div>
         </div>
 
+        <div class="container pt-5">
+            <hr />
+        </div>
+
         <!--Contact Us-->
-        <div class="contact py-5">
-            <div class="container text-center">
-                <div class="contact-content pb-2">
-                    <h1 class="contact-title pr-3">Contact Us</h1>
-                    <img src="" style="width: 50px; height: 50px;" />
+        <div class="container text-center pt-4">
+            <span class="icon-with-text">::::::</span><i class="fa fa-paw paw-icon" aria-hidden="true"
+                style="font-size: 35px;"></i>&nbsp;
+            <span class="icon-with-text">::::::</span>
+            <p class="pt-2 pl-1">SHOP BY PET TYPE</p>
+            <h1 class="title pl-5">High Quality & Branded Pet Products</h1>
+            <div class="row pt-5">
+                <div class="col">
+                    <img src="/image/dog1.jpg" alt="Avatar" class="image">
+                    <div class="overlay">
+                        <h3 class="text-center pt-3" style="color: #01647a;">DOG</h3>
+                        <div class="text">
+                            If your customer base is furry pup lovers - there's no way you can get a
+                            more comprehensive supply than Pet Mart! You'll find quality products like dog crates,
+                            dog toys, dog beds &amp; other accessories from trusted brands - for a playful pup to
+                            sleepy senior, all at prices you can't find elsewhere!
+                        </div>
+                    </div>
                 </div>
-                <p>For more information or if you have questions please feel free to contact us.</p>
-                <button class="btn btn-secondary-1"><a href="contact.php">Contact Us</a></button>
+                <div class="col">
+                    <img src="/image/cat1.jpg" alt="Avatar" class="image">
+                    <div class="overlay">
+                        <h3 class="text-center pt-3" style="color: #01647a;">CAT</h3>
+                        <div class="text">
+                            If your customer base is a cat person you've come to the right place! Pet Mart has all the
+                            cat supplies, from eats to catnaps, a little furball will purr over
+                            &amp;
+                            claw for including cat cages, cat trees, cat scratchers, cat litter sand, and many more.
+                        </div>
+                    </div>
+                </div>
+                <div class="w-100 pt-5"></div>
+                <div class="col">
+                    <img src="/image/hamster-and-rabbit.jpg" alt="Avatar" class="image">
+                    <div class="overlay">
+                        <h3 class="text-center pt-3" style="color: #01647a;">HAMSTER & RABBITS</h3>
+                        <div class="text">
+                            At Pet Mart, we do also cover supplies for numerous types of small animals
+                            &amp; rodent friends like hamsters, mice, rabbits &amp; fishes. Our range includes
+                            hamster foods, hamster cages, hamster litter sand, rabbit litter trays, and many other
+                            accessories.
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="/image/bird.jpg" alt="Avatar" class="image">
+                    <div class="overlay">
+                        <h3 class="text-center pt-3" style="color: #01647a;">BIRDS</h3>
+                        <div class="text">
+                            Various types of birds with different needs. That's why our wide range of
+                            pet products does not end here. At Pet Mart, our supplies cover both inside and wild
+                            birds, include options that all the bird lovers are raving about - such as bird cages
+                            and accessories, bird litter, bird toys, and many more.
+                        </div>
+                    </div>
+                </div>
+                <div class="w-100 pt-5"></div>
+                <div class="col">
+                    <img src="/image/fish.jpg" alt="Avatar" class="image" style="width: 25%;">
+                    <div class="overlay">
+                        <h3 class="text-center pt-3" style="color: #01647a;">FISH</h3>
+                        <div class="text">
+                            Dive into Pet Mart's aquatic world! Explore vibrant freshwater fish and captivating marine
+                            life. Find everything you need for your aquarium, from colorful fish to live plants and
+                            top-quality equipment. Let us help you create your underwater oasis!
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <div class="container pt-5">
+            <hr />
         </div>
 
         <!--Best Seller-->
         <div class="container pb-5">
             <div class="arrow">
-                <h1 class="title pt-5">Best Seller Product</h1>
+                <h1 class="title pt-5">Recommended Product</h1>
                 <a href="product.php#best">
                     <i class="fa fa-arrow-right" data-mdb-toggle="animation" data-mdb-animation-reset="true"
                         data-mdb-animation="slide-out-right"></i>
                 </a>
             </div>
-            <div class="row justify-content-center pb-4">
-
-            </div>
+            <div id="owl-demo" class="owl-carousel owl-theme"></div>
         </div>
 
-        <iframe src="/html/footer.html" frameborder="0" width="100%" height="451"></iframe>
+        <iframe src="/html/footer.html" frameborder="0" width="100%" height="454"></iframe>
 
     </div>
 
@@ -158,11 +247,12 @@
     <!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-    
-    <script type="module" src="/js/logout.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script type="module" src="/js/home.js"></script>
+    <script type="module" src="/js/logout-1.js"></script>
 </body>
 
 </html>
