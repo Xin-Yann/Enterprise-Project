@@ -10,7 +10,12 @@ video#bg-video {
     z-index: -1;
 } 
 
-/* Style the rest of your content */
+
 .content {
     z-index: 1; 
+}
+
+.form-group a:hover{
+    color: #01647a;
+    text-decoration: none;
 }

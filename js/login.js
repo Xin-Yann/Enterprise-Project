@@ -10,21 +10,22 @@ const auth = getAuth();
 
 document.getElementById('signIn').addEventListener('click', () => {
   event.preventDefault();
-  // Get email and password from input fields
   const email = document.getElementById('Email').value;
   const password = document.getElementById('Password').value;
 
-  // Sign in with email and password
+  if (!email || !password) {
+    window.alert('Email and password must be filled out.');
+    return; 
+  }
+
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      // Signed in successfully
       const user = userCredential.user;
       fetchUserdata();
       console.log('Signed in user:', user);
-      window.location.href = "/html/home.html";
+      window.location.href = "../html/home.html";
     })
     .catch((error) => {
-      // Handle sign-in errors
       const errorCode = error.code;
       const errorMessage = error.message;
       console.error('Sign-in error:', errorCode, errorMessage);
@@ -34,10 +35,8 @@ document.getElementById('signIn').addEventListener('click', () => {
 
 async function fetchUserdata() {
   try {
-      // Reference to the "users" collection
       const usersCollection = collection(db, 'users');
 
-      // Get all documents in the "users" collection
       const querySnapshot = await getDocs(usersCollection);
 
   } catch (error) {

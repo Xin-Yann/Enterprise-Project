@@ -27,7 +27,7 @@ function handleProfileClick() {
     window.location.href = "/html/profile.html";
   } else {
     // No user is signed in, redirect to login page
-    window.location.href = "/html/login-1.html";
+    window.location.href = "/html/login.html";
   }
 }
 
@@ -36,13 +36,28 @@ if (profile) {
   profile.addEventListener('click', handleProfileClick);
 }
 
+function handleCartClick() {
+  if (auth.currentUser) {
+    // User is signed in, redirect to profile page
+    window.location.href = ".../html/cart.html";
+  } else {
+    // No user is signed in, redirect to login page
+    window.location.href = "../html/login.html";
+  }
+}
+
+const cart = document.getElementById('cart');
+if (cart) {
+  cart.addEventListener('click', handleCartClick);
+}
+
 document.getElementById('signOut').addEventListener('click', () => {
   // Sign out the current user
   signOut(auth)
     .then(() => {
       // Sign-out successful.
       console.log('User signed out');
-      window.location.href = "/html/home.html";
+      window.location.href = "../html/home.html";
       window.alert("You have been successfully signed out.");
     })
     .catch((error) => {

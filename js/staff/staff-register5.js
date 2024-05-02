@@ -18,11 +18,6 @@ document.getElementById('signUp').addEventListener('click', async () => {
     const password = document.getElementById('Password').value;
     const hashpass = await hashPassword(password);
     const contact = document.getElementById('Contact').value;
-    const address = document.getElementById('Address').value;
-    const state = document.getElementById('State').value;
-    const city = document.getElementById('City').value;
-    const post = document.getElementById('Postcode').value;
-    
 
     const uppercase = /[A-Z]/;
     const lowercase = /[a-z]/;
@@ -31,38 +26,39 @@ document.getElementById('signUp').addEventListener('click', async () => {
       throw new Error('Password must be at least 8 characters long and contain at least one uppercase and one lowercase character');
     }
 
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const staffCredential = await createUserWithEmailAndPassword(auth, email, password);
     
-    // Add a document to the "users" collection
-    const docRef = await addDoc(collection(db, 'users'), {
+    const docRef = await addDoc(collection(db, 'staffs'), {
       name: name,
       email: email,
       password: hashpass,
-      contact: contact,
-      address: address,
-      state: state,
-      city: city,
-      post: post
+      contact: contact
     });
 
-    console.log('User created with email: ', userCredential.user.email);
+    console.log('Staff created with email: ', staffCredential.user.email);
     console.log('Document written with ID: ', docRef.id);
     console.log('Password hash:', hashpass);
-    window.location.href = "/html/home-1.html";
-    //document.getElementById('output').innerText = 'Data added to Firestore!';
+    window.location.href = "../html/staff/staff-home.html";
+    document.getElementById('output').innerText = 'Data added to Firestore!';
   } catch (e) {
     console.error('Error adding document: ', e);
-    //document.getElementById('output').innerText = 'Error adding data to Firestore!';
+    document.getElementById('output').innerText = 'Error adding data to Firestore!';
   }
+
+  
 
   console.log('Password hash:', password);
 
-
 });
 
-
-async function hashPassword(hashpass) {
-  return hashpass;
+async function hashPassword(password) {
+  let hash = 0;
+  for (let i = 0; i < password.length; i++) {
+    const char = password.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; 
+  }
+  return hash.toString();
 }
 
 

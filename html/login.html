@@ -12,17 +12,24 @@
 </head>
 
 <body>
-  <section class="ftco-section"  style="padding: 5em 0;">
+  <section class="ftco-section">
     <video autoplay="autoplay" muted="muted" loop="loop" id="bg-video">
       <source src="/image/back.mp4" type="video/mp4" />
     </video>
 
     <div class="container justify-content-center">
       <div class="login-wrap p-4 p-md-5 justify-content-center " style="background-color: white; left: 25%;">
-        <h3 class="mb-4 text-center">Welcome to Pet Mart Staff Portal !</h3>
         <div class="d-flex">
           <div class="w-100">
             <h3 class="mb-4">Sign In</h3>
+          </div>
+          <div class="w-100">
+            <p class="social-media d-flex justify-content-end">
+              <a href="" target="_blank" class="social-icon d-flex align-items-center justify-content-center"><span
+                  class="fa fa-facebook"></span></a>
+              <a href="/html/staff/staff-login.html" class="social-icon d-flex align-items-center justify-content-center"><span
+                  class="fa fa-user"></span></a>
+            </p>
           </div>
         </div>
         <form action="#" class="signin-form">
@@ -46,15 +53,16 @@
               </label>
             </div>
           </div>
-          <p class="text-center">Not a member? <a data-toggle="tab" href="/html/staff/staff-register.html">Sign Up</a></p>
+          <p class="text-center">Not a member? <a data-toggle="tab" href="register.html">Sign Up</a></p>
       </div>
       </form>
+
     </div>
     </div>
   </section>
 
   <script type="module" src="/js/firebase-configs.js"></script>
-  <script type="module" src="/js/staff/staff-login2.js"></script>
+  <script type="module" src="/js/login.js"></script>
 
 
 </body>
