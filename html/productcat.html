@@ -10,9 +10,9 @@
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
     <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/productcat.css">
     <link rel="stylesheet" href="/css/nav.css">
     <script type="module" src="/js/firebase-configs.js"></script>
-    
 </head>
 
 <body>
@@ -85,97 +85,20 @@
 
         </div>
 
-        <!--slider-->
-        <div class="slideshow-container pt-5" id="demo">
-
-            <div class="mySlides fade">
-                <div class="numbertext">1 / 2</div>
-                <div class="banner">
-                    <img src="" />
-                    <div class="banner-content px-5">
-                        <h4 class="banner-head"></h4>
-                        <h1 class="pb-3 text-capitalize text-center">
-
-                        </h1>
-                        <a href="" class="btn btn-lg">Shop Now</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mySlides fade">
-                <div class="numbertext">2 / 2</div>
-                <div class="banner">
-                    <img src="" />
-                    <div class="banner-content px-5">
-                        <h4 class="banner-head"></h4>
-                        <h1 class="pb-3 text-capitalize text-center">
-
-                        </h1>
-                        <a href="" class="btn btn-lg">Customize</a>
-                    </div>
-                </div>
-            </div>
-
-            <br>
-
-            <ul class="carousel-indicators">
-                <li data-target="#demo" data-slide-to="0" class="active"></li>
-                <li data-target="#demo" data-slide-to="1"></li>
-            </ul>
+        <div>
+            <label for="food-type">Select food type:</label>
+            <select id="food-type">
+                <option value="all">All</option>
+                <option value="dry">Dry Food</option>
+                <option value="wet">Wet Food</option>
+            </select>
         </div>
 
-        <div class="container pt-5">
-            <hr />
-        </div>
-
-        <!--About us-->
-        <div class="about-us pt-3">
-            <div class="container py-5" style="display: flex; flex-direction: row-reverse;">
-                <img src="/image/about.jpg" style="width: 50%; border-radius: 20px;">
-                <div class="about-content text-justify px-5">
-                    <h1 class="about-title pb-4">About Us</h1>
-                    <p>
-                        Our Pet Supplies Store is dedicated to providing high-quality products for pets and their
-                        owners.
-                        We offer a variety of items, including nutritious food, toys, treats, and daily essentials for
-                        pets,
-                        all meeting safety, durability, and affordability standards. We understand the responsibility of
-                        pet owners and strive to provide exceptional service, helping create lasting memories with pets.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!--Contact Us-->
-        <div class="contact py-5">
-            <div class="container text-center">
-                <div class="contact-content pb-2">
-                    <h1 class="contact-title pr-3">Contact Us</h1>
-                    <img src="" style="width: 50px; height: 50px;" />
-                </div>
-                <p>For more information or if you have questions please feel free to contact us.</p>
-                <button class="btn btn-secondary-1"><a href="contact.php">Contact Us</a></button>
-            </div>
-        </div>
-
-        <!--Best Seller-->
-        <div class="container pb-5">
-            <div class="arrow">
-                <h1 class="title pt-5">Best Seller Product</h1>
-                <a href="product.php#best">
-                    <i class="fa fa-arrow-right" data-mdb-toggle="animation" data-mdb-animation-reset="true"
-                        data-mdb-animation="slide-out-right"></i>
-                </a>
-            </div>
-            <div class="row justify-content-center pb-4">
-
-            </div>
-        </div>
-
-        <iframe src="/html/footer.html" frameborder="0" width="100%" height="451"></iframe>
-
+        <div id="product-container" class="product-container"></div>
+        
     </div>
 
+    <script type="module" src="/js/productcat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
         integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
@@ -186,8 +109,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
-    
-    <script type="module" src="/js/logout.js"></script>
 </body>
-
 </html>
