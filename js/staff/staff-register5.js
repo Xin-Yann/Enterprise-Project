@@ -38,7 +38,7 @@ document.getElementById('signUp').addEventListener('click', async () => {
     console.log('Staff created with email: ', staffCredential.user.email);
     console.log('Document written with ID: ', docRef.id);
     console.log('Password hash:', hashpass);
-    window.location.href = "/html/staff/staff-home.html";
+    window.location.href = "../html/staff/staff-home.html";
     document.getElementById('output').innerText = 'Data added to Firestore!';
   } catch (e) {
     console.error('Error adding document: ', e);

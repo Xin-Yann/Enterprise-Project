@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,11 +10,29 @@
     <!-- Import Owl Carousel CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <!-- Import Owl Carousel Theme CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <style>
+        .item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+    </style>
 </head>
+
 <body>
-    <div id="owl-demo" class="owl-carousel owl-theme">
-        
+
+    <select id="selection">
+        <option value="all">All</option>
+        <option value="cat">Cat</option>
+        <option value="dog">Dog</option>
+    </select>
+
+    <div id="product" class="products">
+
     </div>
 
     <!-- Import jQuery -->
@@ -26,4 +45,5 @@
         // JavaScript code goes here
     </script>
 </body>
+
 </html>

@@ -23,7 +23,7 @@ document.getElementById('signIn').addEventListener('click', () => {
       const user = userCredential.user;
       fetchUserdata();
       console.log('Signed in user:', user);
-      window.location.href = "/html/home.html";
+      window.location.href = "../html/home.html";
     })
     .catch((error) => {
       const errorCode = error.code;

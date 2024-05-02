@@ -142,7 +142,7 @@ async function fetchDataAndDisplay() {
 
                 // Call the addToCart function with the product information
                 addToCart(productId, productImage, productName, productPrice, productType);
-                window.location.href = "/html/cart.html";
+                window.location.href = "../html/cart.html";
 
             });
         });

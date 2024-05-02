@@ -7,9 +7,9 @@ cartTable.innerHTML = `
             <th>No</th>
             <th>Image</th>
             <th>Product</th>
+            <th>Quantity</th>
             <th>Price (RM)</th>
             <th>Type</th>
-            <th>Quantity</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -52,10 +52,6 @@ function displayCartItems() {
         const checkoutButton = document.getElementById('checkout');
         continueShoppingButton.style.display = 'none';
         checkoutButton.style.display = 'none';
-
-        const promoSection = document.querySelector('.promo-code');
-        promoSection.style.display = 'none';
-
         return;
     }
 

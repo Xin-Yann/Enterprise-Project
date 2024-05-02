@@ -131,49 +131,27 @@
     }
 }
 
-@media only screen and (max-width: 300px) {
-
-    .prev,
-    .next,
-    .text {
-        font-size: 11px
-    }
-}
-
 
 /*about*/
 .about-title {
     font-family: Catty Pillow Demo;
     font-size: 70px;
-    color: #01647a;
+    color: white;
 }
 
 .about-us {
-    filter: brightness(70%);
+    
     display: flex;
     flex-direction: row-reverse;
+    background-color: #01647a;
 }
 
-.about {
-    position: absolute;
-    top: 20%;
-    left: 23%;
-    width: 55%;
-    height: 55%;
-    background: #88694e;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    text-align: center;
-    border-radius: 20px;
-}
 
 .about-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    color: white;
 }
 
 .about btn {
@@ -183,16 +161,16 @@
 
 .btn-secondary-1 {
     background-color: white !important;
-    color: #88694e !important;
+    color: #01647a !important;
 }
 
 .btn-secondary-1 a:hover {
     text-decoration: none;
-    color: #88694e
+    color: #01647a;
 }
 
 .btn-secondary-1 a {
-    color: #88694e;
+    color: #01647a;
 }
 
 /*cart*/
@@ -224,51 +202,20 @@
     color: #f1f1f1;
 }
 
-.cart .closebtn {
+.cart-icon {
+    position: relative;
+    cursor: pointer;
+}
+
+.cart-item-count {
     position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-}
-
-.btn-secondary {
-    background-color: white !important;
-    color: #88694e !important;
-}
-
-.sidenav {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: #88694e;
-    overflow-x: hidden;
-    transition: 0.5s;
-    color: #ffff;
-}
-
-.sidenav a {
-    padding: 8px 8px 8px 32px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #ffff;
-    display: block;
-    transition: 0.3s;
-}
-
-.sidenav a:hover {
-    color: #f1f1f1;
-}
-
-.sidenav .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
+    top: -10px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 5px;
+    font-size: 12px;
 }
 
 /*Contact*/
@@ -380,64 +327,4 @@
     background-color: #cdf4fd !important;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px !important;
     color: #01647a !important;
-}
-/*mobile*/
-@media screen and (max-width: 767px) {
-
-    /*banner*/
-    .banner img {
-        width: 100%;
-        height: 400px;
-    }
-
-    .banner {
-        display: block;
-    }
-
-    .banner-content {
-        padding: 40px 0 40px 0;
-    }
-
-
-    .banner h1 {
-        font-size: 50px;
-    }
-
-    .btn-lg {
-        position: relative;
-        left: 10%;
-    }
-
-    .container {
-        display: inline-block;
-        max-width: 100%;
-    }
-
-    .card .img-wrapper {
-        height: 17em;
-    }
-
-    .about-us {
-        display: block;
-        padding-bottom: 40px;
-        filter: none;
-    }
-
-    .about-us img {
-        display: none;
-    }
-
-    .dropdown fa {
-        padding-left: 30px;
-        color: white !important;
-    }
-
-}
-
-@media screen and (min-width: 768px) {
-    #mobile-menu-button {
-        display: none;
-    }
-
-
 }

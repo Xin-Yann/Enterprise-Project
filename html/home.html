@@ -12,25 +12,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
-    <link rel="stylesheet" href="/css/home-1.css">
-    <link rel="stylesheet" href="/css/nav.css">
-    <script type="module" src="/js/firebase-configs.js"></script>
+    <link rel="stylesheet" href="../css/home-1.css">
+    <link rel="stylesheet" href="../css/nav.css">
+    <script type="module" src="../js/firebase-configs.js"></script>
     <style>
-       .cart-icon {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .cart-item-count {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background-color: red;
-            color: white;
-            border-radius: 50%;
-            padding: 5px;
-            font-size: 12px;
-        }
+       
     </style>
 
 </head>
@@ -50,7 +36,7 @@
 
                     <div class="col-lg-4">
                         <div id="cartIcon" class="cart-icon">
-                            <a href="/html/cart.html"><i class="fa fa-shopping-bag"></i></a>
+                            <a href="../html/cart.html"><i class="fa fa-shopping-bag"></i></a>
                             <span id="cartItemCount" class="cart-item-count">0</span>
                         </div>
                         <span style="cursor:pointer"><i class="fa fa-user" id="profile"></i></span>
@@ -58,8 +44,7 @@
                     </div>
                 </div>
             </div>
-            <div class="menu pt-5" id="mySidenav">
-                <a href="javascript:void(0)" id="mobile-menu-button" class="closebtn" onclick="closeNav()">&times;</a>
+            <div class="menu pt-5">
                 <a href="home.html">Home</a>
                 <div class="dropdown">
                     <a href="product.php">All Product</a>
@@ -78,7 +63,7 @@
 
                 <a href="customize.php">Offer Details</a>
                 <a href="customize.php">Order History</a>
-                <a href="contact.html">Contact Us</a>
+                <a href="/html/contact.html">Contact Us</a>
             </div>
 
         </div>
@@ -122,14 +107,10 @@
             </ul>
         </div>
 
-        <div class="container pt-5">
-            <hr />
-        </div>
-
         <!--About us-->
         <div class="about-us pt-3">
             <div class="container py-5" style="display: flex; flex-direction: row-reverse;">
-                <img src="/image/about.jpg" style="width: 50%; border-radius: 20px;">
+                <img src="../image/about.jpg" style="width: 50%; border-radius: 20px;">
                 <div class="about-content text-justify px-5">
                     <h1 class="about-title pb-4">About Us</h1>
                     <p>
@@ -148,7 +129,7 @@
             <hr />
         </div>
 
-        <!--Contact Us-->
+        <!--Category-->
         <div class="container text-center pt-4">
             <span class="icon-with-text">::::::</span><i class="fa fa-paw paw-icon" aria-hidden="true"
                 style="font-size: 35px;"></i>&nbsp;
@@ -157,7 +138,7 @@
             <h1 class="title pl-5">High Quality & Branded Pet Products</h1>
             <div class="row pt-5">
                 <div class="col">
-                    <img src="/image/dog1.jpg" alt="Avatar" class="image">
+                    <img src="../image/dog1.jpg" alt="Avatar" class="image">
                     <div class="overlay">
                         <h3 class="text-center pt-3" style="color: #01647a;">DOG</h3>
                         <div class="text">
@@ -169,7 +150,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <img src="/image/cat1.jpg" alt="Avatar" class="image">
+                    <img src="../image/cat1.jpg" alt="Avatar" class="image">
                     <div class="overlay">
                         <h3 class="text-center pt-3" style="color: #01647a;">CAT</h3>
                         <div class="text">
@@ -182,7 +163,7 @@
                 </div>
                 <div class="w-100 pt-5"></div>
                 <div class="col">
-                    <img src="/image/hamster-and-rabbit.jpg" alt="Avatar" class="image">
+                    <img src="../image/hamster-and-rabbit.jpg" alt="Avatar" class="image">
                     <div class="overlay">
                         <h3 class="text-center pt-3" style="color: #01647a;">HAMSTER & RABBITS</h3>
                         <div class="text">
@@ -194,7 +175,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <img src="/image/bird.jpg" alt="Avatar" class="image">
+                    <img src="../image/bird.jpg" alt="Avatar" class="image">
                     <div class="overlay">
                         <h3 class="text-center pt-3" style="color: #01647a;">BIRDS</h3>
                         <div class="text">
@@ -207,7 +188,7 @@
                 </div>
                 <div class="w-100 pt-5"></div>
                 <div class="col">
-                    <img src="/image/fish.jpg" alt="Avatar" class="image" style="width: 25%;">
+                    <img src="../image/fish.jpg" alt="Avatar" class="image" style="width: 25%;">
                     <div class="overlay">
                         <h3 class="text-center pt-3" style="color: #01647a;">FISH</h3>
                         <div class="text">
@@ -224,7 +205,7 @@
             <hr />
         </div>
 
-        <!--Best Seller-->
+        <!--Recommend-->
         <div class="container pb-5">
             <div class="arrow">
                 <h1 class="title pt-5">Recommended Product</h1>
@@ -236,7 +217,7 @@
             <div id="owl-demo" class="owl-carousel owl-theme"></div>
         </div>
 
-        <iframe src="/html/footer.html" frameborder="0" width="100%" height="454"></iframe>
+        <iframe src="../html/footer.html" frameborder="0" width="100%" height="454"></iframe>
 
     </div>
 
@@ -251,8 +232,7 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-    <script type="module" src="/js/home.js"></script>
-    <script type="module" src="/js/logout-1.js"></script>
+    <script type="module" src="../js/home.js"></script>
+    <script type="module" src="../js/logout.js"></script>
 </body>
-
 </html>

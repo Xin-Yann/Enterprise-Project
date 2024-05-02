@@ -8,77 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
     <link rel="stylesheet" href="/css/home-1.css">
     <link rel="stylesheet" href="/css/nav.css">
     <link rel="stylesheet" href="/css/cart.css">
     <script type="module" src="/js/firebase-configs.js"></script>
-
-    <style>
-        .table td,
-        .table th {
-            padding: .75rem;
-            vertical-align: top;
-            border-top: 1px solid #dee2e6;
-            text-align: center;
-        }
-
-        .counter {
-            display: flex;
-            align-items: center;
-        }
-
-        .counter .btn {
-            cursor: pointer;
-            background-color: #f1f1f1;
-            border: none;
-            padding: 5px 10px;
-            margin: 0 5px;
-            border-radius: 3px;
-        }
-
-        .counter .count {
-            font-size: 18px;
-        }
-
-        .cart-icon {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .cart-item-count {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background-color: red;
-            color: white;
-            border-radius: 50%;
-            padding: 5px;
-            font-size: 12px;
-        }
-
-        .continue-shopping-btn a {
-            text-decoration: none;
-            color: white !important;
-        }
-
-        .continue-shopping-btn a:hover {
-            text-decoration: none;
-            color: #01647a !important;
-        }
-
-        .quantity {
-            border: none;
-            width: 15%;
-            text-align: center;
-        }
-
-        .promo-code {
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-end;
-        }
-    </style>
 </head>
 
 <body>
@@ -105,8 +38,7 @@
                     </div>
                 </div>
             </div>
-            <div class="menu pt-5" id="mySidenav">
-                <a href="javascript:void(0)" id="mobile-menu-button" class="closebtn" onclick="closeNav()">&times;</a>
+            <div class="menu pt-5">
                 <a href="home.html">Home</a>
                 <div class="dropdown">
                     <a href="product.php">All Product</a>
@@ -114,7 +46,7 @@
                         <path d="M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z"></path>
                         <path d="M0-.75h24v24H0z" fill="none"></path>
                     </svg>
-                    <div class="dropdown-content" id="menu">
+                    <div class="dropdown-content">
                         <a href="product.php#cakes">Dog</a>
                         <a href="product.php#cookies">Cat</a>
                         <a href="product.php#tarts">Hamster & Rabbits</a>
@@ -136,33 +68,23 @@
             <div class="text-right mt-3">
                 <h4 id="Subtotal">Subtotal: RM 0.00</h4>
                 <h4 class="pt-3 pb-4">Total Price: RM 0.00</h4>
-                <div class="promo-code pb-4">
-                    <h4 class="pr-4">Promo Code:</h4>
-                    <input type="text" id="promoInput" placeholder="Enter promo code" style="margin-right: 15px;">
-                    <button class="btn btn-primary" id="applyPromoBtn">Apply</button>
-                </div>
+                
                 <button class="btn btn-primary" id="shopping">Continous Shopping</button>
                 <button class="btn btn-primary" id="checkout">Checkout</button>
             </div>
         </div>
 
-
-
-
         <iframe src="/html/footer.html" frameborder="0" width="100%" height="451"></iframe>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script>
-    <script type="module" src="/js/logouts.js"></script>
-    <script type="module" src="/js/cart.js"></script>
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <script type="module" src="../js/logout.js"></script>
+    <script type="module" src="../js/cart.js"></script>
 </body>
 
 </html>
