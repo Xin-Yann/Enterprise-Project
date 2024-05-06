@@ -140,7 +140,7 @@
 }
 
 .about-us {
-    
+
     display: flex;
     flex-direction: row-reverse;
     background-color: #01647a;
@@ -297,27 +297,71 @@
 }
 
 /*best seller*/
-.item {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 10px;
-    width: 90%;
-    max-width: 500px;
-}
-
-.item img {
+#owl-demo .owl-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     width: 100%;
-    height: auto;
-    display: block;
 }
 
-.item p {
+#owl-demo .owl-prev,
+#owl-demo .owl-next {
+    position: absolute;
+    font-size: 80px;
+    color: #000;
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    outline: none;
+}
+
+#owl-demo .owl-prev {
+    position: absolute;
+    left: -3%;
+    bottom: 3%;
+}
+
+#owl-demo .owl-next {
+    position: relative;
+    left: 52%;
+    bottom: 4px;
+}
+
+.card {
+    max-width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     overflow: hidden;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    overflow: hidden;
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-title {
+    margin-bottom: 10px;
+    height: 100px;
+}
+
+.card-text {
+    margin-bottom: 10px;
+}
+
+.card-desc{
     white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.btn-primary{
+
+.btn-primary {
+    margin-top: auto; /* Align button to bottom */
     background-color: #01647a !important;
     color: white !important;
     border-color: #01647a !important;
@@ -327,4 +371,8 @@
     background-color: #cdf4fd !important;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px !important;
     color: #01647a !important;
+}
+
+.add-cart {
+    text-transform: uppercase;
 }

@@ -20,31 +20,6 @@
     <div class="overflow-hidden">
         <div class="header">
             <div class="container" id="myHeader">
-                <!--mobile-menu-->
-                <div class="d-flex d-lg-none justify-content-between menu-btn">
-                    <span id="mobile-menu-button" class="open-button" onclick="openNav()">
-                        <i class="fa fa-bars"></i>
-                    </span>
-
-                    <div class="pl-5">
-                        <a href="home.html">
-                            <img src="/image/logo.png" height="70" width="70" />
-                        </a>
-                    </div>
-
-
-                    <div class="menu-icon">
-                        <div class="search">
-                            <span style="cursor:pointer"><a href="/html/cart.html"><i
-                                        class="fa fa-shopping-bag"></i></a></span>
-                            <span style="cursor:pointer"><i class="fa fa-user" id="pro"></i></span>
-                            <span style="cursor:pointer"><i class="fa fa-sign-out" id="Logout"></i></span>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!--desktop-menu-->
                 <div class="row pt-4" id="menu">
 
                     <div class="col-lg-8">
@@ -55,38 +30,40 @@
                     </div>
 
                     <div class="col-lg-4">
-                        <span style="cursor:pointer"><a href="/html/cart.html"><i class="fa fa-shopping-bag"></i></a></span>
+                        <div id="cartIcon" class="cart-icon">
+                            <a href="../html/cart.html"><i class="fa fa-shopping-bag"></i></a>
+                            <span id="cartItemCount" class="cart-item-count">0</span>
+                        </div>
                         <span style="cursor:pointer"><i class="fa fa-user" id="profile"></i></span>
                         <span style="cursor:pointer"><i class="fa fa-sign-out" id="signOut"></i></span>
                     </div>
                 </div>
             </div>
-            <div class="menu pt-5" id="mySidenav">
-                <a href="javascript:void(0)" id="mobile-menu-button" class="closebtn" onclick="closeNav()">&times;</a>
+            <div class="menu pt-5">
                 <a href="home.html">Home</a>
                 <div class="dropdown">
-                    <a href="product.php">All Product</a>
+                    <a href="#">All Product</a>
                     <svg fill="#000000" height="24" viewBox="0 1 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                         <path d="M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z"></path>
                         <path d="M0-.75h24v24H0z" fill="none"></path>
                     </svg>
                     <div class="dropdown-content" id="menu">
-                        <a href="product.php#cakes">Dog</a>
-                        <a href="product.php#cookies">Cat</a>
-                        <a href="product.php#tarts">Hamster & Rabbits</a>
-                        <a href="product.php#pastry">Birds</a>
-                        <a href="product.php#savouries">Fish & Aquatics</a>
+                        <a href="productdog.html">Dog</a>
+                        <a href="productcat.html">Cat</a>
+                        <a href="producthamster&rabbits.html">Hamster & Rabbits</a>
+                        <a href="productbirds.html">Birds</a>
+                        <a href="productfish&aquatics.html">Fish & Aquatics</a>
                     </div>
                 </div>
 
                 <a href="customize.php">Offer Details</a>
                 <a href="customize.php">Order History</a>
-                <a href="">Contact Us</a>
+                <a href="/html/contact.html">Contact Us</a>
             </div>
 
         </div>
 
-        <iframe src="/html/footer.html" frameborder="0" width="100%" height="451"></iframe>
+        <iframe src="../html/footer.html" frameborder="0" width="100%" height="578"></iframe>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"

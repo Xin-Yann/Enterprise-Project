@@ -8,15 +8,13 @@ const db = getFirestore();
 // Get a reference to the Firebase Authentication service
 const auth = getAuth();
 
-
-
 document.getElementById('signUp').addEventListener('click', async () => {
+  event.preventDefault();
   try {
 
     const name = document.getElementById('Name').value;
     const email = document.getElementById('Email').value;
     const password = document.getElementById('Password').value;
-    const hashpass = await hashPassword(password);
     const contact = document.getElementById('Contact').value;
 
     const uppercase = /[A-Z]/;
@@ -31,35 +29,16 @@ document.getElementById('signUp').addEventListener('click', async () => {
     const docRef = await addDoc(collection(db, 'staffs'), {
       name: name,
       email: email,
-      password: hashpass,
       contact: contact
     });
 
     console.log('Staff created with email: ', staffCredential.user.email);
     console.log('Document written with ID: ', docRef.id);
-    console.log('Password hash:', hashpass);
-    window.location.href = "../html/staff/staff-home.html";
+    window.location.href = "../staff/staff-home.html";
     document.getElementById('output').innerText = 'Data added to Firestore!';
   } catch (e) {
     console.error('Error adding document: ', e);
     document.getElementById('output').innerText = 'Error adding data to Firestore!';
   }
 
-  
-
-  console.log('Password hash:', password);
-
 });
-
-async function hashPassword(password) {
-  let hash = 0;
-  for (let i = 0; i < password.length; i++) {
-    const char = password.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; 
-  }
-  return hash.toString();
-}
-
-
-
