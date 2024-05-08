@@ -9,40 +9,31 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
-    <link rel="stylesheet" href="/css/addproduct.css">
+    <link rel="stylesheet" href="/css/staff-editproduct.css">
     <link type="text/css" rel="stylesheet" href="/css/style.css">
     <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
 
 <body>
-    <div id="addproduct" class="section">
+    <div id="editproduct" class="section">
         <div class="section-center">
                 <div class="row" id="rowbox">
-                    <h2 class="aptitle">Add Product</h2>
-                    <div class="addproduct-form">
+                    <h2 class="aptitle">Edit Product</h2>
+                    <div class="editproduct-form">
                             <div class="row">
                                 <div class="form-group">
                                     <label for="product_category">Product category:</label>
-                                    <select id="product_category" name="product_category" class="form-control">
-                                        <option disabled selected>Select category</option>
-                                        <option value="dog">Dog</option>
-                                        <option value="cat">Cat</option>
-                                        <option value="hamster&rabbits">Hamster & Rabbits</option>
-                                        <option value="brids">Birds</option>
-                                        <option value="fish&aqatics">Fish & Aquatics</option>
-                                    </select>
+                                    <input class="form-control" type="text" id="product_category" name="product_category" disabled><br>
                                 </div>
                                 <div class="form-group">
                                     <label for="product_type">Product Type:</label>
-                                    <select id="product_type" name="product_type" class="form-control">
-                                        <option disabled selected>Select type</option>
-                                    </select>
+                                    <input class="form-control" type="text" id="product_type" name="product_type" disabled><br>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group">
                                     <label for="product_id">Product Id:</label>
-                                    <input class="form-control" type="text" id="product_id" name="product_id"><br>
+                                    <input class="form-control" type="text" id="product_id" name="product_id" disabled><br>
                                 </div>
 
                                 <div class="form-group">
@@ -81,7 +72,7 @@
                                 </div>
                             </div>
                             <div class="form-btn">
-                                <button type="button" id="add" class="add-btn">ADD</button>
+                                <button type="button" id="edit" class="edit-btn">EDIT</button>
                             </div>
                         </form>
                     </div>
@@ -100,6 +91,6 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
     <script type="module" src="/js/firebase-configs.js"></script>
-    <script type="module" src="/js/addproduct.js"></script>
+    <script type="module" src="/js/staff-editproduct.js"></script>
 </body>
 </html>

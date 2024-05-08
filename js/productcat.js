@@ -1,128 +1,119 @@
 // Import necessary Firebase modules
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { getFirestore, doc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
 // Initialize Firestore
 const db = getFirestore();
 
 // Function to fetch data and display in the webpage based on food type
-async function fetchDataAndDisplay(foodType) {
+async function fetchDataAndDisplay() {
     try {
-        // Reference to the "products" collection
-        const productsCollection = collection(db, 'products');
+        // Get the selected food type from the dropdown
+        const foodType = document.getElementById('food-type').value;
 
-        // Get all documents in the collection
-        const querySnapshot = await getDocs(productsCollection);
+        // Reference to the specific document with ID "cat" in the "products" collection
+        const catDocRef = doc(db, 'products', 'cat');
+        
+        // Reference to the subcollection under the "cat" document based on the food type
+        const subcollectionRef = collection(catDocRef, foodType);
 
-        // Filter the documents to find the "cat" document
-        const catDoc = querySnapshot.docs.find(doc => doc.id === 'cat');
+        // Get all documents in the subcollection
+        const querySnapshot = await getDocs(subcollectionRef);
 
-        if (catDoc) {
-            // Reference to the "cat" document
-            const catData = catDoc.data();
+        // Clear existing content in the product container
+        const productContainer = document.getElementById('product-container');
+        productContainer.innerHTML = '';
 
-            // Get a reference to the container where products will be displayed
-            const productContainer = document.getElementById('product-container');
-            productContainer.innerHTML = ''; // Clear existing content
+        // Process the retrieved documents
+        querySnapshot.forEach(foodDoc => {
+            // Access the data in each food document
+            const foodData = foodDoc.data();
 
-            // Iterate through subcollections of the "cat" document
-            catDoc.collections.forEach(async subcollection => {
-                // Get all documents in the subcollection
-                const foodQuerySnapshot = await getDocs(subcollection);
-
-                // Iterate through each document in the subcollection
-                foodQuerySnapshot.forEach(foodDoc => {
-                    // Access the data in each food document
-                    const foodData = foodDoc.data();
-
-                    // Check if the document matches the selected food type or show all products
-                    if ((foodType === 'dry' && foodData.dry_food) || (foodType === 'wet' && foodData.wet_food) || (foodType === 'all')) {
-                        // Create a div to display each product's details
-                        const productDiv = document.createElement('div');
-                        productDiv.classList.add('product');
-
-                        // Image
-                        if (foodData.product_image) {
-                            const productImage = document.createElement('img');
-                            productImage.src = `/image/products/cat/${foodType}/${foodData.product_image}`;
-                            productImage.alt = 'Product Image';
-                            productImage.style.width = '300px';
-                            productImage.style.height = '300px';
-                            productDiv.appendChild(productImage);
-                        }
-
-                        // Name
-                        const productName = document.createElement('h4');
-                        productName.textContent = foodData.product_name;
-                        productDiv.appendChild(productName);
-
-                        // Price
-                        const productPrice = document.createElement('h5');
-                        productPrice.textContent = `RM ${foodData.product_price}`;
-                        productDiv.appendChild(productPrice);
-
-                        // Quantity Controls
-                        const quantityContainer = document.createElement('div');
-                        quantityContainer.classList.add('quantity-container');
-
-                        const decrementButton = document.createElement('button');
-                        decrementButton.textContent = '-';
-                        decrementButton.classList.add('decrement-btn');
-                        decrementButton.addEventListener('click', () => {
-                            const currentValue = parseInt(quantityInput.value);
-                            if (currentValue > 1) {
-                                quantityInput.value = currentValue - 1;
-                            }
-                        });
-                        quantityContainer.appendChild(decrementButton);
-
-                        const quantityInput = document.createElement('input');
-                        quantityInput.type = 'text';
-                        quantityInput.min = 1;
-                        quantityInput.value = 1;
-                        quantityInput.classList.add('quantity-input');
-                        quantityContainer.appendChild(quantityInput);
-
-                        const incrementButton = document.createElement('button');
-                        incrementButton.textContent = '+';
-                        incrementButton.classList.add('increment-btn');
-                        incrementButton.addEventListener('click', () => {
-                            quantityInput.value = parseInt(quantityInput.value) + 1;
-                        });
-                        quantityContainer.appendChild(incrementButton);
-
-                        productDiv.appendChild(quantityContainer);
-
-                        // Add to Cart Button
-                        const addToCartButton = document.createElement('button');
-                        addToCartButton.textContent = 'Add to Cart';
-                        addToCartButton.classList.add('add-to-cart-btn');
-                        addToCartButton.addEventListener('click', () => {
-                            // Implement add to cart functionality here
-                            const quantity = parseInt(quantityInput.value);
-                            addToCart(foodDoc.id, foodData.product_name, quantity);
-                        });
-                        productDiv.appendChild(addToCartButton);
-
-                        // Append the product div to the container
-                        productContainer.appendChild(productDiv);
-                    }
-                });
-            });
-        } else {
-            console.log("No 'cat' document found in the 'products' collection.");
-        }
+            // Create product elements and append them to the product container
+            const productDiv = createProductDiv(foodData, foodType);
+            productContainer.appendChild(productDiv);
+        });
 
     } catch (error) {
         console.error('Error fetching documents: ', error);
     }
 }
 
-// Event listener for dropdown list change
-document.getElementById('food-type').addEventListener('change', function () {
-    const selectedFoodType = this.value;
-    fetchDataAndDisplay(selectedFoodType);
-});
+// Function to create product div
+function createProductDiv(foodData, foodType) {
+    const productDiv = document.createElement('div');
+    productDiv.classList.add('product');
 
-// Initial fetch and display based on default food type (all)
-const defaultFoodType = 'all';
-fetchDataAndDisplay(defaultFoodType);
+    // Image
+    if (foodData.product_image) {
+        const productImage = document.createElement('img');
+        productImage.src = `/image/products/cat/${foodType}/${foodData.product_image}`;
+        productImage.alt = 'Product Image';
+        productImage.style.width = '300px';
+        productImage.style.height = '300px';
+        productDiv.appendChild(productImage);
+    }
+
+    // Name
+    const productName = document.createElement('h4');
+    productName.textContent = foodData.product_name;
+    productDiv.appendChild(productName);
+
+    // Price
+    const productPrice = document.createElement('h5');
+    productPrice.textContent = `RM ${foodData.product_price}`;
+    productDiv.appendChild(productPrice);
+
+    // Quantity Controls
+    const quantityContainer = document.createElement('div');
+    quantityContainer.classList.add('quantity-container');
+
+    const decrementButton = createButton('-', () => {
+        const currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+        }
+    });
+    quantityContainer.appendChild(decrementButton);
+
+    const quantityInput = document.createElement('input');
+    quantityInput.type = 'text';
+    quantityInput.min = 1;
+    quantityInput.value = 1;
+    quantityInput.classList.add('quantity-input');
+    quantityContainer.appendChild(quantityInput);
+
+    const incrementButton = createButton('+', () => {
+        quantityInput.value = parseInt(quantityInput.value) + 1;
+    });
+    quantityContainer.appendChild(incrementButton);
+
+    productDiv.appendChild(quantityContainer);
+
+    // Add to Cart Button
+    const addToCartButton = createButton('Add to Cart', () => {
+        // Implement add to cart functionality here
+        const quantity = parseInt(quantityInput.value);
+        addToCart(foodDoc.id, foodData.product_name, quantity);
+    });
+    addToCartButton.classList.add('add-to-cart-btn');
+    productDiv.appendChild(addToCartButton);
+
+    return productDiv;
+}
+
+// Helper function to create a button with a given text and event handler
+function createButton(text, onClickHandler) {
+    const button = document.createElement('button');
+    button.textContent = text;
+    button.addEventListener('click', onClickHandler);
+    button.classList.add('btn', 'btn-primary'); // Add some Bootstrap classes for styling
+    return button;
+}
+
+// Event listener for dropdown list change
+document.getElementById('food-type').addEventListener('change', fetchDataAndDisplay);
+
+// Initial fetch and display based on the default food type when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    fetchDataAndDisplay(); // Fetch and display data without waiting for a dropdown change
+});
