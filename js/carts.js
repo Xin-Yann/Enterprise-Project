@@ -10,6 +10,7 @@ cartTable.innerHTML = `
             <th>Quantity</th>
             <th>Price (RM)</th>
             <th>Type</th>
+            <th>Total Price</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -43,9 +44,7 @@ function displayCartItems() {
             </div>
         `;
 
-        const subtotalSection = document.getElementById('Subtotal');
-        const totalSection = document.querySelector('.pt-3.pb-4');
-        subtotalSection.style.display = 'none';
+        const totalSection = document.getElementById('total');
         totalSection.style.display = 'none';
 
         const continueShoppingButton = document.getElementById('shopping');
@@ -68,11 +67,16 @@ function displayCartItems() {
             </td>
             <td>${item.price}</td> 
             <td>${item.type}</td>
+            <td class="total-price-cell"></td>
             <td><button class="btn btn-danger delete" data-product-name="${item.name}">Delete</button></td>
         `;
         cartTableBody.appendChild(row);
+    
+        // Update total price for the current row
+        const totalPriceCell = row.querySelector('.total-price-cell');
+        totalPriceCell.textContent = `RM ${calculateTotalPrice(item).toFixed(2)}`;
     });
-
+    
     cartContainer.innerHTML = '';
     cartContainer.appendChild(cartTable);
 
@@ -153,23 +157,24 @@ function deleteCartItem() {
     updateCartItemCount();
 }
 
-function calculateSubtotal() {
-    return cartItems.reduce((total, product) => {
-        const price = parseFloat(product.price.replace('RM', ''));
-        const quantity = parseInt(product.quantity);
-        if (!isNaN(price) && !isNaN(quantity)) {
-            return total + (price * quantity);
-        } else {
-            console.error(`Invalid price or quantity for product: ${product.name}`);
-            return total;
-        }
-
-    }, 0);
+function calculateTotalPrice(item) {
+    const price = parseFloat(item.price.replace('RM', ''));
+    const quantity = parseInt(item.quantity);
+    if (!isNaN(price) && !isNaN(quantity)) {
+        return (price * quantity);
+    } else {
+        console.error(`Invalid price or quantity for product: ${item.name}`);
+        return 0; 
+    }
 }
 
 function updateSubtotal() {
-    const SubtotalDisplay = document.getElementById('Subtotal');
-    SubtotalDisplay.textContent = `Subtotal: RM ${calculateSubtotal().toFixed(2)}`;
+    let totalPrice = 0;
+    cartItems.forEach(item => {
+        totalPrice += calculateTotalPrice(item);
+    });
+    const TotalPriceDisplay = document.getElementById('Subtotal');
+    TotalPriceDisplay.textContent = `Subtotal: RM ${totalPrice.toFixed(2)}`;
 }
 
 displayCartItems();
