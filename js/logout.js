@@ -39,10 +39,10 @@ if (profile) {
 function handleCartClick() {
   if (auth.currentUser) {
     // User is signed in, redirect to profile page
-    window.location.href = ".../html/cart.html";
+    window.location.href = "/html/cart.html";
   } else {
     // No user is signed in, redirect to login page
-    window.location.href = "../html/login.html";
+    window.location.href = "/html/login.html";
   }
 }
 

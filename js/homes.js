@@ -1,44 +1,127 @@
-import { getFirestore, collection, getDocs, doc, query, limit } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, setDoc, doc, query, limit } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+
 
 // Initialize Firestore
 const db = getFirestore();
+const auth = getAuth();
 
-function addToCart(productId, productImages, productName, productPrice, productType) {
-    // Check if localStorage is supported
-    if (typeof (Storage) !== "undefined") {
-        // Check if cart exists in localStorage, if not, initialize an empty array
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+function getCurrentUserId() {
+    const user = auth.currentUser;
+    return user ? user.uid : null;
+}
 
-        const existingProductIndex = cart.findIndex(item => item.id === productId);
+auth.onAuthStateChanged(async (user) => {
+    try {
+        if (user) {
+            const userId = getCurrentUserId(); // Get the current user ID
+            if (!userId) {
+                console.error("Invalid userId:", userId);
+                return;
+            }
+            // User is signed in, update cart item count and display cart items
+            updateCartItemCount(userId);
+            console.log("User authenticated. User ID:", userId);
+        } else {
+            console.log("User is not authenticated.");
+        }
+    } catch (error) {
+        console.error("Error in authentication state change:", error);
+    }
+});
+
+async function updateCartItemCount(userId) {
+    try {
+        if (userId) {
+            const userCartDocRef = doc(collection(db, 'carts'), userId); // Reference to the user's cart document
+            const userCartDocSnap = await getDoc(userCartDocRef); // Get the user's cart document snapshot
+
+            if (userCartDocSnap.exists()) {
+                const cartItems = userCartDocSnap.data().cart || []; // Retrieve cart items from Firestore
+                const cartItemCount = document.getElementById('cartItemCount');
+                let totalCount = 0;
+                cartItems.forEach(item => {
+                    totalCount += item.quantity;
+                });
+                cartItemCount.textContent = totalCount;
+            }
+        }
+    } catch (error) {
+        console.error("Error updating cart item count:", error);
+    }
+}
+
+async function addToCart(productId, productImages, productName, productPrice, productType) {
+    try {
+        // Construct the product object
+        let product = {
+            id: productId,
+            image: productImages,
+            name: productName,
+            price: productPrice,
+            type: productType,
+            quantity: 1,
+            totalPrice: parseFloat(productPrice).toFixed(2)
+        };
+
+        // Save the product to Firestore
+        await saveProductToFirestore(product, productName);
+
+        // Update cart item count
+        await updateCartItemCount(getCurrentUserId());
+
+        // Optionally, you can display a message to the user
+        window.alert(`${productName} has been added to your cart!`);
+    } catch (error) {
+        console.error("Error adding product to cart:", error);
+    }
+}
+
+async function saveProductToFirestore(product, productName) {
+    try {
+        const userId = getCurrentUserId(); // Get the current user's ID
+        
+        if (!userId) {
+            console.log("User ID not found. Cannot save cart data.");
+            return;
+        }
+
+        const userCartDocRef = doc(collection(db, 'carts'), userId);// Use userId as the document ID
+
+        // Get existing cart data from Firestore
+        const userCartDoc = await getDoc(userCartDocRef);
+        let cart = userCartDoc.exists() ? userCartDoc.data().cart : [];
+
+        // Check if the product already exists in the cart
+        const existingProductIndex = cart.findIndex(item => item.id === product.id);
 
         // If the product exists, update its quantity
         if (existingProductIndex !== -1) {
             cart[existingProductIndex].quantity++;
+            cart[existingProductIndex].totalPrice = cart[existingProductIndex].quantity * product.price;
         } else {
-            // Construct the product object
-            let product = {
-                id: productId,
-                image: productImages,
-                name: productName,
-                price: productPrice,
-                type: productType,
-                quantity: 1
-            };
-
-            // Add the product to the cart
+            // Otherwise, add the product to the cart
             cart.push(product);
         }
 
-        // Save the updated cart to localStorage
-        localStorage.setItem("cart", JSON.stringify(cart));
+        // Save the updated cart to Firestore
+        await setDoc(userCartDocRef, { cart: cart });
+        console.log("Cart data saved to Firestore successfully!");
 
-        // Optionally, you can display a message to the user
-        alert(`${productName} has been added to your cart!`);
-    } else {
-        // If localStorage is not supported, display an error message
-        alert("Item added unsuccessfully. Please try again.");
+        // Dispatch the addToCart event
+        const addToCartEvent = new CustomEvent('productAddedToCart', {
+            detail: {
+                productId: product.id,
+                productName: productName
+            }
+        });
+        window.dispatchEvent(addToCartEvent);
+    } catch (error) {
+        console.error("Error saving cart data to Firestore:", error);
+        throw error; // Rethrow the error to handle it in the calling function
     }
 }
+
 
 async function fetchDataAndDisplay() {
     try {
@@ -66,7 +149,7 @@ async function fetchDataAndDisplay() {
         const birdToyFoodCollectionRef = collection(birdDocRef, 'toys');
         const birdTreatFoodCollectionRef = collection(birdDocRef, 'treats');
         const birdEssentialFoodCollectionRef = collection(birdDocRef, 'essentials');
-        
+
 
         const limitCount = 2;
 
@@ -87,7 +170,7 @@ async function fetchDataAndDisplay() {
         //bird
         const birdDryQuerySnapshot = await getDocs(query(birdDryFoodCollectionRef, limit(limitCount)));
         //const birdToyQuerySnapshot = await getDocs(query(birdToyFoodCollectionRef, limit(limitCount)));
-        //const birdTreatQuerySnapshot = await getDocs(query(birdTreatFoodCollectionRef, limit(limitCount)));
+        //const birdTreatQuerySnapshot = await getDocs(query(birdTreatFoodCollectionRef, limit(limitCount))) ;
         const birdEssentialQuerySnapshot = await getDocs(query(birdEssentialFoodCollectionRef, limit(limitCount)));
 
         const combinedQuerySnapshot = catDryQuerySnapshot.docs
@@ -168,7 +251,7 @@ async function fetchDataAndDisplay() {
 
         /// Add event listener to each button
         addToCartButtons.forEach(button => {
-            button.addEventListener('click', function (event) {
+            button.addEventListener('click', async function (event) {
                 event.preventDefault();
 
                 // Get the parent div which holds the product information
@@ -182,8 +265,9 @@ async function fetchDataAndDisplay() {
 
                 const productName = item.querySelector('h5').textContent;
                 const productPriceText = item.querySelector('.product-price').textContent;
-                const productPrice = productPriceText.split(':')[1].trim();
-
+                console.log("Product Price Text:", productPriceText);
+                const productPrice = parseFloat(productPriceText.split(':')[1].trim().replace('RM', ''));
+                console.log("Product Price:", productPrice);
 
                 let productType = "";
                 if (productId.includes("DF")) {
@@ -195,9 +279,8 @@ async function fetchDataAndDisplay() {
                 }
 
                 // Call the addToCart function with the product information
-                addToCart(productId, productImages, productName, productPrice, productType);
+                await addToCart(productId, productImages, productName, productPrice, productType);
                 window.location.href = "../html/cart.html";
-
             });
         });
 
@@ -208,19 +291,6 @@ async function fetchDataAndDisplay() {
 
 }
 
-// Function to update cart item count
-function updateCartItemCount() {
-    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    const cartItemCount = document.getElementById('cartItemCount');
-    let totalCount = 0;
-    cartItems.forEach(item => {
-        totalCount += item.quantity;
-    });
-    cartItemCount.textContent = totalCount;
-}
-
-// Call the function initially to display cart item count
-updateCartItemCount();
 
 // Call the function to fetch and display data
 fetchDataAndDisplay();
