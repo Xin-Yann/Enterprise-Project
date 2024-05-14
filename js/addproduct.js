@@ -67,10 +67,10 @@ function updateOptions() {
             addOption("treats");
             break;
         case "hamster&rabbits":
-            addOption("Dry Food");
-            addOption("Essentials");
-            addOption("Toys");
-            addOption("Treats");
+            addOption("dry food");
+            addOption("essentials");
+            addOption("toys");
+            addOption("treats");
             break;
         case "birds":
             addOption("dry food");
@@ -79,9 +79,9 @@ function updateOptions() {
             addOption("treats");
             break;
         case "fish&aquatics":
-            addOption("Dry Food");
-            addOption("Essentials");
-            addOption("Treats");
+            addOption("dry Food");
+            addOption("essentials");
+            addOption("treats");
             break;
     }
 }
