@@ -25,7 +25,7 @@ document.getElementById("add").addEventListener("click", async () => {
             product_stock: document.getElementById('product_stock').value,
             product_weight: document.getElementById('product_weight').value,
         });
-
+        alert('Product added successfully!');
         window.location.reload();
 
         console.log('Document written with ID: ', productId);
@@ -48,7 +48,7 @@ function updateOptions() {
     var selectedCategory = categorySelect.value;
 
     // Clear existing type options
-    typeSelect.innerHTML = '<option disabled selected>Select Type</option>';
+    typeSelect.innerHTML = '<option disabled selected>Select type</option>';
 
     // Add type options based on the selected category
     switch (selectedCategory) {
@@ -79,7 +79,7 @@ function updateOptions() {
             addOption("treats");
             break;
         case "fish&aquatics":
-            addOption("dry Food");
+            addOption("dry food");
             addOption("essentials");
             addOption("treats");
             break;

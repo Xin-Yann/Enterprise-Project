@@ -17,8 +17,8 @@ function createButton(text, onClickHandler) {
 async function fetchDataAndDisplay() {
     try {
         const foodType = document.getElementById('food-type').value;
-        const catDocRef = doc(db, 'products', 'cat');
-        const subcollectionRef = collection(catDocRef, foodType);
+        const fishNaquaticssDocRef = doc(db, 'products', 'fish&aquatics');
+        const subcollectionRef = collection(fishNaquaticssDocRef, foodType);
         const querySnapshot = await getDocs(subcollectionRef);
 
         let documents = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -49,7 +49,7 @@ function createProductDiv(foodData, foodType) {
     // Image
     if (foodData.product_image) {
         const productImage = document.createElement('img');
-        productImage.src = `/image/products/cat/${foodType}/${foodData.product_image}`;
+        productImage.src = `/image/products/fish&aquatics/${foodType}/${foodData.product_image}`;
         productImage.alt = 'Product Image';
         productImage.classList.add('product-image','clickable');
         productImage.addEventListener('click', () => showModal(foodData, foodType));
@@ -125,7 +125,7 @@ function showModal(foodData, foodType) {
     // Image
     if (foodData.product_image) {
         const productImage = document.createElement('img');
-        productImage.src = `/image/products/cat/${foodType}/${foodData.product_image}`;
+        productImage.src = `/image/products/fish&aquatics/${foodType}/${foodData.product_image}`;
         productImage.alt = 'Product Image';
         productImage.classList.add('product-image');
         modalBody.appendChild(productImage);
