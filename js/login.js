@@ -30,6 +30,7 @@ document.getElementById('signIn').addEventListener('click', () => {
       const errorMessage = error.message;
       console.error('Sign-in error:', errorCode, errorMessage);
       window.alert("Invalid email or password. Please try again.");
+      
     });
 });
 
@@ -40,6 +41,7 @@ async function fetchUserdata() {
       const querySnapshot = await getDocs(usersCollection);
 
   } catch (error) {
+
       console.error('Error fetching documents: ', error);
   }
 }

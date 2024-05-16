@@ -6,7 +6,6 @@ const db = getFirestore();
 const auth = getAuth(); // Initialize Firebase Authentication
 
 // Function to get the current user ID
-// Function to get the current user ID
 function getCurrentUserId() {
     const user = auth.currentUser;
     return user ? user.uid : null;
@@ -27,12 +26,12 @@ auth.onAuthStateChanged(async (user) => {
             await getCartData(userId);
             console.log("User authenticated. User ID:", userId);
         } else {
-            console.log("User is not authenticated.");
         }
     } catch (error) {
         console.error("Error in authentication state change:", error);
     }
 });
+
 
 // Function to fetch cart data for a user
 async function getCartData(user) {
@@ -81,7 +80,6 @@ cartTable.innerHTML = `
 const cartTableBody = cartTable.querySelector('tbody');
 const cartContainer = document.getElementById('cartItems');
 
-
 async function displayCartItems() {
     const userId = getCurrentUserId();
     let cartItems = await getCartData(userId); // Changed from const to let
@@ -92,49 +90,62 @@ async function displayCartItems() {
     cartTableBody.innerHTML = '';
 
     // Check if the cart is empty
-    if (cartItems.length === 0) {
-        cartContainer.innerHTML = `
-            <div class="empty-cart-message text-center pb-5">
-                <img src="/image/cart.png" alt="Empty Cart" style="width: 300px;">
-                <h2 class="pb-3">Your cart is empty.</h2>
-                <button class="btn btn-primary continue-shopping-btn"><a href="/html/product.html">Continue Shopping</a></button>
-            </div>
-        `;
+    if (cartItems == 0) {
+         // Hide total section
+         const noSection = document.getElementById('none');
+         noSection.style.display = 'block';
 
+         const headSection = document.getElementById('cartItems');
+         headSection.style.display = 'none';
+
+        // Hide total section
         const totalSection = document.getElementById('total');
         totalSection.style.display = 'none';
+    }else{
+        const noSection = document.getElementById('none');
+         noSection.style.display = 'none';
 
-        const continueShoppingButton = document.getElementById('shopping');
-        const checkoutButton = document.getElementById('checkout');
-        continueShoppingButton.style.display = 'none';
-        checkoutButton.style.display = 'none';
-        return;
+        const totalSection = document.getElementById('total');
+        totalSection.style.display = 'block';
+
+        const headSection = document.getElementById('cartItems');
+        headSection.style.display = 'block';
     }
+
+
+    let totalPrice = 0; // Declare totalPrice variable outside the loop
 
     cartItems.forEach((item, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${index + 1}</td>
-            <td><img src="${item.image}" alt="Product Image" style="width: 100px;"></td>
-            <td>${item.name}</td>
-            <td>
-                <button class="btn btn-sm btn-secondary decrease" data-product-name="${item.name}">-</button>
-                <input type="text" min="1" value="${item.quantity}" class="quantity">
-                <button class="btn btn-sm btn-secondary increase" data-product-name="${item.name}">+</button>
-            </td>
-            <td>${item.price}</td> 
-            <td>${item.type}</td>
-            <td class="total-price-cell"></td>
-            <td><button class="btn btn-danger delete" data-product-name="${item.name}">Delete</button></td>
-        `;
+        <td>${index + 1}</td>
+        <td><img src="${item.image}" alt="Product Image" style="width: 100px;"></td>
+        <td>${item.name}</td>
+        <td>
+            <button class="btn btn-sm btn-secondary decrease" data-product-name="${item.name}">-</button>
+            <input type="text" min="1" value="${item.quantity}" class="quantity">
+            <button class="btn btn-sm btn-secondary increase" data-product-name="${item.name}">+</button>
+        </td>
+        <td>${item.price}</td> 
+        <td>${item.type}</td>
+        <td class="total-price-cell"></td>
+        <td><button class="btn btn-danger delete" data-product-name="${item.name}">Delete</button></td>
+    `;
         cartTableBody.appendChild(row);
 
-        calculateTotalPrice(item).then(totalPrice => {
+        calculateTotalPrice(item).then(itemTotalPrice => {
             // Update total price for the current row
             const totalPriceCell = row.querySelector('.total-price-cell');
-            totalPriceCell.textContent = `RM ${totalPrice.toFixed(2)}`;
+            totalPriceCell.textContent = `RM ${itemTotalPrice.toFixed(2)}`;
+
+            // Accumulate totalPrice
+            totalPrice += itemTotalPrice;
+
+            // Update the subtotal after all items' total prices are calculated
+            updateSubtotal(totalPrice);
         });
     });
+
 
     cartContainer.innerHTML = '';
     cartContainer.appendChild(cartTable);
@@ -159,7 +170,6 @@ async function displayCartItems() {
         button.addEventListener('click', deleteCartItem);
     });
 
-    updateSubtotal();
 }
 
 function incrementQuantity() {
@@ -173,7 +183,6 @@ function incrementQuantity() {
             item.quantity = newQuantity;
         }
     });
-
     updateCartItemCount();
     updateQuantityAndPrice(productName, newQuantity);
 }
@@ -192,7 +201,6 @@ function decrementQuantity() {
             item.quantity = newQuantity;
         }
     });
-
     updateCartItemCount();
     updateQuantityAndPrice(productName, newQuantity);
 }
@@ -222,11 +230,6 @@ async function updateCartItemCount(userId) {
 updateCartItemCount();
 
 
-// function updateLocalStorageAndDisplay() {
-//     localStorage.setItem('cart', JSON.stringify(cartItems));
-//     displayCartItems();
-// }
-
 function updateCartItemQuantity() {
     const productName = this.parentElement.previousElementSibling.previousElementSibling.previousElementSibling.textContent;
     const newQuantity = parseInt(this.value);
@@ -235,7 +238,6 @@ function updateCartItemQuantity() {
             item.quantity = newQuantity;
         }
     });
-    //updateLocalStorageAndDisplay();
 }
 
 
@@ -335,13 +337,10 @@ async function calculateTotalPrice(item) {
     }
 }
 
-async function updateSubtotal() {
-    let totalPrice = 0;
-    for (const item of cartItems) {
-        totalPrice += await calculateTotalPrice(item);
-    }
+async function updateSubtotal(totalPrice) {
+    const formattedTotalPrice = totalPrice.toFixed(2); // Format totalPrice to have exactly two decimal places
     const TotalPriceDisplay = document.getElementById('Subtotal');
-    TotalPriceDisplay.textContent = `Subtotal: RM ${totalPrice.toFixed(2)}`;
+    TotalPriceDisplay.textContent = `Subtotal: RM ${formattedTotalPrice}`;
 }
 
 

@@ -36,20 +36,6 @@ if (profile) {
   profile.addEventListener('click', handleProfileClick);
 }
 
-function handleCartClick() {
-  if (auth.currentUser) {
-    // User is signed in, redirect to profile page
-    window.location.href = "/html/cart.html";
-  } else {
-    // No user is signed in, redirect to login page
-    window.location.href = "/html/login.html";
-  }
-}
-
-const cart = document.getElementById('cart');
-if (cart) {
-  cart.addEventListener('click', handleCartClick);
-}
 
 document.getElementById('signOut').addEventListener('click', () => {
   // Sign out the current user

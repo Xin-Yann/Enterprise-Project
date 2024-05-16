@@ -1,6 +1,6 @@
 // Initialize Firebase Auth and Firestore
-import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
 // Get a reference to the Firestore database
 const db = getFirestore();
@@ -23,6 +23,3 @@ document.getElementById('signOut').addEventListener('click', () => {
             console.error('Sign-out error:', error);
         });
 });
-
-
-
