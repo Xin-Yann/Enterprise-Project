@@ -6,7 +6,7 @@ const auth = getAuth();
 const db = getFirestore();
 
 document.getElementById('signUpButton').addEventListener('click', async () => {
-  event.preventDefault();
+    event.preventDefault();
     try {
         const name = document.getElementById('Name').value;
         const email = document.getElementById('Email').value;
@@ -41,8 +41,26 @@ document.getElementById('signUpButton').addEventListener('click', async () => {
 
         console.log('User created with email: ', userCredential.user.email);
         console.log('Document written with ID: ', docRef.id);
-    } catch (e) {
-        console.error('Error adding document: ', e);
+    } catch (error) {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error('Error adding document: ', errorCode, errorMessage);
+        switch (errorCode) {
+            case 'auth/wrong-password':
+                window.alert("Invalid password. Please try again.");
+                break;
+            case 'auth/user-not-found':
+                window.alert("No user found with this email. Please sign up.");
+                break;
+            case 'auth/invalid-email':
+                window.alert("Invalid email format. Please check your email.");
+                break;
+            case 'auth/email-already-in-use':
+                window.alert("The email address is already in use by another account.");
+                break;
+            default:
+                window.alert("Error: " + errorMessage);
+        }
     }
 });
 

@@ -2,63 +2,16 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet Mart</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/staff/staff-nav.css">
 
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-
-    <!-- Font Awesome -->
-    <link href="https://fonts.cdnfonts.com/css/futura-pt" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-
-    <!-- Customized Stylesheet -->
-    <link href="/css/styles.css" rel="stylesheet">
-
-    <style>
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #fff;
-            min-width: 10rem;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            z-index: 1;
-        }
-
-        .dropdown-content a {
-            color: #6F6F6F;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #f1f1f1
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .dropdown:hover {
-            background-color: #fff;
-        }
-
-        .title {
-            font-family: Catty Pillow Demo;
-        }
-    </style>
 </head>
 
 <body>
@@ -88,48 +41,22 @@
                             <div class="dropdown">
                                 <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">PRODUCT</a>
                                 <div class="dropdown-content">
-                                    <a href="addProduct.jsp" class="dropdown-item">ADD NEW</a>
-                                    <a href="displayAllProduct.jsp" class="dropdown-item">VIEW</a>
+                                    <a href="/html/staff/staff-productdog.html" class="dropdown-item">DOG</a>
+                                    <a href="/html/staff/staff-productcat.html" class="dropdown-item">CAT</a>
+                                    <a href="/html/staff/staff-productbirds.html" class="dropdown-item">BIRDS</a>
+                                    <a href="/html/staff/staff-productfish&aquatics.html" class="dropdown-item">FISH & AQUATICS</a>
+                                    <a href="/html/staff/staff-producthamster&rabbits.html" class="dropdown-item">HAMSTER & RABBITS</a>
                                 </div>
                             </div>
-                            <div class="dropdown">
-                                <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">CUSTOMER</a>
-                                <div class="dropdown-content">
-                                    <a href="customerRecord.jsp" class="dropdown-item">VIEW</a>
-                                </div>
-                            </div>
-                            <div class="dropdown">
-                                <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">STAFF</a>
-                                <div class="dropdown-content">
-                                    <a href="addStaff.jsp" class="dropdown-item">ADD NEW</a>
-                                    <a href="staff.jsp" class="dropdown-item">VIEW</a>
-                                </div>
-                            </div>
-                            <div class="dropdown">
-                                <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">SALES</a>
-                                <div class="dropdown-content">
-                                    <a href="salesRecord.jsp" class="dropdown-item">VIEW</a>
-                                </div>
-                            </div>
-                            <div class="dropdown">
-                                <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">REPORT</a>
-                                <div class="dropdown-content">
-                                    <form method="post" action="top5MostSoldProcess">
-                                        <button class="dropdown-item">Top 5 Most Sold Report</button>
-                                    </form>
+                            <a href="/html/staff/staff-addproduct.html"  class="nav-item nav-link">ADD PRODUCT</a>
 
-                                    <form method="post" action="top5LeastSoldProcess">
-                                        <button class="dropdown-item">Top 5 Least Sold Report</button>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="nav-item nav-link active" style="float: right; padding-right: 5px">
-                                <span class="tooltipFavourite" style="cursor: pointer;">PROFILE</span><i
-                                        class="fa fa-sign-out"
-                                        style="font-size:36px; margin-top: -20px;"></i>
-                                <span class="tooltipFavourite" style="cursor: pointer;" id="signOut">LOGOUT</span><i
-                                        class="fa fa-sign-out"
-                                        style="font-size:36px; margin-top:-20px; margin-left: -100%;"></i>
+                            <a href=""  class="nav-item nav-link" >ORDER HISTORY</a>
+
+                            <a href="" class="nav-item nav-link" >DELIVERY STATUS</a>
+
+                            <div class="nav-item nav-link" style="float: right; padding-right: 5px">
+                                <span class="tooltipFavourite" style="cursor: pointer;">PROFILE</span>
+                                <span class="tooltipFavourite active" style="cursor: pointer;color:#01647a; left: 76%; position: absolute;" id="signOut">LOGOUT</span>
                             </div>
                         </div>
                     </div>
