@@ -19,9 +19,13 @@ document.getElementById('signUp').addEventListener('click', async () => {
 
     const uppercase = /[A-Z]/;
     const lowercase = /[a-z]/;
+
+    if (!email.endsWith('@staff.com')) {
+      window.alert('Only staff members are allowed to register.');
+    }
     
     if (password.length < 8 || !uppercase.test(password) || !lowercase.test(password)) {
-      throw new Error('Password must be at least 8 characters long and contain at least one uppercase and one lowercase character');
+      window.alert('Password must be at least 8 characters long and contain at least one uppercase and one lowercase character');
     }
 
     const staffCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -37,8 +41,19 @@ document.getElementById('signUp').addEventListener('click', async () => {
     window.location.href = "../staff/staff-home.html";
     document.getElementById('output').innerText = 'Data added to Firestore!';
   } catch (e) {
-    console.error('Error adding document: ', e);
-    document.getElementById('output').innerText = 'Error adding data to Firestore!';
+    const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error('Error adding document: ', errorCode, errorMessage);
+        switch (errorCode) {
+            case 'auth/invalid-email':
+                window.alert("Invalid email format. Please check your email.");
+                break;
+            case 'auth/email-already-in-use':
+                window.alert("The email address is already in use by another account.");
+                break;
+            default:
+                window.alert("Error: " + errorMessage);
+        }
   }
 
 });
