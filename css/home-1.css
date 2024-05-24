@@ -13,7 +13,6 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: #dbe4d5;
     width: 100%;
 }
 
@@ -30,6 +29,10 @@
 
 .banner img {
     width: 50%;
+    width: 60%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .btn-lg {
@@ -63,53 +66,57 @@
     margin: auto;
 }
 
-.prev,
-.next {
-    cursor: pointer;
-    position: absolute;
+/* Style for carousel controls */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 50px; 
+    height: 50px; 
+    position: absolute; 
     top: 50%;
-    width: auto;
-    padding: 16px;
-    margin-top: -22px;
-    color: white;
-    font-weight: bold;
-    font-size: 18px;
-    transition: 0.6s ease;
-    border-radius: 0 3px 3px 0;
-    user-select: none;
+    transform: translateY(-50%); 
+    z-index: 999;
 }
 
-.next {
-    right: 0;
-    border-radius: 3px 0 0 3px;
+/* Default styles for SVG icons inside carousel control buttons */
+.carousel-control-prev svg,
+.carousel-control-next svg {
+    width: 100%; 
+    height: 100%; 
+    fill: #01647a; /* Default color */
 }
 
-.prev:hover,
-.next:hover {
-    background-color: rgba(0, 0, 0, 0.8);
+/* Styles for carousel control buttons when hovered over */
+.carousel-control-prev:hover svg,
+.carousel-control-next:hover svg {
+    fill: rgba(0, 0, 0, 0.7); /* Color when hovered over */
 }
 
-.text {
-    color: #f2f2f2;
-    font-size: 15px;
-    padding: 8px 12px;
+.carousel-control-next-icon {
+    transform: rotate(-360deg); 
+}
+
+/* Style for carousel indicators */
+.carousel-indicators {
     position: absolute;
-    bottom: 8px;
-    width: 100%;
-    text-align: center;
+    top: 97%;
+    left: 50%; 
+    transform: translateX(-50%);
+    list-style: none; 
+    margin: 0; 
+    padding: 0; 
 }
 
-.numbertext {
-    color: #f2f2f2;
-    font-size: 12px;
-    padding: 8px 12px;
-    position: absolute;
-    top: 0;
+.carousel-indicators li {
+    display: inline-block;
+    width: 10px; 
+    height: 10px;
+    background-color: #ccc; 
+    border-radius: 50%; 
+    margin-right: 5px; 
 }
 
-
-.dot:hover {
-    background-color: #717171;
+.carousel-indicators li.active {
+    background-color: #01647a;
 }
 
 .fade {
@@ -125,7 +132,6 @@
     from {
         opacity: .4
     }
-
     to {
         opacity: 1
     }
@@ -140,7 +146,6 @@
 }
 
 .about-us {
-
     display: flex;
     flex-direction: row-reverse;
     background-color: #01647a;
@@ -218,7 +223,7 @@
     font-size: 12px;
 }
 
-/*Contact*/
+/*SHOP BY PET TYPE*/
 .content {
     padding: 60px 20px 0px 20px;
 }
@@ -240,6 +245,7 @@
     margin-right: auto;
 }
 
+
 .overlay {
     position: absolute;
     top: 0;
@@ -256,7 +262,7 @@
     width: 50%;
 }
 
-.overlay:hover {
+.overlay:hover{
     opacity: 1;
     background-image: linear-gradient(transparent, rgba(1, 100, 122, 0.8));
     width: 400px;
@@ -274,9 +280,8 @@
     color: white;
     font-size: 18px;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    left: 5%;
+    right: 5%;
     text-align: left;
     opacity: 0;
 }
