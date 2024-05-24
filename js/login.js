@@ -18,6 +18,11 @@ document.getElementById('signIn').addEventListener('click', () => {
     return; 
   }
 
+  if (email.endsWith('@staff.com')) {
+    window.alert('Invalid Email');
+    return;
+  }
+
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;

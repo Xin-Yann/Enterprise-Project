@@ -71,10 +71,27 @@ async function updateCartItemCount(userId) {
     }
 }
 
-async function addToCart(productId, productImages, productName, productPrice, productType) {
+async function addToCart(productId, productImages, productName, productPrice, productType, productStock) {
     try {
         const userId = getCurrentUserId();
         if (userId) {
+            // Check if the product is already in the cart and calculate total quantity
+            let totalQuantity = 0;
+            const userCartDocRef = doc(collection(db, 'carts'), userId);
+            const userCartDocSnap = await getDoc(userCartDocRef);
+
+            if (userCartDocSnap.exists()) {
+                const cartItems = userCartDocSnap.data().cart || [];
+                const existingProduct = cartItems.find(item => item.id === productId);
+                totalQuantity = existingProduct ? existingProduct.quantity : 0;
+            }
+
+            // Check if adding one more item exceeds available stock or if stock is already 0
+            if (productStock === 0 || totalQuantity + 1 > productStock) {
+                window.alert(`Insufficient stock for ${productName}.`);
+                return;
+            }
+
             // Construct the product object
             let product = {
                 id: productId,
@@ -84,6 +101,7 @@ async function addToCart(productId, productImages, productName, productPrice, pr
                 type: productType,
                 quantity: 1,
                 totalPrice: parseFloat(productPrice).toFixed(2)
+               // stock: productStock
             };
 
             // Save the product to Firestore
@@ -91,6 +109,7 @@ async function addToCart(productId, productImages, productName, productPrice, pr
 
             // Update cart item count
             await updateCartItemCount(userId);
+
 
             // Display a message to the user
             window.alert(`${productName} has been added to your cart!`);
@@ -104,6 +123,7 @@ async function addToCart(productId, productImages, productName, productPrice, pr
         console.error("Error adding product to cart:", error);
     }
 }
+
 
 
 // Function to save product to Firestore
@@ -144,92 +164,93 @@ async function saveProductToFirestore(product, productName) {
     }
 }
 
+
 // Function to fetch data and display it
 async function fetchDataAndDisplay() {
     try {
-          // Reference to the specific document with ID "cat" in the "product" collection
-          const catDocRef = doc(collection(db, 'products'), 'cat');
-          const dogDocRef = doc(collection(db, 'products'), 'dog');
-          const birdDocRef = doc(collection(db, 'products'), 'birds');
-          const fishDocRef = doc(collection(db, 'products'), 'fish&aquatics');
-          const hamsterDocRef = doc(collection(db, 'products'), 'hamster&rabbits');
-  
-  
-          // Reference to the "dry food" subcollection under the "cat" document
-          //CAT
-          const catDryFoodCollectionRef = collection(catDocRef, 'dry food');
-          const catWetFoodCollectionRef = collection(catDocRef, 'wet food');
-          const catToyFoodCollectionRef = collection(catDocRef, 'toys');
-          const catTreatFoodCollectionRef = collection(catDocRef, 'essentials');
-          const catEssentialFoodCollectionRef = collection(catDocRef, 'treats');
-          //DOG
-          const dogDryFoodCollectionRef = collection(dogDocRef, 'dry food');
-          const dogWetFoodCollectionRef = collection(dogDocRef, 'wet food');
-          const dogToyFoodCollectionRef = collection(dogDocRef, 'toys');
-          const dogTreatFoodCollectionRef = collection(dogDocRef, 'treats');
-          const dogEssentialFoodCollectionRef = collection(dogDocRef, 'essentials');
-          //Bird
-          const birdDryFoodCollectionRef = collection(birdDocRef, 'dry food');
-          const birdToyFoodCollectionRef = collection(birdDocRef, 'toys');
-          const birdTreatFoodCollectionRef = collection(birdDocRef, 'treats');
-          const birdEssentialFoodCollectionRef = collection(birdDocRef, 'essentials');
-          //Fish
-          const fishDryFoodCollectionRef = collection(fishDocRef, 'dry food');
-          const fishEssentialFoodCollectionRef = collection(fishDocRef, 'essentials');
-          //Hamster
-          const hamsterDryFoodCollectionRef = collection(hamsterDocRef, 'dry food');
-          const hamsterEssentialFoodCollectionRef = collection(hamsterDocRef, 'essentials');
-  
-          const limitCount = 2;
-  
-          // Get the limited number of documents in the "dry food" subcollection
-          //cat
-          const catDryQuerySnapshot = await getDocs(query(catDryFoodCollectionRef, limit(limitCount)));
-          const catWetQuerySnapshot = await getDocs(query(catWetFoodCollectionRef, limit(limitCount)));
-          const catToyQuerySnapshot = await getDocs(query(catToyFoodCollectionRef, limit(limitCount)));
-          const catTreatQuerySnapshot = await getDocs(query(catTreatFoodCollectionRef, limit(limitCount)));
-          const catEssentialQuerySnapshot = await getDocs(query(catEssentialFoodCollectionRef, limit(limitCount)));
-          // Get the limited number of documents in the "dog" subcollection
-          //dog
-          const dogDryQuerySnapshot = await getDocs(query(dogDryFoodCollectionRef, limit(limitCount)));
-          const dogWetQuerySnapshot = await getDocs(query(dogWetFoodCollectionRef, limit(limitCount)));
-          const dogToyQuerySnapshot = await getDocs(query(dogToyFoodCollectionRef, limit(limitCount)));
-          const dogTreatQuerySnapshot = await getDocs(query(dogTreatFoodCollectionRef, limit(limitCount)));
-          const dogEssentialQuerySnapshot = await getDocs(query(dogEssentialFoodCollectionRef, limit(limitCount)));
-          //bird
-          const birdDryQuerySnapshot = await getDocs(query(birdDryFoodCollectionRef, limit(limitCount)));
-          const birdToyQuerySnapshot = await getDocs(query(birdToyFoodCollectionRef, limit(limitCount)));
-          const birdTreatQuerySnapshot = await getDocs(query(birdTreatFoodCollectionRef, limit(limitCount))) ;
-          const birdEssentialQuerySnapshot = await getDocs(query(birdEssentialFoodCollectionRef, limit(limitCount)));
-          //fish
-          const fishDryQuerySnapshot = await getDocs(query(fishDryFoodCollectionRef, limit(limitCount)));
-          const fishEssentialQuerySnapshot = await getDocs(query(fishEssentialFoodCollectionRef, limit(limitCount)));
-          //Hamster
-          const hamsterDryQuerySnapshot = await getDocs(query(hamsterDryFoodCollectionRef, limit(limitCount)));
-          const hamsterEssentialQuerySnapshot = await getDocs(query(hamsterEssentialFoodCollectionRef, limit(limitCount)));
-  
-          const combinedQuerySnapshot = catDryQuerySnapshot.docs
-              .concat(catWetQuerySnapshot.docs)
-              .concat(catToyQuerySnapshot.docs)
-              .concat(catTreatQuerySnapshot.docs)
-              .concat(catEssentialQuerySnapshot.docs)
-              //dog
-              .concat(dogDryQuerySnapshot.docs)
-              .concat(dogWetQuerySnapshot.docs)
-              .concat(dogToyQuerySnapshot.docs)
-              .concat(dogTreatQuerySnapshot.docs)
-              .concat(dogEssentialQuerySnapshot.docs)
-              //bird
-              .concat(birdDryQuerySnapshot.docs)
-              .concat(birdToyQuerySnapshot.docs)
-              .concat(birdTreatQuerySnapshot.docs) 
-              .concat(birdEssentialQuerySnapshot.docs)
-              //fish
-              .concat(fishDryQuerySnapshot.docs)
-              .concat(fishEssentialQuerySnapshot.docs)
-              //hamster
-              .concat(hamsterDryQuerySnapshot.docs)
-              .concat(hamsterEssentialQuerySnapshot.docs);
+        // Reference to the specific document with ID "cat" in the "product" collection
+        const catDocRef = doc(collection(db, 'products'), 'cat');
+        const dogDocRef = doc(collection(db, 'products'), 'dog');
+        const birdDocRef = doc(collection(db, 'products'), 'birds');
+        const fishDocRef = doc(collection(db, 'products'), 'fish&aquatics');
+        const hamsterDocRef = doc(collection(db, 'products'), 'hamster&rabbits');
+
+
+        // Reference to the "dry food" subcollection under the "cat" document
+        //CAT
+        const catDryFoodCollectionRef = collection(catDocRef, 'dry food');
+        const catWetFoodCollectionRef = collection(catDocRef, 'wet food');
+        const catToyFoodCollectionRef = collection(catDocRef, 'toys');
+        const catTreatFoodCollectionRef = collection(catDocRef, 'essentials');
+        const catEssentialFoodCollectionRef = collection(catDocRef, 'treats');
+        //DOG
+        const dogDryFoodCollectionRef = collection(dogDocRef, 'dry food');
+        const dogWetFoodCollectionRef = collection(dogDocRef, 'wet food');
+        const dogToyFoodCollectionRef = collection(dogDocRef, 'toys');
+        const dogTreatFoodCollectionRef = collection(dogDocRef, 'treats');
+        const dogEssentialFoodCollectionRef = collection(dogDocRef, 'essentials');
+        //Bird
+        const birdDryFoodCollectionRef = collection(birdDocRef, 'dry food');
+        const birdToyFoodCollectionRef = collection(birdDocRef, 'toys');
+        const birdTreatFoodCollectionRef = collection(birdDocRef, 'treats');
+        const birdEssentialFoodCollectionRef = collection(birdDocRef, 'essentials');
+        //Fish
+        const fishDryFoodCollectionRef = collection(fishDocRef, 'dry food');
+        const fishEssentialFoodCollectionRef = collection(fishDocRef, 'essentials');
+        //Hamster
+        const hamsterDryFoodCollectionRef = collection(hamsterDocRef, 'dry food');
+        const hamsterEssentialFoodCollectionRef = collection(hamsterDocRef, 'essentials');
+
+        const limitCount = 2;
+
+        // Get the limited number of documents in the "dry food" subcollection
+        //cat
+        const catDryQuerySnapshot = await getDocs(query(catDryFoodCollectionRef, limit(limitCount)));
+        const catWetQuerySnapshot = await getDocs(query(catWetFoodCollectionRef, limit(limitCount)));
+        const catToyQuerySnapshot = await getDocs(query(catToyFoodCollectionRef, limit(limitCount)));
+        const catTreatQuerySnapshot = await getDocs(query(catTreatFoodCollectionRef, limit(limitCount)));
+        const catEssentialQuerySnapshot = await getDocs(query(catEssentialFoodCollectionRef, limit(limitCount)));
+        // Get the limited number of documents in the "dog" subcollection
+        //dog
+        const dogDryQuerySnapshot = await getDocs(query(dogDryFoodCollectionRef, limit(limitCount)));
+        const dogWetQuerySnapshot = await getDocs(query(dogWetFoodCollectionRef, limit(limitCount)));
+        const dogToyQuerySnapshot = await getDocs(query(dogToyFoodCollectionRef, limit(limitCount)));
+        const dogTreatQuerySnapshot = await getDocs(query(dogTreatFoodCollectionRef, limit(limitCount)));
+        const dogEssentialQuerySnapshot = await getDocs(query(dogEssentialFoodCollectionRef, limit(limitCount)));
+        //bird
+        const birdDryQuerySnapshot = await getDocs(query(birdDryFoodCollectionRef, limit(limitCount)));
+        const birdToyQuerySnapshot = await getDocs(query(birdToyFoodCollectionRef, limit(limitCount)));
+        const birdTreatQuerySnapshot = await getDocs(query(birdTreatFoodCollectionRef, limit(limitCount)));
+        const birdEssentialQuerySnapshot = await getDocs(query(birdEssentialFoodCollectionRef, limit(limitCount)));
+        //fish
+        const fishDryQuerySnapshot = await getDocs(query(fishDryFoodCollectionRef, limit(limitCount)));
+        const fishEssentialQuerySnapshot = await getDocs(query(fishEssentialFoodCollectionRef, limit(limitCount)));
+        //Hamster
+        const hamsterDryQuerySnapshot = await getDocs(query(hamsterDryFoodCollectionRef, limit(limitCount)));
+        const hamsterEssentialQuerySnapshot = await getDocs(query(hamsterEssentialFoodCollectionRef, limit(limitCount)));
+
+        const combinedQuerySnapshot = catDryQuerySnapshot.docs
+            .concat(catWetQuerySnapshot.docs)
+            .concat(catToyQuerySnapshot.docs)
+            .concat(catTreatQuerySnapshot.docs)
+            .concat(catEssentialQuerySnapshot.docs)
+            //dog
+            .concat(dogDryQuerySnapshot.docs)
+            .concat(dogWetQuerySnapshot.docs)
+            .concat(dogToyQuerySnapshot.docs)
+            .concat(dogTreatQuerySnapshot.docs)
+            .concat(dogEssentialQuerySnapshot.docs)
+            //bird
+            .concat(birdDryQuerySnapshot.docs)
+            .concat(birdToyQuerySnapshot.docs)
+            .concat(birdTreatQuerySnapshot.docs)
+            .concat(birdEssentialQuerySnapshot.docs)
+            //fish
+            .concat(fishDryQuerySnapshot.docs)
+            .concat(fishEssentialQuerySnapshot.docs)
+            //hamster
+            .concat(hamsterDryQuerySnapshot.docs)
+            .concat(hamsterEssentialQuerySnapshot.docs);
 
 
         const owlCarousel = document.getElementById('owl-demo');
@@ -290,6 +311,8 @@ async function fetchDataAndDisplay() {
                 const productName = item.querySelector('h5').textContent;
                 const productPriceText = item.querySelector('.product-price').textContent;
                 const productPrice = parseFloat(productPriceText.split(':')[1].trim().replace('RM', ''));
+                const productStockText = item.querySelector('.text-muted').textContent.split(':')[1].trim();
+                const productStock = parseInt(productStockText);
 
                 let productType = "";
                 if (productId.includes("DF")) {
@@ -298,17 +321,18 @@ async function fetchDataAndDisplay() {
                     productType = "Wet Food";
                 } else if (productId.includes("ES")) {
                     productType = "Essentials";
-                }else if (productId.includes("TO")) {
+                } else if (productId.includes("TO")) {
                     productType = "Toys";
-                }else if (productId.includes("TR")) {
+                } else if (productId.includes("TR")) {
                     productType = "Treats";
-                }else{
+                } else {
                     productType = "Unknown";
                 }
 
-                await addToCart(productId, productImages, productName, productPrice, productType);
+                await addToCart(productId, productImages, productName, productPrice, productType, productStock);
             });
         });
+
     } catch (error) {
         console.error("Error fetching and displaying data:", error);
     }
@@ -316,3 +340,71 @@ async function fetchDataAndDisplay() {
 
 // Call the function to fetch and display data
 fetchDataAndDisplay();
+
+// Initialize slide index, slides, and dots
+var slideIndex = 0;
+var slides = document.getElementsByClassName("mySlides");
+var dots = document.getElementsByClassName("dot");
+var slideInterval = 10000; // Adjust the interval (in milliseconds) between slides
+
+// Function to show the current slide
+function showSlide(n) {
+    // Hide all slides
+    for (var i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+    }
+    // Remove "active" class from all dots
+    for (var i = 0; i < dots.length; i++) {
+        dots[i].classList.remove("active");
+    }
+    // Show the desired slide and set corresponding dot as active
+    slides[n].style.display = "block";
+    dots[n].classList.add("active");
+}
+
+// Function to navigate to the previous slide
+function prevSlide() {
+    slideIndex--;
+    if (slideIndex < 0) {
+        slideIndex = slides.length - 1;
+    }
+    showSlide(slideIndex);
+}
+
+// Function to navigate to the next slide
+function nextSlide() {
+    slideIndex++;
+    if (slideIndex >= slides.length) {
+        slideIndex = 0;
+    }
+    showSlide(slideIndex);
+}
+
+// Function to auto-slide to the next slide
+function autoSlide() {
+    nextSlide();
+    setTimeout(autoSlide, slideInterval);
+}
+
+// Event listener for the previous button
+document.querySelector(".carousel-control-prev").addEventListener("click", prevSlide);
+
+// Event listener for the next button
+document.querySelector(".carousel-control-next").addEventListener("click", nextSlide);
+
+// Loop through each dot and add a click event listener
+for (var i = 0; i < dots.length; i++) {
+    dots[i].addEventListener("click", function () {
+        // Get the slide index associated with the clicked dot
+        var slideIndex = parseInt(this.getAttribute("data-slide-to"));
+        // Show the corresponding slide
+        showSlide(slideIndex);
+    });
+}
+
+// Show the initial slide
+showSlide(slideIndex);
+
+// Start auto-sliding
+setTimeout(autoSlide, slideInterval);
+

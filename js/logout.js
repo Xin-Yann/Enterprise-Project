@@ -36,7 +36,6 @@ if (profile) {
   profile.addEventListener('click', handleProfileClick);
 }
 
-
 document.getElementById('signOut').addEventListener('click', () => {
   // Sign out the current user
   signOut(auth)
@@ -51,6 +50,8 @@ document.getElementById('signOut').addEventListener('click', () => {
       console.error('Sign-out error:', error);
     });
 });
+
+
 
 
 

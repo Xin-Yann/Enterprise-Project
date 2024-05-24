@@ -8,14 +8,20 @@ const db = getFirestore();
 document.getElementById('signUpButton').addEventListener('click', async () => {
     event.preventDefault();
     try {
-        const name = document.getElementById('Name').value;
-        const email = document.getElementById('Email').value;
-        const password = document.getElementById('Password').value;
-        const contact = document.getElementById('Contact').value;
-        const address = document.getElementById('Address').value;
-        const state = document.getElementById('State').value;
-        const city = document.getElementById('City').value;
-        const post = document.getElementById('Postcode').value;
+        const name = document.getElementById('Name').value.trim();
+        const email = document.getElementById('Email').value.trim();
+        const password = document.getElementById('Password').value.trim();
+        const contact = document.getElementById('Contact').value.trim();
+        const address = document.getElementById('Address').value.trim();
+        const state = document.getElementById('State').value.trim();
+        const city = document.getElementById('City').value.trim();
+        const post = document.getElementById('Postcode').value.trim();
+
+        // Check if any field is empty
+        if (!name || !email || !password || !contact || !address || !state || !city || !post) {
+            window.alert("Please fill in all the details.");
+            return; // Prevent further execution
+        }
 
         const uppercase = /[A-Z]/;
         const lowercase = /[a-z]/;
@@ -27,8 +33,12 @@ document.getElementById('signUpButton').addEventListener('click', async () => {
 
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-        // Add a document to the "users" collection
+        // Get the user ID (which is the auto-generated document ID in Firestore)
+        const userId = userCredential.user.uid;
+
+        // Add a document to the "users" collection with the user ID as the auto-generated document ID
         const docRef = await addDoc(collection(db, 'users'), {
+            userId: userId,
             name: name,
             email: email,
             contact: contact,
@@ -37,10 +47,11 @@ document.getElementById('signUpButton').addEventListener('click', async () => {
             city: city,
             post: post
         });
+
         window.location.href = "../html/home.html";
 
         console.log('User created with email: ', userCredential.user.email);
-        console.log('Document written with ID: ', docRef.id);
+        console.log('Document written with ID (used as user ID): ', docRef.id);
     } catch (error) {
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -63,4 +74,3 @@ document.getElementById('signUpButton').addEventListener('click', async () => {
         }
     }
 });
-
