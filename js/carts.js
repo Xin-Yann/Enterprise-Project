@@ -244,8 +244,6 @@ async function incrementQuantity(event) {
     updateCartItemCount(getCurrentUserId());
 }
 
-
-
 async function getProductStock() {
     try {
         //cat
