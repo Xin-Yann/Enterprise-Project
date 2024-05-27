@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/staff/staff-nav.css">
 
@@ -44,19 +44,23 @@
                                     <a href="/html/staff/staff-productdog.html" class="dropdown-item">DOG</a>
                                     <a href="/html/staff/staff-productcat.html" class="dropdown-item">CAT</a>
                                     <a href="/html/staff/staff-productbirds.html" class="dropdown-item">BIRDS</a>
-                                    <a href="/html/staff/staff-productfish&aquatics.html" class="dropdown-item">FISH & AQUATICS</a>
-                                    <a href="/html/staff/staff-producthamster&rabbits.html" class="dropdown-item">HAMSTER & RABBITS</a>
+                                    <a href="/html/staff/staff-productfish&aquatics.html" class="dropdown-item">FISH &
+                                        AQUATICS</a>
+                                    <a href="/html/staff/staff-producthamster&rabbits.html"
+                                        class="dropdown-item">HAMSTER & RABBITS</a>
                                 </div>
                             </div>
-                            <a href="/html/staff/staff-addproduct.html"  class="nav-item nav-link">ADD PRODUCT</a>
+                            <a href="/html/staff/staff-addproduct.html" class="nav-item nav-link">ADD PRODUCT</a>
 
-                            <a href=""  class="nav-item nav-link" >ORDER HISTORY</a>
+                            <a href="" class="nav-item nav-link">ORDER HISTORY</a>
 
-                            <a href="" class="nav-item nav-link" >DELIVERY STATUS</a>
+                            <a href="" class="nav-item nav-link">DELIVERY STATUS</a>
 
                             <div class="nav-item nav-link" style="float: right; padding-right: 5px">
                                 <span class="tooltipFavourite" style="cursor: pointer;">PROFILE</span>
-                                <span class="tooltipFavourite active" style="cursor: pointer;color:#01647a; left: 76%; position: absolute;" id="signOut">LOGOUT</span>
+                                <span class="tooltipFavourite active"
+                                    style="cursor: pointer;color:#01647a; left: 77%; position: absolute;"
+                                    id="signOut">LOGOUT</span>
                             </div>
                         </div>
                     </div>
@@ -65,6 +69,37 @@
         </div>
     </div>
     <!-- Navbar End -->
+    <canvas id="myChart" style="width:100%;max-width:600px; position: absolute; left: 20%;"></canvas>
+
+    <script>
+        var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+        var yValues = [55, 49, 44, 24, 15];
+        var barColors = [
+            "#b91d47",
+            "#00aba9",
+            "#2b5797",
+            "#e8c3b9",
+            "#1e7145"
+        ];
+
+        new Chart("myChart", {
+            type: "pie",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: "Pet Mart Monthly Sales Report"
+                }
+            }
+        });
+    </script>
+
     <script type="module" src="/js/firebase-configs.js"></script>
     <script type="module" src="/js/staff/staff-logout.js"></script>
 </body>
