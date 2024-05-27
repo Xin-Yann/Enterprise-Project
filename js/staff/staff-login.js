@@ -29,6 +29,10 @@ document.getElementById('signIn').addEventListener('click', () => {
       const staff = staffCredential.user;
       fetchStaffdata();
       console.log('Signed in user:', staff);
+
+      // Store user email in session storage
+      sessionStorage.setItem('staffEmail', staff.email);
+
       window.location.href = "staff-home.html";
     })
     .catch((error) => {

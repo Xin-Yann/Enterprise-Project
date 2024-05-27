@@ -9,9 +9,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
-    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/profile.css">
     <link rel="stylesheet" href="/css/nav.css">
-    <link rel="stylesheet" href="/css/cart.css">
+    <link rel="stylesheet" href="../css/home-1.css">
     <script type="module" src="/js/firebase-configs.js"></script>
 
 </head>
@@ -55,6 +55,7 @@
                         <a href="/html/productfish&aquatics.html">Fish & Aquatics</a>
                     </div>
                 </div>
+                <a href="/html/offerdetails.html">Offer Details</a>
                 <a href="/html/offerdetails.html">Order History</a>
                 <a href="/html/contact.html">Contact Us</a>
             </div>
@@ -82,15 +83,66 @@
                     </div>
                 </div>
 
-                <h3 class="py-3">Follow Us</h3>
-                <a href="https://www.facebook.com/petswonderland.com.my/" target="blank"><i class="fa fa-facebook"
-                        aria-hidden="true" style="color:white !important"></i></a>
-                <a href="https://www.instagram.com/petswonderlandmy/" target="blank"><i class="fa fa-instagram"
-                        aria-hidden="true" style="color:white !important"></i></a>
+                <a href="/html/offerdetails.html">Offer Details</a>
+                <a href="/html/offerhistory.html">Order History</a>
+                <a href="/html/contact.html">Contact Us</a>
             </div>
 
         </div>
 
+        <div id="profiledetails">
+            <div class="section-center" style="background-color: white;">
+                <h1 class="title text-center pt-5  pb-5">My Details</h1>
+                    <div class="row">
+                        <div class="profiledetails-form">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label for="name">Name:</label>
+                                        <input class="form-control" type="text" id="Name" name="Name"><br>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email:</label>
+                                        <input class="form-control" type="text" id="Email" name="Email" style="background-color: #eaeaea;" disabled><br>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label for="contact">Contact:</label>
+                                        <input class="form-control" type="text" id="Contact" name="Contact"><br>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label for="address">Address:</label>
+                                        <textarea id="Address" class="form-controladdress" cols="40" rows="4"></textarea><br>
+                                    </div>
+                                </div>
+                                    
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label for="state">State:</label>
+                                        <input class="form-control" type="text" id="State" name="State"><br>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="city">City:</label>
+                                        <input class="form-control" type="text" id="City" name="City"><br>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label for="postcode">Postcode:</label>
+                                        <input class="form-control" type="text" id="Postcode" name="Postcode"><br>
+                                    </div>
+                                </div>
+                                <div class="form-btn">
+                                    <button type="button" id="save" class="save-btn">SAVE</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+            </div>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
