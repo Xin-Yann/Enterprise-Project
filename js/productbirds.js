@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Initialize Firestore and Authentication
+=======
+// Import necessary Firebase modules
+>>>>>>> bcd6bf2144c531dafea42affe7f7deefed117812
 import { getFirestore, doc, collection, getDocs, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
@@ -71,7 +75,11 @@ async function updateCartItemCount(userId) {
     }
 }
 
+<<<<<<< HEAD
 async function addToCart(productId, productImage, productName, productPrice, quantityInputValue, productStock) {
+=======
+async function addToCart(productId, productImage, productName, productPrice, productWeight, quantity) {
+>>>>>>> bcd6bf2144c531dafea42affe7f7deefed117812
     try {
         const userId = getCurrentUserId();
         if (userId) {
@@ -106,9 +114,11 @@ async function addToCart(productId, productImage, productName, productPrice, qua
                 image: productImage,
                 name: productName,
                 price: productPrice,
-                type: productType,
+                type: productType, // Assign the determined product type
+                weight: productWeight,
                 quantity: quantity,
-                totalPrice: (productPrice * quantity).toFixed(2)
+                totalPrice: (productPrice * quantity).toFixed(2),
+                totalWeight: productWeight * quantity
             };
 
             await saveProductToFirestore(product, productName);
@@ -118,15 +128,14 @@ async function addToCart(productId, productImage, productName, productPrice, qua
             window.location.href = "/html/cart.html";
         } else {
             window.alert(`Please login to add products to your cart.`);
-            window.location.href = "/html/login.html";
+            window.location.href = "../html/login.html";
         }
     } catch (error) {
         console.error("Error adding product to cart:", error);
     }
 }
 
-
-
+// Function to determine the product type based on its ID
 function getProductType(productId) {
     if (productId.includes("DF")) {
         return "Dry Food";
@@ -158,8 +167,9 @@ async function saveProductToFirestore(product, productName) {
         const existingProductIndex = cart.findIndex(item => item.id === product.id);
 
         if (existingProductIndex !== -1) {
-            cart[existingProductIndex].quantity++;
+            cart[existingProductIndex].quantity += product.quantity;
             cart[existingProductIndex].totalPrice = (cart[existingProductIndex].quantity * product.price).toFixed(2);
+            cart[existingProductIndex].totalWeight = (cart[existingProductIndex].quantity * product.weight);
         } else {
             cart.push(product);
         }
@@ -180,6 +190,7 @@ async function saveProductToFirestore(product, productName) {
     }
 }
 
+// Helper function to create a button with a given text and event handler
 function createButton(text, onClickHandler) {
     const button = document.createElement('button');
     button.textContent = text;
@@ -249,20 +260,25 @@ function createProductDiv(foodData, foodType) {
         const currentValue = parseInt(quantityInput.value);
         if (currentValue > 1) {
             quantityInput.value = currentValue - 1;
+            updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
         }
     });
     decrementButton.classList.add('btn', 'btn-sm', 'btn-secondary');
     quantityContainer.appendChild(decrementButton);
 
     const quantityInput = document.createElement('input');
-    quantityInput.type = 'text';
+    quantityInput.type = 'number';
     quantityInput.min = 1;
     quantityInput.value = 1;
     quantityInput.classList.add('quantity-input');
+    quantityInput.addEventListener('input', () => {
+        updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
+    });
     quantityContainer.appendChild(quantityInput);
 
     const incrementButton = createButton('+', () => {
         quantityInput.value = parseInt(quantityInput.value) + 1;
+        updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
     });
     incrementButton.classList.add('btn', 'btn-sm', 'btn-secondary');
     quantityContainer.appendChild(incrementButton);
@@ -272,11 +288,8 @@ function createProductDiv(foodData, foodType) {
 
     const addToCartButton = createButton('ADD TO CART', () => {
         const quantity = parseInt(quantityInput.value);
-        const totalPrice = parseFloat(foodData.product_price) * quantity;
-        const productImageSrc = `/image/products/birds/${foodType}/${foodData.product_image}`;
-        const productStock = parseInt(foodData.product_stock);
-
-        addToCart(foodData.product_id, productImageSrc, foodData.product_name, foodData.product_price, quantity, productStock);
+        const productImage = `/image/products/birds/${foodType}/${foodData.product_image}`;
+        addToCart(foodData.id, productImage, foodData.product_name, foodData.product_price, foodData.product_weight, quantity);
     });
 
     addToCartButton.classList.add('btn', 'btn-primary', 'add-cart');
@@ -287,6 +300,15 @@ function createProductDiv(foodData, foodType) {
     return productDiv;
 }
 
+// Function to update total price and total weight based on quantity
+function updateTotals(productPrice, productWeight, quantity, totalPriceElement, totalWeightElement) {
+    const totalPrice = (productPrice * quantity).toFixed(2);
+    const totalWeight = productWeight * quantity;
+    totalPriceElement.textContent = `Total Price: RM ${totalPrice}`;
+    totalWeightElement.textContent = `Total Weight: ${totalWeight}g`;
+}
+
+// Function to update total price and total weight based on quantity
 function showModal(foodData, foodType) {
     const modalBody = document.getElementById('modal-body-content');
     modalBody.innerHTML = '';
@@ -324,32 +346,41 @@ function showModal(foodData, foodType) {
         const currentValue = parseInt(quantityInput.value);
         if (currentValue > 1) {
             quantityInput.value = currentValue - 1;
+            updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
         }
     });
     decrementButton.classList.add('btn', 'btn-sm', 'btn-secondary', 'mr-2');
     quantityContainer.appendChild(decrementButton);
 
+    // Quantity Input
+    const quantityInput = document.createElement('input');
+    quantityInput.type = 'text';
+    quantityInput.min = 1;
+    quantityInput.value = 1;
+    quantityInput.classList.add('quantity-input');
+    quantityInput.addEventListener('input', () => {
+        updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
+    });
     quantityContainer.appendChild(quantityInput);
 
     const incrementButton = createButton('+', () => {
         quantityInput.value = parseInt(quantityInput.value) + 1;
+        updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
     });
     incrementButton.classList.add('btn', 'btn-sm', 'btn-secondary', 'ml-2');
     quantityContainer.appendChild(incrementButton);
 
     modalBody.appendChild(quantityContainer);
 
+    // Add to Cart Button
     const addToCartButton = createButton('ADD TO CART', () => {
         const quantity = parseInt(quantityInput.value);
-        const totalPrice = parseFloat(foodData.product_price) * quantity;
-        const productImageSrc = `/image/products/birds/${foodType}/${foodData.product_image}`;
-        const productStock = parseInt(foodData.product_stock);
-
-        addToCart(foodData.product_id, productImageSrc, foodData.product_name, foodData.product_price, quantity, productStock);
+        const productImage = `/image/products/birds/${foodType}/${foodData.product_image}`;
+        addToCart(foodData.id, productImage, foodData.product_name, foodData.product_price, foodData.product_weight, quantity);
     });
 
     addToCartButton.classList.add('btn', 'btn-primary', 'add-cart');
-    addToCartButton.style.width = '100%';
+    addToCartButton.style.width = '-webkit-fill-available';
     addToCartButton.style.marginTop = '8px';
     modalBody.appendChild(addToCartButton);
 

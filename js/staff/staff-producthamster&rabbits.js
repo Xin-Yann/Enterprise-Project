@@ -113,7 +113,8 @@ async function deleteProduct(productId, productType) {
 
 // Function to edit product page
 function editProduct(productId, productType) {
-    window.location.href = `/html/staff/staff-editproduct.html?category=hamster&rabbits&id=${productId}&type=${encodeURIComponent(productType)}`;
+    const category = encodeURIComponent('hamster&rabbits');
+    window.location.href = `/html/staff/staff-editproduct.html?category=${category}&id=${productId}&type=${encodeURIComponent(productType)}`;
 }
 
 // Event listener for dropdown list change
