@@ -1,3 +1,4 @@
+// Import necessary Firebase modules
 import { getFirestore, doc, collection, getDocs, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
@@ -71,7 +72,7 @@ async function updateCartItemCount(userId) {
     }
 }
 
-async function addToCart(productId, productImage, productName, productPrice) {
+async function addToCart(productId, productImage, productName, productPrice, productWeight, quantity) {
     try {
         const userId = getCurrentUserId();
         if (userId) {
@@ -84,8 +85,10 @@ async function addToCart(productId, productImage, productName, productPrice) {
                 name: productName,
                 price: productPrice,
                 type: productType, // Assign the determined product type
-                quantity: 1,
-                totalPrice: parseFloat(productPrice).toFixed(2)
+                weight: productWeight,
+                quantity: quantity,
+                totalPrice: (productPrice * quantity).toFixed(2),
+                totalWeight: productWeight * quantity
             };
 
             // Save the product to Firestore
@@ -100,13 +103,12 @@ async function addToCart(productId, productImage, productName, productPrice) {
         } else {
             // If user is not logged in, prompt them to log in
             window.alert(`Please login to add products to your cart.`);
-            window.location.href = "/html/login.html";
+            window.location.href = "../html/login.html";
         }
     } catch (error) {
         console.error("Error adding product to cart:", error);
     }
 }
-
 
 // Function to determine the product type based on its ID
 function getProductType(productId) {
@@ -133,11 +135,6 @@ async function saveProductToFirestore(product, productName) {
             return;
         }
 
-        // Check if product and its properties are defined
-        console.log("Product:", product);
-        console.log("Product ID:", product.id);
-        console.log("Product Type:", product.type);
-
         const userCartDocRef = doc(collection(db, 'carts'), userId);
         const userCartDoc = await getDoc(userCartDocRef);
         let cart = userCartDoc.exists() ? userCartDoc.data().cart : [];
@@ -145,8 +142,9 @@ async function saveProductToFirestore(product, productName) {
         const existingProductIndex = cart.findIndex(item => item.id === product.id);
 
         if (existingProductIndex !== -1) {
-            cart[existingProductIndex].quantity++;
+            cart[existingProductIndex].quantity += product.quantity;
             cart[existingProductIndex].totalPrice = (cart[existingProductIndex].quantity * product.price).toFixed(2);
+            cart[existingProductIndex].totalWeight = (cart[existingProductIndex].quantity * product.weight);
         } else {
             cart.push(product);
         }
@@ -166,7 +164,6 @@ async function saveProductToFirestore(product, productName) {
         throw error;
     }
 }
-
 
 // Helper function to create a button with a given text and event handler
 function createButton(text, onClickHandler) {
@@ -245,6 +242,7 @@ function createProductDiv(foodData, foodType) {
         const currentValue = parseInt(quantityInput.value);
         if (currentValue > 1) {
             quantityInput.value = currentValue - 1;
+            updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
         }
     });
     decrementButton.classList.add('btn', 'btn-sm', 'btn-secondary');
@@ -252,15 +250,19 @@ function createProductDiv(foodData, foodType) {
 
     // Quantity Input
     const quantityInput = document.createElement('input');
-    quantityInput.type = 'text';
+    quantityInput.type = 'number';
     quantityInput.min = 1;
     quantityInput.value = 1;
     quantityInput.classList.add('quantity-input');
+    quantityInput.addEventListener('input', () => {
+        updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
+    });
     quantityContainer.appendChild(quantityInput);
 
     // + Button
     const incrementButton = createButton('+', () => {
         quantityInput.value = parseInt(quantityInput.value) + 1;
+        updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
     });
     incrementButton.classList.add('btn', 'btn-sm', 'btn-secondary');
     quantityContainer.appendChild(incrementButton);
@@ -271,10 +273,8 @@ function createProductDiv(foodData, foodType) {
     // Add to Cart Button
     const addToCartButton = createButton('ADD TO CART', () => {
         const quantity = parseInt(quantityInput.value);
-        const totalPrice = parseFloat(foodData.product_price) * quantity;
-        // Assuming productImage is an image element
         const productImage = `/image/products/birds/${foodType}/${foodData.product_image}`;
-        addToCart(foodData.id, productImage, foodData.product_name, foodData.product_price, quantity, totalPrice);
+        addToCart(foodData.id, productImage, foodData.product_name, foodData.product_price, foodData.product_weight, quantity);
     });
 
     addToCartButton.classList.add('btn', 'btn-primary', 'add-cart');
@@ -285,7 +285,15 @@ function createProductDiv(foodData, foodType) {
     return productDiv;
 }
 
-// Function to show product details in a modal
+// Function to update total price and total weight based on quantity
+function updateTotals(productPrice, productWeight, quantity, totalPriceElement, totalWeightElement) {
+    const totalPrice = (productPrice * quantity).toFixed(2);
+    const totalWeight = productWeight * quantity;
+    totalPriceElement.textContent = `Total Price: RM ${totalPrice}`;
+    totalWeightElement.textContent = `Total Weight: ${totalWeight}g`;
+}
+
+// Function to update total price and total weight based on quantity
 function showModal(foodData, foodType) {
     const modalBody = document.getElementById('modal-body-content');
     modalBody.innerHTML = '';
@@ -323,6 +331,7 @@ function showModal(foodData, foodType) {
         const currentValue = parseInt(quantityInput.value);
         if (currentValue > 1) {
             quantityInput.value = currentValue - 1;
+            updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
         }
     });
     decrementButton.classList.add('btn', 'btn-sm', 'btn-secondary', 'mr-2');
@@ -334,22 +343,34 @@ function showModal(foodData, foodType) {
     quantityInput.min = 1;
     quantityInput.value = 1;
     quantityInput.classList.add('quantity-input');
+    quantityInput.addEventListener('input', () => {
+        updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
+    });
     quantityContainer.appendChild(quantityInput);
 
     // + Button
     const incrementButton = createButton('+', () => {
         quantityInput.value = parseInt(quantityInput.value) + 1;
+        updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
     });
     incrementButton.classList.add('btn', 'btn-sm', 'btn-secondary', 'ml-2');
     quantityContainer.appendChild(incrementButton);
 
     modalBody.appendChild(quantityContainer);
 
-    $('#productModal').modal('show');
+    // Add to Cart Button
+    const addToCartButton = createButton('ADD TO CART', () => {
+        const quantity = parseInt(quantityInput.value);
+        const productImage = `/image/products/birds/${foodType}/${foodData.product_image}`;
+        addToCart(foodData.id, productImage, foodData.product_name, foodData.product_price, foodData.product_weight, quantity);
+    });
 
-    document.getElementById('modal-add-to-cart').onclick = () => {
-        $('#productModal').modal('hide');
-    };
+    addToCartButton.classList.add('btn', 'btn-primary', 'add-cart');
+    addToCartButton.style.width = '-webkit-fill-available';
+    addToCartButton.style.marginTop = '8px';
+    modalBody.appendChild(addToCartButton);
+
+    $('#productModal').modal('show');
 }
 
 // Event listener for dropdown list change

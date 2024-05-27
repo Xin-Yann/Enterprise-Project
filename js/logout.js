@@ -1,6 +1,6 @@
 // Initialize Firebase Auth and Firestore
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
 // Get a reference to the Firestore database
 const db = getFirestore();
@@ -12,13 +12,10 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     // User is signed in
     document.getElementById('signOut').style.display = 'block'; 
-   
-
   } else {
     // No user is signed in
     document.getElementById('signOut').style.display = 'none'; 
   }
-
 });
 
 function handleProfileClick() {
@@ -36,12 +33,12 @@ if (profile) {
   profile.addEventListener('click', handleProfileClick);
 }
 
-
 document.getElementById('signOut').addEventListener('click', () => {
   // Sign out the current user
   signOut(auth)
     .then(() => {
-      // Sign-out successful.
+      // Sign-out successful, clear session storage
+      sessionStorage.clear();
       console.log('User signed out');
       window.location.href = "../html/home.html";
       window.alert("You have been successfully signed out.");
@@ -51,6 +48,3 @@ document.getElementById('signOut').addEventListener('click', () => {
       console.error('Sign-out error:', error);
     });
 });
-
-
-

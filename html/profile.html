@@ -9,9 +9,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
-    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/profile.css">
     <link rel="stylesheet" href="/css/nav.css">
-    <link rel="stylesheet" href="/css/cart.css">
+    <link rel="stylesheet" href="../css/home-1.css">
     <script type="module" src="/js/firebase-configs.js"></script>
 
 </head>
@@ -56,14 +56,66 @@
                     </div>
                 </div>
 
-                <a href="customize.php">Offer Details</a>
-                <a href="customize.php">Order History</a>
+                <a href="/html/offerdetails.html">Offer Details</a>
+                <a href="/html/offerhistory.html">Order History</a>
                 <a href="/html/contact.html">Contact Us</a>
             </div>
 
         </div>
 
-        <iframe src="../html/footer.html" frameborder="0" width="100%" height="578"></iframe>
+        <div id="profiledetails">
+            <div class="section-center" style="background-color: white;">
+                <h1 class="title text-center pt-5  pb-5">My Details</h1>
+                    <div class="row">
+                        <div class="profiledetails-form">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label for="name">Name:</label>
+                                        <input class="form-control" type="text" id="Name" name="Name"><br>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email:</label>
+                                        <input class="form-control" type="text" id="Email" name="Email" style="background-color: #eaeaea;" disabled><br>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label for="contact">Contact:</label>
+                                        <input class="form-control" type="text" id="Contact" name="Contact"><br>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label for="address">Address:</label>
+                                        <textarea id="Address" class="form-controladdress" cols="40" rows="4"></textarea><br>
+                                    </div>
+                                </div>
+                                    
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label for="state">State:</label>
+                                        <input class="form-control" type="text" id="State" name="State"><br>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="city">City:</label>
+                                        <input class="form-control" type="text" id="City" name="City"><br>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label for="postcode">Postcode:</label>
+                                        <input class="form-control" type="text" id="Postcode" name="Postcode"><br>
+                                    </div>
+                                </div>
+                                <div class="form-btn">
+                                    <button type="button" id="save" class="save-btn">SAVE</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+            </div>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -75,6 +127,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+    <script type="module" src="/js/profile.js"></script>
     <script type="module" src="/js/logout.js"></script>
 
 </body>

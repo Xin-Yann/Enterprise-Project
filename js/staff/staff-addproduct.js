@@ -1,5 +1,5 @@
 // Import necessary Firebase modules
-import { getFirestore, collection, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { getFirestore, collection, setDoc, doc, getDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
 // Initialize Firestore
 const db = getFirestore();
@@ -11,34 +11,64 @@ document.getElementById("add").addEventListener("click", async () => {
         const subcategory = document.getElementById('product_type').value;
         const productId = document.getElementById('product_id').value;
 
+        // Validate required fields
+        const productName = document.getElementById('product_name').value;
+        const productDescription = document.getElementById('product_description').value;
+        const productPrice = document.getElementById('product_price').value;
+        const productStock = document.getElementById('product_stock').value;
+        const productWeight = document.getElementById('product_weight').value;
+
+        if (!category || !subcategory || !productId || !productName || !productPrice || !productStock || !productWeight) {
+            alert('Please fill out all required fields: category, type, ID, name, price, stock, weight.');
+            return;
+        }
+
+        // Check if the product ID already exists
+        const productRef = doc(collection(db, 'products', category, subcategory), productId);
+        const productSnapshot = await getDoc(productRef);
+
+        if (productSnapshot.exists()) {
+            alert('Product ID already exists. Please choose a different ID.');
+            return;
+        }
+
+        // Check if the product name already exists
+        const productsQuery = query(collection(db, 'products', category, subcategory), where("product_name", "==", productName));
+        const querySnapshot = await getDocs(productsQuery);
+
+        if (!querySnapshot.empty) {
+            alert('Product name already exists. Please choose a different name.');
+            return;
+        }
+
         // Get the full path of the image
         const imagePath = document.getElementById('product_image').value;
         // Extract only the file name
-        const imageName = imagePath.split('\\').pop().split('/').pop(); 
+        const imageName = imagePath.split('\\').pop().split('/').pop();
 
-        await setDoc(doc(collection(db, 'products', category, subcategory), productId), {
+        // Set the document in Firestore
+        await setDoc(productRef, {
             product_id: productId,
             product_image: imageName,
-            product_name: document.getElementById('product_name').value,
-            product_description: document.getElementById('product_description').value,
-            product_price: document.getElementById('product_price').value,
-            product_stock: document.getElementById('product_stock').value,
-            product_weight: document.getElementById('product_weight').value,
+            product_name: productName,
+            product_description: productDescription,
+            product_price: productPrice,
+            product_stock: productStock,
+            product_weight: productWeight,
         });
+
         alert('Product added successfully!');
         window.location.reload();
 
         console.log('Document written with ID: ', productId);
-        //document.getElementById('output').innerText = 'Data added to Firestore!';
     } catch (e) {
         console.error('Error adding document: ', e);
-        //document.getElementById('output').innerText = 'Error adding data to Firestore!';
+        alert('Error adding document: ' + e.message);
     }
 });
 
 // Add an event listener to the product category select element
 document.getElementById("product_category").addEventListener("change", function () {
-    // Call updateOptions() when the value of the product category changes
     updateOptions();
 });
 
