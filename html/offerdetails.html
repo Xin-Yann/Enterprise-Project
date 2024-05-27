@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Mart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    <link rel="stylesheet" href="/css/staff/staff-offerdetails.css">
+    <link rel="stylesheet" href="/css/nav.css">
+    <link rel="stylesheet" href="../css/home-1.css">
+    <script type="module" src="/js/firebase-configs.js"></script>
+</head>
+<body style="font-family: Catty Pillow Demo;">
+    <div class="overflow-hidden">
+        <div class="header">
+            <div class="container" id="myHeader">
+                <div class="row pt-4" id="menu">
+                    <div class="col-lg-8">
+                        <a href="home.html">
+                            <img src="/image/logo.png" height="80" width="auto" />
+                        </a>
+                        <h1 class="title px-2 pt-2">Pet Mart</h1>
+                    </div>
+                    <div class="col-lg-4">
+                        <div id="cartIcon" class="cart-icon">
+                            <a href="../html/cart.html"><i class="fa fa-shopping-bag"></i></a>
+                            <span id="cartItemCount" class="cart-item-count">0</span>
+                        </div>
+                        <span style="cursor:pointer"><i class="fa fa-user" id="profile"></i></span>
+                        <span style="cursor:pointer"><i class="fa fa-sign-out" id="signOut"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="menu pt-5">
+                <a href="home.html">Home</a>
+                <div class="dropdown">
+                    <a href="#">All Product</a>
+                    <svg fill="#000000" height="24" viewBox="0 1 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z"></path>
+                        <path d="M0-.75h24v24H0z" fill="none"></path>
+                    </svg>
+                    <div class="dropdown-content" id="menu">
+                        <a href="/html/productdog.html">Dog</a>
+                        <a href="/html/productcat.html">Cat</a>
+                        <a href="/html/producthamster&rabbits.html">Hamster & Rabbits</a>
+                        <a href="/html/productbirds.html">Birds</a>
+                        <a href="/html/productfish&aquatics.html">Fish & Aquatics</a>
+                    </div>
+                </div>
+                <a href="/html/offerdetails.html">Offer Details</a>
+                <a href="/html/offerdetails.html">Order History</a>
+                <a href="/html/contact.html">Contact Us</a>
+            </div>
+        </div>
+        <div class="container1">
+            <img src="/image/slider1.png" class="offerimg">
+            
+            <h5 class="offerinfo">We are thrilled to announce our 1st Year Anniversary celebration! It has been an incredible journey, and we are deeply grateful for your support. 
+                To mark this special occasion, we are launching a storewide promotion as a token of our appreciation. 
+                Join us in celebrating this milestone with amazing deals and exclusive offers that you won't want to miss!</h5>
+            </div>
+
+        <div class="container2">
+            <img src="/image/slider2.png" class="offerimg">
+
+            <h5 class="offerinfo">Enjoy a 15% discount on all online purchases by using promo code PETM15 at checkout. 
+                This offer is valid until 31st July 2024.</h5>
+        </div>
+
+        <div class="container1">
+            <img src="/image/slider3.png" class="offerimg">
+
+            <h5 class="offerinfo">Additionally, receive a free gift with every purchase over RM200. 
+                Gifts are available while supplies last, with terms and conditions applying, including non-transferability and return policies.</h5>
+        </div>
+
+        <div class="container2">
+            <img src="/image/slider4.png" class="offerimg">
+
+            <div class="container">
+                <h5 class="offerinfo">Don't miss out on our latest arrivals: Whiskas - Cat Dry Food - Senior Mackerel 1.1kg for RM16.06, and Vitakraft Cat Milky Melody Pure 70g for RM10.90. 
+                    We invite you to take advantage of these special offers and celebrate with us. 
+                    Thank you for being a part of our journey. Here's to many more years together!</h5>
+        </div>
+</body>
+</html>
