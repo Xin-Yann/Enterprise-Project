@@ -25,10 +25,3 @@ document.getElementById('addDataButton').addEventListener('click', async () => {
   }
 });
 
-document.getElementById('signInButton').addEventListener('click', () => {
-  // Sign in with Firebase Authentication (you need to implement your own authentication logic)
-});
-
-document.getElementById('signOutButton').addEventListener('click', () => {
-  // Sign out from Firebase Authentication (you need to implement your own authentication logic)
-});
