@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,22 +14,21 @@
     <link rel="stylesheet" href="../css/home-1.css">
     <script type="module" src="/js/firebase-configs.js"></script>
 </head>
+
 <body>
     <div class="overflow-hidden">
         <div class="header">
             <div class="container" id="myHeader">
                 <div class="row pt-4" id="menu">
-
                     <div class="col-lg-8">
                         <a href="home.html">
                             <img src="/image/logo.png" height="80" width="auto" />
                         </a>
                         <h1 class="title px-2 pt-2">Pet Mart</h1>
                     </div>
-
                     <div class="col-lg-4">
-                        <div id="cart" class="cart-icon">
-                            <i class="fa fa-shopping-bag"></i>
+                        <div id="cartIcon" class="cart-icon">
+                            <a href="../html/cart.html"><i class="fa fa-shopping-bag"></i></a>
                             <span id="cartItemCount" class="cart-item-count">0</span>
                         </div>
                         <span style="cursor:pointer"><i class="fa fa-user" id="profile"></i></span>
@@ -52,6 +52,7 @@
                         <a href="/html/productfish&aquatics.html">Fish & Aquatics</a>
                     </div>
                 </div>
+                <a href="/html/offerdetails.html">Offer Details</a>
                 <a href="/html/offerdetails.html">Order History</a>
                 <a href="/html/contact.html">Contact Us</a>
             </div>
@@ -131,6 +132,7 @@
         crossorigin="anonymous"></script>
     <script type="module" src="/js/producthamster&rabbits.js"></script>
     <script type="module" src="/js/homes.js"></script>
-    <script type="module" src="/js/profile.js"></script>
+    <script type="module" src="/js/logout.js"></script>
 </body>
+
 </html>
