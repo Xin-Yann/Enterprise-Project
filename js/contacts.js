@@ -4,33 +4,74 @@ import { getFirestore, collection, addDoc, getDocs, query, where } from "https:/
 // Initialize Firebase Firestore
 const db = getFirestore();
 
-// Initialize Firebase Authentication
 const auth = getAuth();
 
+// Function to get the current user ID
 function getCurrentUserId() {
-  const user = auth.currentUser;
-  return user ? user.uid : null;
+    const user = auth.currentUser;
+    return user ? user.uid : null;
 }
 
+// Listen for authentication state changes
 auth.onAuthStateChanged(async (user) => {
-  try {
-      if (user) {
-          const userId = getCurrentUserId();
-          if (!userId) {
-              console.error("Invalid userId:", userId);
-              return;
-          }
-          // User is signed in, update cart item count
-          fetchUserDataFromFirestore(userId);
-          console.log("User authenticated. User ID:", userId);
-      } else {
-          console.log("User is not authenticated.");
-      }
-  } catch (error) {
-      console.error("Error in authentication state change:", error);
-  }
+    try {
+        if (user) {
+            const userId = getCurrentUserId();
+            if (!userId) {
+                console.error("Invalid userId:", userId);
+                return;
+            }
+            // User is signed in, update cart item count
+            updateCartItemCount(userId);
+            fetchUserDataFromFirestore(userId);
+            console.log("User authenticated. User ID:", userId);
+        } else {
+            console.log("User is not authenticated.");
+        }
+    } catch (error) {
+        console.error("Error in authentication state change:", error);
+    }
 });
 
+const cart = document.getElementById('cart');
+if (cart) {
+    // Add event listener to the cart button
+    cart.addEventListener('click', handleCartClick);
+}
+
+function handleCartClick() {
+    if (auth.currentUser) {
+        // User is signed in, redirect to cart page
+        window.location.href = "../html/cart.html";
+    } else {
+        // User is not logged in, display alert message
+        window.alert('Please Login to view your cart.');
+        // Optionally, redirect to the login page
+        window.location.href = "../html/login.html";
+    }
+}
+
+// Function to update the cart item count in the UI
+async function updateCartItemCount(userId) {
+    try {
+        if (userId) {
+            const userCartDocRef = doc(collection(db, 'carts'), userId);
+            const userCartDocSnap = await getDoc(userCartDocRef);
+
+            if (userCartDocSnap.exists()) {
+                const cartItems = userCartDocSnap.data().cart || [];
+                const cartItemCount = document.getElementById('cartItemCount');
+                let totalCount = 0;
+                cartItems.forEach(item => {
+                    totalCount += item.quantity;
+                });
+                cartItemCount.textContent = totalCount;
+            }
+        }
+    } catch (error) {
+        console.error("Error updating cart item count:", error);
+    }
+}
 
 async function fetchUserDataFromFirestore(userId) {
   try {
