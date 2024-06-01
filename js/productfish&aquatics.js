@@ -1,7 +1,8 @@
-// Initialize Firestore and Authentication
+// Import necessary Firebase modules
 import { getFirestore, doc, collection, getDocs, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
+// Initialize Firestore and Authentication
 const db = getFirestore();
 const auth = getAuth();
 
@@ -43,7 +44,7 @@ function handleCartClick() {
         window.location.href = "../html/cart.html";
     } else {
         // User is not logged in, display alert message
-        window.alert(`Please Login to view your cart.`);
+        window.alert('Please Login to view your cart.');
         // Optionally, redirect to the login page
         window.location.href = "../html/login.html";
     }
@@ -71,46 +72,37 @@ async function updateCartItemCount(userId) {
     }
 }
 
-async function addToCart(productId, productImage, productName, productPrice, quantityInputValue, productStock) {
+async function addToCart(productId, productImage, productName, productPrice, productWeight, quantity) {
     try {
         const userId = getCurrentUserId();
         if (userId) {
-            const quantity = parseInt(quantityInputValue);
-            const userCartDocRef = doc(collection(db, 'carts'), userId);
-            const userCartDocSnap = await getDoc(userCartDocRef);
-            let cartItems = userCartDocSnap.exists() ? userCartDocSnap.data().cart : [];
+            let productType = getProductType(productId); // Determine product type based on product ID
 
-            let totalQuantity = quantity;
-            const existingProduct = cartItems.find(item => item.id === productId);
-            if (existingProduct) {
-                totalQuantity += existingProduct.quantity;
-            }
-
-            // Check if the total quantity exceeds the available stock or if stock is zero
-            if (productStock === 0 || totalQuantity > productStock) {
-                window.alert(`Insufficient stock for ${productName}.`);
-                return;
-            }
-
-            // Continue with adding the product to the cart
-            let productType = getProductType(productId);
+            // Construct the product object
             let product = {
                 id: productId,
-                image: productImage,
+                image: productImage, // Use the passed productImageSrc argument
                 name: productName,
                 price: productPrice,
-                type: productType,
+                type: productType, // Assign the determined product type
+                weight: productWeight,
                 quantity: quantity,
-                totalPrice: (productPrice * quantity).toFixed(2)
+                totalPrice: (productPrice * quantity).toFixed(2),
+                totalWeight: productWeight * quantity
             };
 
+            // Save the product to Firestore
             await saveProductToFirestore(product, productName);
+
+            // Update cart item count
             await updateCartItemCount(userId);
 
-            window.alert(`${productName} (${quantity}x) has been added to your cart!`);
+            // Display a message to the user
+            window.alert(`${productName} has been added to your cart!`);
             window.location.href = "/html/cart.html";
         } else {
-            window.alert(`Please login to add products to your cart.`);
+            // If user is not logged in, prompt them to log in
+            window.alert('Please login to add products to your cart.');
             window.location.href = "/html/login.html";
         }
     } catch (error) {
@@ -118,7 +110,7 @@ async function addToCart(productId, productImage, productName, productPrice, qua
     }
 }
 
-
+// Function to determine the product type based on its ID
 function getProductType(productId) {
     if (productId.includes("DF")) {
         return "Dry Food";
@@ -152,6 +144,7 @@ async function saveProductToFirestore(product, productName) {
         if (existingProductIndex !== -1) {
             cart[existingProductIndex].quantity++;
             cart[existingProductIndex].totalPrice = (cart[existingProductIndex].quantity * product.price).toFixed(2);
+            cart[existingProductIndex].totalWeight = (cart[existingProductIndex].quantity * product.weight);
         } else {
             cart.push(product);
         }
@@ -172,6 +165,7 @@ async function saveProductToFirestore(product, productName) {
     }
 }
 
+// Helper function to create a button with a given text and event handler
 function createButton(text, onClickHandler) {
     const button = document.createElement('button');
     button.textContent = text;
@@ -180,11 +174,12 @@ function createButton(text, onClickHandler) {
     return button;
 }
 
+// Function to fetch data and display it in the webpage based on food type
 async function fetchDataAndDisplay() {
     try {
         const foodType = document.getElementById('food-type').value;
-        const fishNaquaticsDocRef = doc(db, 'products', 'fish&aquatics');
-        const subcollectionRef = collection( fishNaquaticsDocRef , foodType);
+        const fishNaquaticssDocRef = doc(db, 'products', 'fish&aquatics');
+        const subcollectionRef = collection(fishNaquaticssDocRef, foodType);
         const querySnapshot = await getDocs(subcollectionRef);
 
         let documents = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -207,10 +202,12 @@ function naturalSort(a, b) {
     return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
 }
 
+// Function to create product div
 function createProductDiv(foodData, foodType) {
     const productDiv = document.createElement('div');
     productDiv.classList.add('product');
 
+    // Image
     if (foodData.product_image) {
         const productImage = document.createElement('img');
         productImage.src = `/image/products/fish&aquatics/${foodType}/${foodData.product_image}`;
@@ -220,6 +217,7 @@ function createProductDiv(foodData, foodType) {
         productDiv.appendChild(productImage);
     }
 
+    // Name
     const productName = document.createElement('h5');
     productName.textContent = foodData.product_name;
     productName.style.height = '60px';
@@ -230,31 +228,41 @@ function createProductDiv(foodData, foodType) {
     const priceNquantity = document.createElement('div');
     priceNquantity.classList.add('price-quantity');
 
+    // Price
     const productPrice = document.createElement('h5');
     productPrice.textContent = `RM ${foodData.product_price}`;
-    priceNquantity.appendChild(productPrice);
+    priceNquantity.appendChild(productPrice); // Append price to the priceNquantity div
 
+    // Quantity Controls
     const quantityContainer = document.createElement('div');
     quantityContainer.classList.add('quantity-container', 'mb-3');
 
+    // - Button
     const decrementButton = createButton('-', () => {
         const currentValue = parseInt(quantityInput.value);
         if (currentValue > 1) {
             quantityInput.value = currentValue - 1;
+            updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
         }
     });
     decrementButton.classList.add('btn', 'btn-sm', 'btn-secondary');
     quantityContainer.appendChild(decrementButton);
 
+    // Quantity Input
     const quantityInput = document.createElement('input');
-    quantityInput.type = 'text';
+    quantityInput.type = 'number';
     quantityInput.min = 1;
     quantityInput.value = 1;
     quantityInput.classList.add('quantity-input');
+    quantityInput.addEventListener('input', () => {
+        updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
+    });
     quantityContainer.appendChild(quantityInput);
 
+    // + Button
     const incrementButton = createButton('+', () => {
         quantityInput.value = parseInt(quantityInput.value) + 1;
+        updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
     });
     incrementButton.classList.add('btn', 'btn-sm', 'btn-secondary');
     quantityContainer.appendChild(incrementButton);
@@ -262,13 +270,11 @@ function createProductDiv(foodData, foodType) {
     priceNquantity.appendChild(quantityContainer);
     productDiv.appendChild(priceNquantity);
 
+    // Add to Cart Button
     const addToCartButton = createButton('ADD TO CART', () => {
         const quantity = parseInt(quantityInput.value);
-        const totalPrice = parseFloat(foodData.product_price) * quantity;
-        const productImageSrc = `/image/products/fish&aquatics/${foodType}/${foodData.product_image}`;
-        const productStock = parseInt(foodData.product_stock);
-
-        addToCart(foodData.product_id, productImageSrc, foodData.product_name, foodData.product_price, quantity, productStock);
+        const productImage = `/image/products/fish&aquatics/${foodType}/${foodData.product_image}`;
+        addToCart(foodData.id, productImage, foodData.product_name, foodData.product_price, foodData.product_weight, quantity);
     });
 
     addToCartButton.classList.add('btn', 'btn-primary', 'add-cart');
@@ -279,10 +285,20 @@ function createProductDiv(foodData, foodType) {
     return productDiv;
 }
 
+// Function to update total price and total weight based on quantity
+function updateTotals(productPrice, productWeight, quantity, totalPriceElement, totalWeightElement) {
+    const totalPrice = (productPrice * quantity).toFixed(2);
+    const totalWeight = productWeight * quantity;
+    totalPriceElement.textContent = `Total Price: RM ${totalPrice}`;
+    totalWeightElement.textContent = `Total Weight: ${totalWeight}g`;
+}
+
+// Function to show product details in a modal
 function showModal(foodData, foodType) {
     const modalBody = document.getElementById('modal-body-content');
     modalBody.innerHTML = '';
 
+    // Image
     if (foodData.product_image) {
         const productImage = document.createElement('img');
         productImage.src = `/image/products/fish&aquatics/${foodType}/${foodData.product_image}`;
@@ -291,57 +307,66 @@ function showModal(foodData, foodType) {
         modalBody.appendChild(productImage);
     }
 
+    // Name
     const productName = document.createElement('h4');
     productName.textContent = foodData.product_name;
     modalBody.appendChild(productName);
 
+    // Description
     const productDescription = document.createElement('p');
     productDescription.textContent = foodData.product_description;
     modalBody.appendChild(productDescription);
 
+    // Price
     const productPrice = document.createElement('h5');
     productPrice.textContent = `RM ${foodData.product_price}`;
     modalBody.appendChild(productPrice);
 
+    // Quantity Controls
     const quantityContainer = document.createElement('div');
     quantityContainer.classList.add('quantity-container', 'd-flex', 'justify-content-center', 'align-items-center', 'mb-3');
 
-    const quantityInput = document.createElement('input');
-    quantityInput.type = 'number';
-    quantityInput.min = 1;
-    quantityInput.value = 1;
-    quantityInput.classList.add('quantity-input');
-
+    // - Button
     const decrementButton = createButton('-', () => {
         const currentValue = parseInt(quantityInput.value);
         if (currentValue > 1) {
             quantityInput.value = currentValue - 1;
+            updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
         }
     });
     decrementButton.classList.add('btn', 'btn-sm', 'btn-secondary', 'mr-2');
     quantityContainer.appendChild(decrementButton);
 
+    // Quantity Input
+    const quantityInput = document.createElement('input');
+    quantityInput.type = 'text';
+    quantityInput.min = 1;
+    quantityInput.value = 1;
+    quantityInput.classList.add('quantity-input');
+    quantityInput.addEventListener('input', () => {
+        updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
+    });
     quantityContainer.appendChild(quantityInput);
 
+    // + Button
     const incrementButton = createButton('+', () => {
         quantityInput.value = parseInt(quantityInput.value) + 1;
+        updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
     });
     incrementButton.classList.add('btn', 'btn-sm', 'btn-secondary', 'ml-2');
     quantityContainer.appendChild(incrementButton);
 
     modalBody.appendChild(quantityContainer);
 
+    // Add to Cart Button
     const addToCartButton = createButton('ADD TO CART', () => {
         const quantity = parseInt(quantityInput.value);
-        const totalPrice = parseFloat(foodData.product_price) * quantity;
-        const productImageSrc = `/image/products/fish&aquatics/${foodType}/${foodData.product_image}`;
-        const productStock = parseInt(foodData.product_stock);
-
-        addToCart(foodData.product_id, productImageSrc, foodData.product_name, foodData.product_price, quantity, productStock);
+        const productImage = `/image/products/fish&aquatics/${foodType}/${foodData.product_image}`;
+        addToCart(foodData.id, productImage, foodData.product_name, foodData.product_price, foodData.product_weight, quantity);
     });
 
     addToCartButton.classList.add('btn', 'btn-primary', 'add-cart');
-    addToCartButton.style.width = '100%';
+    addToCartButton.style.width = '-webkit-fill-available';
     addToCartButton.style.marginTop = '8px';
     modalBody.appendChild(addToCartButton);
 

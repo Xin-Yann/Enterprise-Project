@@ -66,3 +66,16 @@
 .type{
     padding-left: 15px;
 }
+
+.quantity-input {
+    -webkit-appearance: none; /* Removes up-down arrows in WebKit browsers */
+    -moz-appearance: textfield; /* Removes up-down arrows in Firefox */
+    appearance: none; /* Standard syntax */
+}
+
+/* Additionally, to remove the spinner in Firefox */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
