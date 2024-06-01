@@ -18,6 +18,7 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+
 function handleProfileClick() {
   if (auth.currentUser) {
     // User is signed in, redirect to profile page

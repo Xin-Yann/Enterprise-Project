@@ -43,7 +43,7 @@ function handleCartClick() {
         window.location.href = "../html/cart.html";
     } else {
         // User is not logged in, display alert message
-        window.alert(`Please Login to view your cart.`);
+        window.alert('Please Login to view your cart.');
         // Optionally, redirect to the login page
         window.location.href = "../html/login.html";
     }
