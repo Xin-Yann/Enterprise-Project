@@ -1,11 +1,8 @@
-<<<<<<< HEAD
-// Initialize Firestore and Authentication
-=======
 // Import necessary Firebase modules
->>>>>>> bcd6bf2144c531dafea42affe7f7deefed117812
 import { getFirestore, doc, collection, getDocs, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
+// Initialize Firestore and Authentication
 const db = getFirestore();
 const auth = getAuth();
 
@@ -47,7 +44,7 @@ function handleCartClick() {
         window.location.href = "../html/cart.html";
     } else {
         // User is not logged in, display alert message
-        window.alert(`Please Login to view your cart.`);
+        window.alert('Please Login to view your cart.');
         // Optionally, redirect to the login page
         window.location.href = "../html/login.html";
     }
@@ -79,28 +76,12 @@ async function addToCart(productId, productImage, productName, productPrice, pro
     try {
         const userId = getCurrentUserId();
         if (userId) {
-            const quantity = parseInt(quantityInputValue);
-            const userCartDocRef = doc(collection(db, 'carts'), userId);
-            const userCartDocSnap = await getDoc(userCartDocRef);
-            let cartItems = userCartDocSnap.exists() ? userCartDocSnap.data().cart : [];
+            let productType = getProductType(productId); // Determine product type based on product ID
 
-            let totalQuantity = quantity;
-            const existingProduct = cartItems.find(item => item.id === productId);
-            if (existingProduct) {
-                totalQuantity += existingProduct.quantity;
-            }
-
-            // Check if the total quantity exceeds the available stock or if stock is zero
-            if (productStock === 0 || totalQuantity > productStock) {
-                window.alert(`Insufficient stock for ${productName}.`);
-                return;
-            }
-
-            // Continue with adding the product to the cart
-            let productType = getProductType(productId);
+            // Construct the product object
             let product = {
                 id: productId,
-                image: productImage,
+                image: productImage, // Use the passed productImageSrc argument
                 name: productName,
                 price: productPrice,
                 type: productType, // Assign the determined product type
@@ -110,13 +91,18 @@ async function addToCart(productId, productImage, productName, productPrice, pro
                 totalWeight: productWeight * quantity
             };
 
+            // Save the product to Firestore
             await saveProductToFirestore(product, productName);
+
+            // Update cart item count
             await updateCartItemCount(userId);
 
-            window.alert(`${productName} (${quantity}x) has been added to your cart!`);
+            // Display a message to the user
+            window.alert(`${productName} has been added to your cart!`);
             window.location.href = "/html/cart.html";
         } else {
-            window.alert(`Please login to add products to your cart.`);
+            // If user is not logged in, prompt them to log in
+            window.alert('Please login to add products to your cart.');
             window.location.href = "/html/login.html";
         }
     } catch (error) {
@@ -188,6 +174,7 @@ function createButton(text, onClickHandler) {
     return button;
 }
 
+// Function to fetch data and display it in the webpage based on food type
 async function fetchDataAndDisplay() {
     try {
         const foodType = document.getElementById('food-type').value;
@@ -215,10 +202,12 @@ function naturalSort(a, b) {
     return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
 }
 
+// Function to create product div
 function createProductDiv(foodData, foodType) {
     const productDiv = document.createElement('div');
     productDiv.classList.add('product');
 
+    // Image
     if (foodData.product_image) {
         const productImage = document.createElement('img');
         productImage.src = `/image/products/cat/${foodType}/${foodData.product_image}`;
@@ -228,6 +217,7 @@ function createProductDiv(foodData, foodType) {
         productDiv.appendChild(productImage);
     }
 
+    // Name
     const productName = document.createElement('h5');
     productName.textContent = foodData.product_name;
     productName.style.height = '60px';
@@ -238,13 +228,16 @@ function createProductDiv(foodData, foodType) {
     const priceNquantity = document.createElement('div');
     priceNquantity.classList.add('price-quantity');
 
+    // Price
     const productPrice = document.createElement('h5');
     productPrice.textContent = `RM ${foodData.product_price}`;
-    priceNquantity.appendChild(productPrice);
+    priceNquantity.appendChild(productPrice); // Append price to the priceNquantity div
 
+    // Quantity Controls
     const quantityContainer = document.createElement('div');
     quantityContainer.classList.add('quantity-container', 'mb-3');
 
+    // - Button
     const decrementButton = createButton('-', () => {
         const currentValue = parseInt(quantityInput.value);
         if (currentValue > 1) {
@@ -255,6 +248,7 @@ function createProductDiv(foodData, foodType) {
     decrementButton.classList.add('btn', 'btn-sm', 'btn-secondary');
     quantityContainer.appendChild(decrementButton);
 
+    // Quantity Input
     const quantityInput = document.createElement('input');
     quantityInput.type = 'number';
     quantityInput.min = 1;
@@ -265,6 +259,7 @@ function createProductDiv(foodData, foodType) {
     });
     quantityContainer.appendChild(quantityInput);
 
+    // + Button
     const incrementButton = createButton('+', () => {
         quantityInput.value = parseInt(quantityInput.value) + 1;
         updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);
@@ -275,9 +270,10 @@ function createProductDiv(foodData, foodType) {
     priceNquantity.appendChild(quantityContainer);
     productDiv.appendChild(priceNquantity);
 
+    // Add to Cart Button
     const addToCartButton = createButton('ADD TO CART', () => {
         const quantity = parseInt(quantityInput.value);
-        const productImage = `/image/products/cat/${foodType}/${foodData.product_image}`;
+        const productImage =   `/image/products/cat/${foodType}/${foodData.product_image}`;
         addToCart(foodData.id, productImage, foodData.product_name, foodData.product_price, foodData.product_weight, quantity);
     });
 
@@ -293,7 +289,7 @@ function createProductDiv(foodData, foodType) {
 function updateTotals(productPrice, productWeight, quantity, totalPriceElement, totalWeightElement) {
     const totalPrice = (productPrice * quantity).toFixed(2);
     const totalWeight = productWeight * quantity;
-    totalPriceElement.textContent = `Total Price: RM ${totalPrice}`;
+    totalPriceElement.textContent =  `Total Price: RM ${totalPrice}`;
     totalWeightElement.textContent = `Total Weight: ${totalWeight}g`;
 }
 
@@ -302,6 +298,7 @@ function showModal(foodData, foodType) {
     const modalBody = document.getElementById('modal-body-content');
     modalBody.innerHTML = '';
 
+    // Image
     if (foodData.product_image) {
         const productImage = document.createElement('img');
         productImage.src = `/image/products/cat/${foodType}/${foodData.product_image}`;
@@ -310,27 +307,26 @@ function showModal(foodData, foodType) {
         modalBody.appendChild(productImage);
     }
 
+    // Name
     const productName = document.createElement('h4');
     productName.textContent = foodData.product_name;
     modalBody.appendChild(productName);
 
+    // Description
     const productDescription = document.createElement('p');
     productDescription.textContent = foodData.product_description;
     modalBody.appendChild(productDescription);
 
+    // Price
     const productPrice = document.createElement('h5');
     productPrice.textContent = `RM ${foodData.product_price}`;
     modalBody.appendChild(productPrice);
 
+    // Quantity Controls
     const quantityContainer = document.createElement('div');
     quantityContainer.classList.add('quantity-container', 'd-flex', 'justify-content-center', 'align-items-center', 'mb-3');
 
-    const quantityInput = document.createElement('input');
-    quantityInput.type = 'number';
-    quantityInput.min = 1;
-    quantityInput.value = 1;
-    quantityInput.classList.add('quantity-input');
-
+    // - Button
     const decrementButton = createButton('-', () => {
         const currentValue = parseInt(quantityInput.value);
         if (currentValue > 1) {
@@ -352,6 +348,7 @@ function showModal(foodData, foodType) {
     });
     quantityContainer.appendChild(quantityInput);
 
+    // + Button
     const incrementButton = createButton('+', () => {
         quantityInput.value = parseInt(quantityInput.value) + 1;
         updateTotals(parseFloat(foodData.product_price), parseFloat(foodData.product_weight), quantityInput.value, totalPriceElement, totalWeightElement);

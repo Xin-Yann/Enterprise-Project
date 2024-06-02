@@ -40,20 +40,26 @@ document.getElementById('signUp').addEventListener('click', async () => {
     console.log('Document written with ID: ', docRef.id);
     window.location.href = "../staff/staff-home.html";
     document.getElementById('output').innerText = 'Data added to Firestore!';
-  } catch (e) {
+  }  catch (error) {
     const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error('Error adding document: ', errorCode, errorMessage);
-        switch (errorCode) {
-            case 'auth/invalid-email':
-                window.alert("Invalid email format. Please check your email.");
-                break;
-            case 'auth/email-already-in-use':
-                window.alert("The email address is already in use by another account.");
-                break;
-            default:
-                window.alert("Error: " + errorMessage);
-        }
-  }
+    const errorMessage = error.message;
+    console.error('Error adding document: ', errorCode, errorMessage);
+    switch (errorCode) {
+        case 'auth/wrong-password':
+            window.alert("Invalid password. Please try again.");
+            break;
+        case 'auth/user-not-found':
+            window.alert("No user found with this email. Please sign up.");
+            break;
+        case 'auth/invalid-email':
+            window.alert("Invalid email format. Please check your email.");
+            break;
+        case 'auth/email-already-in-use':
+            window.alert("The email address is already in use by another account.");
+            break;
+        default:
+            window.alert("Error: " + errorMessage);
+    }
+}
 
 });
