@@ -8,7 +8,7 @@ const db = getFirestore();
 document.getElementById("add").addEventListener("click", async () => {
     try {
         const category = document.getElementById('product_category').value;
-        const subcategory = document.getElementById('product_type').value;
+        const type = document.getElementById('product_type').value;
         const productId = document.getElementById('product_id').value;
 
         // Validate required fields
@@ -18,13 +18,23 @@ document.getElementById("add").addEventListener("click", async () => {
         const productStock = document.getElementById('product_stock').value;
         const productWeight = document.getElementById('product_weight').value;
 
-        if (!category || !subcategory || !productId || !productName || !productPrice || !productStock || !productWeight) {
+        if (!productId || !productName || !productPrice || !productStock || !productWeight) {
             alert('Please fill out all required fields: category, type, ID, name, price, stock, weight.');
             return;
         }
 
+        if (category === "Select category") {
+            alert('Please select a category.');
+            return;
+        }
+
+        if (type === "Select type") {
+            alert('Please select a type.');
+            return;
+        }
+
         // Check if the product ID already exists
-        const productRef = doc(collection(db, 'products', category, subcategory), productId);
+        const productRef = doc(collection(db, 'products', category, type), productId);
         const productSnapshot = await getDoc(productRef);
 
         if (productSnapshot.exists()) {
@@ -33,7 +43,7 @@ document.getElementById("add").addEventListener("click", async () => {
         }
 
         // Check if the product name already exists
-        const productsQuery = query(collection(db, 'products', category, subcategory), where("product_name", "==", productName));
+        const productsQuery = query(collection(db, 'products', category, type), where("product_name", "==", productName));
         const querySnapshot = await getDocs(productsQuery);
 
         if (!querySnapshot.empty) {

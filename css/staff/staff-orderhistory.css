@@ -27,16 +27,16 @@
 }
 
 .table-image{
-    width: 400px;
-    height: 225px;
+    width: 100px;
+    height: 100px;
+}
+
+.table-receipt-image{
+    width: 150px;
+    height: 307px;
 }
 
 .btn:hover {
     background-color: #e7f3ff;
     color: #007bff;
-}
-
-.btn-danger:hover {
-    background-color: #ffe7e7;
-    color: #dc3545;
 }

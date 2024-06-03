@@ -354,7 +354,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 await clearUserCart(getCurrentUserId());
                 await updateStock(orderDetails.cartItems); // Update stock after order submission
                 paymentModal.hide();
-                window.location.href = "/html/staff/staff-orderhistory.html";
+                window.location.href = "/html/orderhistory.html";
             } catch (error) {
                 alert('Error submitting order:', error);
             }
@@ -376,10 +376,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (validateCardDetails(cardName, cardNumber, expiryDate, cvv, referenceId, receipt)) {
             const orderDetails = await collectOrderDetails();
             orderDetails.paymentMethod = 'Card';
-            orderDetails.cardName = cardName;
-            orderDetails.cardNumber = cardNumber;
-            orderDetails.expiryDate = expiryDate;
-            orderDetails.cvv = cvv;
             orderDetails.paymentReferenceId = referenceId;
             orderDetails.receipt = receipt.name;
 
@@ -389,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 await clearUserCart(getCurrentUserId());
                 await updateStock(orderDetails.cartItems); // Update stock after order submission
                 paymentModal.hide();
-                window.location.href = "/html/staff/staff-orderhistory.html";
+                window.location.href = "/html/orderhistory.html";
             } catch (error) {
                 alert('Error submitting order:', error);
             }

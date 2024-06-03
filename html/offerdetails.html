@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
-    <link rel="stylesheet" href="/css/staff/staff-offerdetails.css">
+    <link rel="stylesheet" href="/css/offerdetails.css">
     <link rel="stylesheet" href="/css/nav.css">
     <link rel="stylesheet" href="../css/home-1.css">
     <script type="module" src="/js/firebase-configs.js"></script>
@@ -53,45 +53,12 @@
                     </div>
                 </div>
                 <a href="/html/offerdetails.html">Offer Details</a>
-                <a href="/html/offerdetails.html">Order History</a>
+                <a href="/html/orderhistory.html">Order History</a>
                 <a href="/html/contact.html">Contact Us</a>
             </div>
         </div>
-        <div class="container1">
-            <img src="/image/slider1.png" class="offerimg">
-
-            <h5 class="offerinfo">We are thrilled to announce our 1st Year Anniversary celebration! It has been an
-                incredible journey, and we are deeply grateful for your support.
-                To mark this special occasion, we are launching a storewide promotion as a token of our appreciation.
-                Join us in celebrating this milestone with amazing deals and exclusive offers that you won't want to
-                miss!</h5>
-        </div>
-
-        <div class="container2">
-            <img src="/image/slider2.png" class="offerimg">
-
-            <h5 class="offerinfo">Enjoy a 15% discount on all online purchases by using promo code PETM15 at checkout.
-                This offer is valid until 31st July 2024.</h5>
-        </div>
-
-        <div class="container1">
-            <img src="/image/slider3.png" class="offerimg">
-
-            <h5 class="offerinfo">Additionally, receive a free gift with every purchase over RM200.
-                Gifts are available while supplies last, with terms and conditions applying, including
-                non-transferability and return policies.</h5>
-        </div>
-
-        <div class="container2">
-            <img src="/image/slider4.png" class="offerimg">
-
-            <div class="container">
-                <h5 class="offerinfo">Don't miss out on our latest arrivals: Whiskas - Cat Dry Food - Senior Mackerel
-                    1.1kg for RM16.06, and Vitakraft Cat Milky Melody Pure 70g for RM10.90.
-                    We invite you to take advantage of these special offers and celebrate with us.
-                    Thank you for being a part of our journey. Here's to many more years together!</h5>
-            </div>
-        </div>
+        
+        <div id="promoContainer"></div>
 
         <!--Footer-->
         <div class="row text-left px-5 pt-5 foot">
@@ -124,8 +91,20 @@
 
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script type="module" src="/js/firebase-configs.js"></script>
     <script type="module" src="/js/homes.js"></script>
     <script type="module" src="/js/logout.js"></script>
+    <script type="module" src="/js/offerdetails.js"></script>
 </body>
 
 </html>
