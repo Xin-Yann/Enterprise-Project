@@ -1,10 +1,15 @@
-import { getFirestore, collection, getDocs, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize Firestore and Authentication
     const db = getFirestore();
     const auth = getAuth();
+
+    function getCurrentUserId() {
+        const user = auth.currentUser;
+        return user ? user.uid : null;
+    }
 
     // Function to fetch and display personal details
     async function fetchAndDisplayPersonalDetails(email) {
@@ -40,12 +45,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ensure the user is authenticated before fetching details
     onAuthStateChanged(auth, (user) => {
         if (user) {
+            const userId = getCurrentUserId();
+            // User is signed in, update cart item count
+            updateCartItemCount(userId);
             const userEmail = sessionStorage.getItem('userEmail');
             if (userEmail) {
                 fetchAndDisplayPersonalDetails(userEmail);
             } else {
                 console.log('No user email found in session storage.');
             }
+
         } else {
             console.log('No user is authenticated. Redirecting to login page.');
             window.location.href = "/html/login.html";
@@ -97,5 +106,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('No user email found in session storage.');
             }
         });
+    }
+
+    // Function to update the cart item count in the UI
+    async function updateCartItemCount(userId) {
+        try {
+            if (userId) {
+                const userCartDocRef = doc(collection(db, 'carts'), userId);
+                const userCartDocSnap = await getDoc(userCartDocRef);
+
+                if (userCartDocSnap.exists()) {
+                    const cartItems = userCartDocSnap.data().cart || [];
+                    const cartItemCount = document.getElementById('cartItemCount');
+                    let totalCount = 0;
+                    cartItems.forEach(item => {
+                        totalCount += item.quantity;
+                    });
+                    cartItemCount.textContent = totalCount;
+                }
+            }
+        } catch (error) {
+            console.error("Error updating cart item count:", error);
+        }
     }
 });

@@ -1,9 +1,14 @@
-import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, getDocs, getDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const db = getFirestore();
     const auth = getAuth();
+
+    function getCurrentUserId() {
+        const user = auth.currentUser;
+        return user ? user.uid : null;
+    }
 
     // Function to create an order div
     function createOrderDiv(orderData) {
@@ -17,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Status
         const status = document.createElement('p');
-        status.textContent = `Status: ${orderData.status || 'Incomplete'}`;
+        status.textContent = `Status: ${orderData.status || 'Incomplete'}`; // Ensure this defaults to 'Incomplete'
         orderDiv.appendChild(status);
 
         // Order Date
@@ -44,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 itemDiv.appendChild(itemName);
 
                 const itemPrice = document.createElement('p');
-                itemPrice.textContent = `Price: ${item.price}`;
+                itemPrice.textContent = `Price: RM ${item.price}`;
                 itemDiv.appendChild(itemPrice);
 
                 const itemQuantity = document.createElement('p');
@@ -80,30 +85,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
         orderDiv.appendChild(orderDetails);
 
-        // Payment Details
-        const paymentDetails = document.createElement('div');
-        paymentDetails.classList.add('payment-details');
+        // Append status to orderDetails if not already done
+        orderDetails.appendChild(status);
 
-        const paymentMethod = document.createElement('p');
-        paymentMethod.textContent = `Payment Method: ${orderData.paymentMethod || 'N/A'}`;
-        paymentDetails.appendChild(paymentMethod);
-
-        const paymentReferenceId = document.createElement('p');
-        paymentReferenceId.textContent = `Reference ID: ${orderData.paymentReferenceId || 'N/A'}`;
-        paymentDetails.appendChild(paymentReferenceId);
-
-        if (orderData.receipt) {
-            const receiptImage = document.createElement('img');
-            receiptImage.src = `/image/${orderData.receipt}`;
-            receiptImage.alt = 'Receipt Image';
-            receiptImage.classList.add('orders-receipt-image');
-            paymentDetails.appendChild(receiptImage);
+        // Complete Button
+        if (orderData.status !== 'Complete') {
+            const completeButton = document.createElement('button');
+            completeButton.classList.add('btn');
+            completeButton.textContent = 'Complete';
+            completeButton.addEventListener('click', async () => {
+                try {
+                    const q = query(collection(db, 'orders'), where('orderID', '==', orderData.orderID));
+                    const querySnapshot = await getDocs(q);
+                    if (!querySnapshot.empty) {
+                        const orderDoc = querySnapshot.docs[0];
+                        const orderRef = doc(db, 'orders', orderDoc.id);
+                        await updateDoc(orderRef, { status: 'Complete' });
+                        status.textContent = 'Status: Complete';
+                        completeButton.disabled = true;  // Disable the button after clicking
+                    }
+                } catch (error) {
+                    console.error('Error updating order status:', error);
+                }
+            });
+            orderDiv.appendChild(completeButton);
         }
-
-        orderDiv.appendChild(paymentDetails);
 
         return orderDiv;
     }
+
 
     // Function to fetch and display order history
     async function fetchAndDisplayOrderHistory(email) {
@@ -116,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let orders = [];
             querySnapshot.forEach(doc => {
-                orders.push(doc.data());
+                orders.push({ ...doc.data(), id: doc.id });
             });
 
             // Sort orders first by status (Incomplete first) and then by orderDate in descending order
@@ -149,6 +159,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ensure the user is authenticated before fetching details
     onAuthStateChanged(auth, (user) => {
         if (user) {
+            const userId = getCurrentUserId();
+            // User is signed in, update cart item count
+            updateCartItemCount(userId);
             const userEmail = user.email;
             if (userEmail) {
                 fetchAndDisplayOrderHistory(userEmail); // Fetch order history based on user email
@@ -160,4 +173,26 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = "/html/login.html";
         }
     });
+
+    // Function to update the cart item count in the UI
+    async function updateCartItemCount(userId) {
+        try {
+            if (userId) {
+                const userCartDocRef = doc(collection(db, 'carts'), userId);
+                const userCartDocSnap = await getDoc(userCartDocRef);
+
+                if (userCartDocSnap.exists()) {
+                    const cartItems = userCartDocSnap.data().cart || [];
+                    const cartItemCount = document.getElementById('cartItemCount');
+                    let totalCount = 0;
+                    cartItems.forEach(item => {
+                        totalCount += item.quantity;
+                    });
+                    cartItemCount.textContent = totalCount;
+                }
+            }
+        } catch (error) {
+            console.error("Error updating cart item count:", error);
+        }
+    }
 });
