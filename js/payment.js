@@ -331,10 +331,11 @@ function ordertotal(totalPrice, discount, fees) {
 async function sendOrderConfirmationEmail(orderDetails) {
     const emailParams = {
         user_name: orderDetails.userDetails.name,
+        user_email: orderDetails.userDetails.email, // Correct the userEmail reference
         order_id: orderDetails.orderID,
         order_date: orderDetails.orderDate,
         tracking_number: orderDetails.trackingNumber,
-        order_total: orderDetails.totalPrice,
+        order_total: `RM ${orderDetails.orderTotal.toFixed(2)}`, // Format the total price
         payment_method: orderDetails.paymentMethod,
     };
 
@@ -343,15 +344,9 @@ async function sendOrderConfirmationEmail(orderDetails) {
         console.log('Order confirmation email sent successfully:', response);
     } catch (error) {
         console.error('Error sending order confirmation email:', error);
-        if (error.response) {
-            console.error('EmailJS response error:', error.response);
-        } else if (error.request) {
-            console.error('EmailJS request error:', error.request);
-        } else {
-            console.error('Unknown error occurred:', error.message);
-        }
     }
 }
+
 
 document.addEventListener('DOMContentLoaded', function() {
     const payButton = document.getElementById('payButton');
