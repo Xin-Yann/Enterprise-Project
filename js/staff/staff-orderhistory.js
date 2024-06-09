@@ -22,7 +22,7 @@ async function fetchOrdersAndDisplay() {
 
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
-        ['Order ID', 'Order Date', 'Items', 'Order Details', 'Payment Details', 'User Details', 'Status', ' '].forEach(text => {
+        ['Order ID', 'Order Date', 'Items', 'Order Details', 'Payment Details', 'User Details', 'Status'].forEach(text => {
             const th = document.createElement('th');
             th.textContent = text;
             headerRow.appendChild(th);
@@ -171,24 +171,8 @@ async function fetchOrdersAndDisplay() {
 
             // Status
             const statusTd = document.createElement('td');
-            statusTd.textContent = orderData.status || 'Incomplete';
+            statusTd.textContent = orderData.status;
             tr.appendChild(statusTd);
-
-            // Complete button
-            const completeTd = document.createElement('td');
-            if (orderData.status !== 'Complete') {
-                const completeButton = document.createElement('button');
-                completeButton.textContent = 'Complete';
-                completeButton.classList.add('btn', 'btn-success');
-                completeButton.addEventListener('click', async () => {
-                    await markOrderAsComplete(doc.id);
-                    fetchOrdersAndDisplay(); // Refresh the table after marking as complete
-                });
-                completeTd.appendChild(completeButton);
-            } else {
-                completeTd.textContent = ' ';
-            }
-            tr.appendChild(completeTd);
 
             tbody.appendChild(tr);
         });
@@ -196,17 +180,6 @@ async function fetchOrdersAndDisplay() {
         ordersContainer.appendChild(table);
     } catch (error) {
         console.error('Error fetching orders:', error);
-    }
-}
-
-// Function to mark order as complete
-async function markOrderAsComplete(orderId) {
-    try {
-        const orderDocRef = doc(db, 'orders', orderId);
-        await updateDoc(orderDocRef, { status: 'Complete' });
-        alert('Order marked as complete.');
-    } catch (error) {
-        console.error('Error marking order as complete:', error);
     }
 }
 

@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 await updateStock(orderDetails.cartItems); // Update stock after order submission
                 await sendOrderConfirmationEmail(orderDetails);
                 paymentModal.hide();
-                window.location.href = "/html/staff/staff-orderhistory.html";
+                window.location.href = "/html/orderhistory.html";
             } catch (error) {
                 alert('Error submitting order:', error);
             }
@@ -505,6 +505,7 @@ document.addEventListener('DOMContentLoaded', function() {
             orderTotal,
             orderDate: new Date().toISOString(),
             trackingNumber,
+            status: "Order Placed",
         };
     }
 
