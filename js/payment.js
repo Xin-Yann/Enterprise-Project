@@ -1,9 +1,13 @@
 import { getFirestore, collection, getDoc, getDocs, setDoc, doc, query, where, addDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
 // Initialize Firestore
 const db = getFirestore();
 const auth = getAuth(); // Initialize Firebase Authentication
+
+(function () {
+    emailjs.init("86kjxi3kBUTZUUwYJ");
+})();
 
 // Function to get the current user ID
 function getCurrentUserId() {
@@ -324,6 +328,26 @@ function ordertotal(totalPrice, discount, fees) {
     OrderTotalDisplay.textContent = `Order Total: RM ${orderTotal.toFixed(2)}`;
 }
 
+async function sendOrderConfirmationEmail(orderDetails) {
+    const emailParams = {
+        user_name: orderDetails.userDetails.name,
+        user_email: orderDetails.userDetails.email, // Correct the userEmail reference
+        order_id: orderDetails.orderID,
+        order_date: orderDetails.orderDate,
+        tracking_number: orderDetails.trackingNumber,
+        order_total: `RM ${orderDetails.orderTotal.toFixed(2)}`, // Format the total price
+        payment_method: orderDetails.paymentMethod,
+    };
+
+    try {
+        const response = await emailjs.send('service_wio03zw', 'template_qicmnu7', emailParams);
+        console.log('Order confirmation email sent successfully:', response);
+    } catch (error) {
+        console.error('Error sending order confirmation email:', error);
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
     const payButton = document.getElementById('payButton');
     const paymentModalElement = document.getElementById('paymentModal');
@@ -353,8 +377,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Order submitted successfully');
                 await clearUserCart(getCurrentUserId());
                 await updateStock(orderDetails.cartItems); // Update stock after order submission
+                await sendOrderConfirmationEmail(orderDetails);
                 paymentModal.hide();
-                window.location.href = "/html/orderhistory.html";
+                window.location.href = "/html/staff/staff-orderhistory.html";
             } catch (error) {
                 alert('Error submitting order:', error);
             }
@@ -376,6 +401,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (validateCardDetails(cardName, cardNumber, expiryDate, cvv, referenceId, receipt)) {
             const orderDetails = await collectOrderDetails();
             orderDetails.paymentMethod = 'Card';
+            orderDetails.cardName = cardName;
+            orderDetails.cardNumber = cardNumber;
+            orderDetails.expiryDate = expiryDate;
+            orderDetails.cvv = cvv;
             orderDetails.paymentReferenceId = referenceId;
             orderDetails.receipt = receipt.name;
 
@@ -384,8 +413,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Order submitted successfully');
                 await clearUserCart(getCurrentUserId());
                 await updateStock(orderDetails.cartItems); // Update stock after order submission
+                await sendOrderConfirmationEmail(orderDetails);
                 paymentModal.hide();
-                window.location.href = "/html/orderhistory.html";
+                window.location.href = "/html/staff/staff-orderhistory.html";
             } catch (error) {
                 alert('Error submitting order:', error);
             }
@@ -430,6 +460,13 @@ document.addEventListener('DOMContentLoaded', function() {
         return true;
     }    
 
+    function generateTrackingNumber() {
+        // Example: Generate a random tracking number (could be more sophisticated in a real-world scenario)
+        const prefix = "TRK";
+        const randomNumber = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit random number
+        return `${prefix}${randomNumber}`;
+    }
+
     async function collectOrderDetails() {
         const user = auth.currentUser;
         const userDetails = {
@@ -452,6 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalWeight = parseFloat(document.getElementById('Subweight').textContent.replace(/[^0-9.]/g, ""));
         const shippingFees = parseFloat(document.getElementById('ShippingFees').textContent.replace(/[^0-9.]/g, ""));
         const orderTotal = parseFloat(document.getElementById('OrderTotal').textContent.replace(/[^0-9.]/g, ""));
+        const trackingNumber = generateTrackingNumber(); // Generate a tracking number
 
         const orderID = await generateOrderID();
 
@@ -466,6 +504,7 @@ document.addEventListener('DOMContentLoaded', function() {
             shippingFees,
             orderTotal,
             orderDate: new Date().toISOString(),
+            trackingNumber,
         };
     }
 
