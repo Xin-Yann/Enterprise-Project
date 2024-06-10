@@ -1,20 +1,15 @@
-import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { getFirestore, collection, query, getDocs, updateDoc, doc, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
 // Initialize Firestore and Auth
 const db = getFirestore();
 const auth = getAuth();
 
-// Function to get the current user ID
-function getCurrentUserId() {
-    const user = auth.currentUser;
-    return user ? user.uid : null;
-}
-
 // Function to fetch and display delivery status
 async function fetchAndDisplayDeliveryStatus() {
     try {
-        const q = query(collection(db, 'orders'));
+        // Create a query ordered by orderId in ascending order
+        const q = query(collection(db, 'orders'), orderBy('orderID', 'asc'));
         const querySnapshot = await getDocs(q);
 
         const statusContainer = document.getElementById('statusContainer');
@@ -36,12 +31,13 @@ async function fetchAndDisplayDeliveryStatus() {
 
             querySnapshot.forEach((doc) => {
                 const orderData = doc.data();
+                const orderId = orderData.orderID || 'N/A';  // Use orderId from the document data
                 const trackingNumber = orderData.trackingNumber || 'N/A';
                 const deliveryStatus = orderData.status || 'Pending';
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${doc.id}</td>
+                    <td>${orderId}</td>  <!-- Display orderId here -->
                     <td>${trackingNumber}</td>
                     <td>${deliveryStatus}</td>
                     <td>
