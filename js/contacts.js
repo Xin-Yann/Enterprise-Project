@@ -1,10 +1,13 @@
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc,doc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
 // Initialize Firebase Firestore
 const db = getFirestore();
-
 const auth = getAuth();
+
+(function () {
+    emailjs.init("86kjxi3kBUTZUUwYJ");
+})();
 
 // Function to get the current user ID
 function getCurrentUserId() {
