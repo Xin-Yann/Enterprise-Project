@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('Name').value = userData.name || '';
                     document.getElementById('Email').value = userData.email || '';
                     document.getElementById('Contact').value = userData.contact || '';
+                    document.getElementById('Points').value = userData.points || '';
                     document.getElementById('Address').value = userData.address || '';
                     document.getElementById('State').value = userData.state || '';
                     document.getElementById('City').value = userData.city || '';
@@ -77,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         name: document.getElementById('Name').value,
                         email: document.getElementById('Email').value,
                         contact: document.getElementById('Contact').value,
+                        points: document.getElementById('Points').value,
                         address: document.getElementById('Address').value,
                         state: document.getElementById('State').value,
                         city: document.getElementById('City').value,

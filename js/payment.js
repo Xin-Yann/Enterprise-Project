@@ -248,7 +248,7 @@ async function updateSubweight(totalWeight) {
 
 displayCartItems(getCurrentUserId());
 
-document.getElementById("apply").onclick = function() {
+document.getElementById("apply").onclick = function () {
     const totalPriceText = document.getElementById('Subtotal').textContent;
     const totalPrice = parseFloat(totalPriceText.replace(/[^0-9.]/g, "").trim());
 
@@ -328,27 +328,26 @@ function ordertotal(totalPrice, discount, fees) {
     OrderTotalDisplay.textContent = `Order Total: RM ${orderTotal.toFixed(2)}`;
 }
 
-async function sendOrderConfirmationEmail(orderDetails) {
-    const emailParams = {
-        user_name: orderDetails.userDetails.name,
-        user_email: orderDetails.userDetails.email, // Correct the userEmail reference
-        order_id: orderDetails.orderID,
-        order_date: orderDetails.orderDate,
-        tracking_number: orderDetails.trackingNumber,
-        order_total: `RM ${orderDetails.orderTotal.toFixed(2)}`, // Format the total price
-        payment_method: orderDetails.paymentMethod,
-    };
+// async function sendOrderConfirmationEmail(orderDetails) {
+//     const emailParams = {
+//         user_name: orderDetails.userDetails.name,
+//         user_email: orderDetails.userDetails.email, // Correct the userEmail reference
+//         order_id: orderDetails.orderID,
+//         order_date: orderDetails.orderDate,
+//         tracking_number: orderDetails.trackingNumber,
+//         order_total: `RM ${orderDetails.orderTotal.toFixed(2)}`, // Format the total price
+//         payment_method: orderDetails.paymentMethod,
+//     };
 
-    try {
-        const response = await emailjs.send('service_wio03zw', 'template_qicmnu7', emailParams);
-        console.log('Order confirmation email sent successfully:', response);
-    } catch (error) {
-        console.error('Error sending order confirmation email:', error);
-    }
-}
+//     try {
+//         const response = await emailjs.send('service_wio03zw', 'template_qicmnu7', emailParams);
+//         console.log('Order confirmation email sent successfully:', response);
+//     } catch (error) {
+//         console.error('Error sending order confirmation email:', error);
+//     }
+// }
 
-
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const payButton = document.getElementById('payButton');
     const paymentModalElement = document.getElementById('paymentModal');
     const paymentModal = new bootstrap.Modal(paymentModalElement);
@@ -383,7 +382,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } catch (error) {
                 alert('Error submitting order:', error);
             }
-        } else if (!referenceId || !receipt){
+        } else if (!referenceId || !receipt) {
             alert('Please fill out all required fields: reference id and receipt.');
         }
     });
@@ -426,86 +425,106 @@ document.addEventListener('DOMContentLoaded', function() {
         const namePattern = /^[A-Za-z\s]+$/;
         const numberPattern = /^\d{4}\s\d{4}\s\d{4}\s\d{4}$/;
         const cvvPattern = /^\d{3}$/;
-    
+
         if (!cardName || !cardNumber || !expiryDate || !cvv || !referenceId || !receipt) {
             alert('Please fill out all required fields: card name, card number, expiry date, cvv, reference id, and receipt.');
             return false;
         }
-    
+
         if (!namePattern.test(cardName)) {
             alert('Card name should contain only letters and spaces.');
             return false;
         }
-    
+
         if (!numberPattern.test(cardNumber)) {
             alert('Card number should be in the format "xxxx xxxx xxxx xxxx".');
             return false;
         }
-    
+
         if (!cvvPattern.test(cvv)) {
             alert('CVV should be exactly 3 digits.');
             return false;
         }
-    
+
         if (!referenceId) {
             alert('Please enter the reference ID.');
             return false;
         }
-    
+
         if (!receipt) {
             alert('Please upload the receipt.');
             return false;
         }
-    
-        return true;
-    }    
 
-    function generateTrackingNumber() {
-        // Example: Generate a random tracking number (could be more sophisticated in a real-world scenario)
-        const prefix = "TRK";
-        const randomNumber = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit random number
-        return `${prefix}${randomNumber}`;
+        return true;
     }
 
-    async function collectOrderDetails() {
-        const user = auth.currentUser;
-        const userDetails = {
-            name: document.getElementById('Name').value,
-            email: document.getElementById('Email').value,
-            contact: document.getElementById('Contact').value,
-            address: document.getElementById('Address').value,
-            state: document.getElementById('State').value,
-            city: document.getElementById('City').value,
-            postcode: document.getElementById('Postcode').value,
-        };
+    async function calculatePoints(totalPrice) {
+        const pointsPerRM = 1; // 1 point per RM 1 spent
+        const wholeRM = Math.floor(totalPrice); // Only consider the whole ringgit part
+        const points = wholeRM * pointsPerRM;
+        return points;
+    }
+    
+    // Function to update points in the user's profile using email
+    async function updatePoints(points) {
+        try {
+            const user = auth.currentUser; // Ensure 'auth' is initialized
+            if (!user) {
+                console.error("No user is currently logged in.");
+                return;
+            }
 
-        // Fetch cart items from Firestore
-        const userId = user ? user.uid : null;
-        const cartItems = await getCartData(userId);
+            const userEmail = user.email; // Get the current user's email
+            if (!userEmail) {
+                console.error("User email is not available.");
+                return;
+            }
 
-        const totalPrice = parseFloat(document.getElementById('Subtotal').textContent.replace(/[^0-9.]/g, ""));
-        const promoCode = document.getElementById('Promocode').value;
-        const discountAmount = parseFloat(document.getElementById('discount_amount').textContent.replace(/[^0-9.]/g, "")) || 0;
-        const totalWeight = parseFloat(document.getElementById('Subweight').textContent.replace(/[^0-9.]/g, ""));
-        const shippingFees = parseFloat(document.getElementById('ShippingFees').textContent.replace(/[^0-9.]/g, ""));
-        const orderTotal = parseFloat(document.getElementById('OrderTotal').textContent.replace(/[^0-9.]/g, ""));
-        const trackingNumber = generateTrackingNumber(); // Generate a tracking number
+            const usersCollection = collection(db, 'users');
+            const q = query(usersCollection, where("email", "==", userEmail));
+            const querySnapshot = await getDocs(q);
 
-        const orderID = await generateOrderID();
+            if (!querySnapshot.empty) {
+                const userDocRef = querySnapshot.docs[0].ref;
+                const userDocSnap = await getDoc(userDocRef);
+                if (userDocSnap.exists()) {
+                    const userData = userDocSnap.data();
+                    const existingPoints = Number(userData.points) || 0; // Convert to number
+                    const updatedPoints = existingPoints + Number(points); // Ensure points are numbers
 
-        return {
-            orderID,
-            userDetails,
-            cartItems,
-            totalPrice,
-            promoCode,
-            discountAmount,
-            totalWeight,
-            shippingFees,
-            orderTotal,
-            orderDate: new Date().toISOString(),
-            trackingNumber,
-        };
+                    await updateDoc(userDocRef, { points: updatedPoints });
+                    window.alert(`Points updated successfully. New points: ${updatedPoints}`);
+                    console.log(`Points updated successfully. New points: ${updatedPoints}`);
+                } else {
+                    console.log('User document does not exist.');
+                }
+            } else {
+                console.log('No user document found with the specified email.');
+            }
+        } catch (error) {
+            console.error('Error updating points:', error);
+        }
+    }
+
+
+    // Function to generate a unique tracking number
+    function generateTrackingNumber() {
+        const now = new Date();
+        const timestamp = now.getTime();
+        const randomNum = Math.floor(Math.random() * 1000);
+        return `TRK${timestamp}-${randomNum}`;
+    }
+
+    // Function to fetch cart data from Firestore
+    async function getCartData(userId) {
+        const cartRef = collection(db, 'carts', userId, 'items');
+        const cartSnapshot = await getDocs(cartRef);
+        const cartItems = [];
+        cartSnapshot.forEach(doc => {
+            cartItems.push(doc.data());
+        });
+        return cartItems;
     }
 
     // Function to generate a running order ID
@@ -525,6 +544,69 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    async function collectOrderDetails() {
+        const user = auth.currentUser;
+        const userId = user ? user.uid : null;
+    
+        const userDetails = {
+            name: document.getElementById('Name').value,
+            email: document.getElementById('Email').value,
+            contact: document.getElementById('Contact').value,
+            address: document.getElementById('Address').value,
+            state: document.getElementById('State').value,
+            city: document.getElementById('City').value,
+            postcode: document.getElementById('Postcode').value,
+        };
+    
+        // Fetch cart items from Firestore
+        const cartItems = await getCartData(userId);
+    
+        const totalPriceText = document.getElementById('Subtotal').textContent;
+        const totalPrice = parseFloat(totalPriceText.replace(/[^0-9.]/g, "")); // Ensure conversion to number
+    
+        const promoCode = document.getElementById('Promocode').value;
+        const discountAmountText = document.getElementById('discount_amount').textContent;
+        const discountAmount = parseFloat(discountAmountText.replace(/[^0-9.]/g, "")) || 0;
+    
+        const totalWeightText = document.getElementById('Subweight').textContent;
+        const totalWeight = parseFloat(totalWeightText.replace(/[^0-9.]/g, ""));
+    
+        const shippingFeesText = document.getElementById('ShippingFees').textContent;
+        const shippingFees = parseFloat(shippingFeesText.replace(/[^0-9.]/g, ""));
+    
+        const orderTotalText = document.getElementById('OrderTotal').textContent;
+        const orderTotal = parseFloat(orderTotalText.replace(/[^0-9.]/g, "")); // Ensure conversion to number
+    
+        // Generate a tracking number
+        const trackingNumber = generateTrackingNumber(); 
+    
+        // Calculate points based on the order total
+        const points = await calculatePoints(orderTotal);
+    
+        // Update points in the user's profile
+        if (userId) {
+            await updatePoints(points);
+        }
+    
+        const orderID = await generateOrderID();
+    
+        const orderDetails = {
+            orderID,
+            userDetails,
+            cartItems,
+            totalPrice,
+            promoCode,
+            discountAmount,
+            totalWeight,
+            shippingFees,
+            orderTotal,
+            orderDate: new Date().toISOString(),
+            trackingNumber,
+        };
+    
+        return orderDetails;
+    }   
+   
     // Function to clear user cart after order submission
     async function clearUserCart(userId) {
         const cartRef = doc(db, 'carts', userId);
@@ -543,7 +625,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Updating stock for item:', item); // Log item details
                 let category;
                 let type;
-    
+
                 // Extract category and type from the image URL if not present
                 const imageUrlParts = item.image.split('/');
                 if (imageUrlParts.length > 4) {
@@ -555,21 +637,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     errors.push(errorMessage);
                     continue; // Skip to the next item
                 }
-    
+
                 const productId = item.id; // Use item.id as the product ID
-    
+
                 if (!productId || !category || !type) {
                     const errorMessage = `Invalid product ID, category, or type for item: ${JSON.stringify(item)}`;
                     console.error(errorMessage);
                     errors.push(errorMessage);
                     continue; // Skip to the next item
                 }
-    
+
                 // Log extracted category and type
                 console.log(`Extracted category: ${category}`);
                 console.log(`Extracted type: ${type}`);
                 console.log(`Product ID: ${productId}`);
-    
+
                 // Reference the product document correctly
                 const productRef = doc(db, `products/${category}/${type}/${productId}`);
                 const productDoc = await getDoc(productRef);
@@ -582,10 +664,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         continue; // Skip to the next item
                     }
                     console.log(`Current stock for product ${productId}: ${productData.product_stock}`);
-                    
+
                     const updatedStock = productData.product_stock - item.quantity;
                     await updateDoc(productRef, { product_stock: updatedStock });
-    
+
                     // Fetch the document again to verify the update
                     const updatedProductDoc = await getDoc(productRef);
                     const updatedProductData = updatedProductDoc.data();
@@ -604,7 +686,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (errors.length > 0) {
             alert(`Errors occurred while updating stock:\n${errors.join('\n')}`);
         }
-    }    
+    }
 
     // Remove modal-backdrop when modal is hidden
     paymentModalElement.addEventListener('hidden.bs.modal', () => {
