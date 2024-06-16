@@ -86,6 +86,12 @@ async function fetchAndDisplayPersonalDetails(email) {
                 document.getElementById('State').value = userData.state || '';
                 document.getElementById('City').value = userData.city || '';
                 document.getElementById('Postcode').value = userData.post || '';
+
+                // Display points
+                const pointsDisplay = document.getElementById('point');
+                const points = userData.points || 0;
+                pointsDisplay.textContent = `Point: ${points}`;
+                console.log(`User points: ${points}`);
             });
         } else {
             console.log('User details document does not exist.');
@@ -328,6 +334,67 @@ function ordertotal(totalPrice, discount, fees) {
     OrderTotalDisplay.textContent = `Order Total: RM ${orderTotal.toFixed(2)}`;
 }
 
+async function redeemPoints() {
+    try {
+        const pointsText = document.getElementById('point').textContent;
+        let points = parseFloat(pointsText.replace(/[^0-9.]/g, "").trim());
+
+        if (points <= 0) {
+            console.error('No points available for redemption.');
+            return;
+        }
+
+        // Calculate the redeemed discount
+        const redeemedDiscount = points / 1000;
+        printAmount("point_amount", `-RM${redeemedDiscount.toFixed(2)}`);
+
+        const totalPriceText = document.getElementById('Subtotal').textContent;
+        const totalPrice = parseFloat(totalPriceText.replace(/[^0-9.]/g, "").trim());
+
+        const shippingFeesText = document.getElementById('ShippingFees').textContent.replace(/[^0-9.]/g, "").trim();
+        const shippingFees = parseFloat(shippingFeesText);
+
+        // Update order total with redeemed discount
+        ordertotal(totalPrice, redeemedDiscount, shippingFees);
+
+        // Deduct points from user's profile using email
+        const user = auth.currentUser;
+        const email = user ? user.email : null;
+        if (email) {
+            const pointsToDeduct = redeemedDiscount * 1000; // Convert discount to points
+            await updateUserPointsByEmail(email, pointsToDeduct); // Deduct points
+        }
+
+        // Fetch and update the displayed points after deduction
+        await fetchAndDisplayPersonalDetails(email);
+    } catch (error) {
+        console.error('Error redeeming points:', error);
+    }
+}
+
+// Function to update the user's points in Firestore using email
+async function updateUserPointsByEmail(email, pointsToDeduct) {
+    const q = query(collection(db, 'users'), where('email', '==', email));
+    try {
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+            const userDoc = querySnapshot.docs[0]; // Get the first matching document
+            const userRef = userDoc.ref;
+            const userData = userDoc.data();
+            const currentPoints = userData.points || 0;
+            const updatedPoints = Math.max(0, currentPoints - pointsToDeduct); // Ensure points don't go below 0
+            await updateDoc(userRef, { points: updatedPoints });
+            console.log(`User points updated successfully. New points: ${updatedPoints}`);
+        } else {
+            console.error('User document does not exist for the given email.');
+        }
+    } catch (error) {
+        console.error('Error updating user points by email:', error);
+    }
+}
+
+document.getElementById('redeem').addEventListener('click', redeemPoints);
+
 // async function sendOrderConfirmationEmail(orderDetails) {
 //     const emailParams = {
 //         user_name: orderDetails.userDetails.name,
@@ -346,6 +413,7 @@ function ordertotal(totalPrice, discount, fees) {
 //         console.error('Error sending order confirmation email:', error);
 //     }
 // }
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const payButton = document.getElementById('payButton');
@@ -378,7 +446,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 await updateStock(orderDetails.cartItems); // Update stock after order submission
                 await sendOrderConfirmationEmail(orderDetails);
                 paymentModal.hide();
-                window.location.href = "/html/staff/staff-orderhistory.html";
+                window.location.href = "/html/orderhistory.html";
             } catch (error) {
                 alert('Error submitting order:', error);
             }
@@ -465,7 +533,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const points = wholeRM * pointsPerRM;
         return points;
     }
-    
+
     // Function to update points in the user's profile using email
     async function updatePoints(points) {
         try {
@@ -507,24 +575,63 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-
-    // Function to generate a unique tracking number
     function generateTrackingNumber() {
-        const now = new Date();
-        const timestamp = now.getTime();
-        const randomNum = Math.floor(Math.random() * 1000);
-        return `TRK${timestamp}-${randomNum}`;
+        // Example: Generate a random tracking number (could be more sophisticated in a real-world scenario)
+        const prefix = "TRK";
+        const randomNumber = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit random number
+        return `${prefix}${randomNumber}`;
     }
 
-    // Function to fetch cart data from Firestore
-    async function getCartData(userId) {
-        const cartRef = collection(db, 'carts', userId, 'items');
-        const cartSnapshot = await getDocs(cartRef);
-        const cartItems = [];
-        cartSnapshot.forEach(doc => {
-            cartItems.push(doc.data());
-        });
-        return cartItems;
+    async function collectOrderDetails() {
+        const user = auth.currentUser;
+        const userDetails = {
+            name: document.getElementById('Name').value,
+            email: document.getElementById('Email').value,
+            contact: document.getElementById('Contact').value,
+            address: document.getElementById('Address').value,
+            state: document.getElementById('State').value,
+            city: document.getElementById('City').value,
+            postcode: document.getElementById('Postcode').value,
+        };
+
+        // Fetch cart items from Firestore
+        const userId = user ? user.uid : null;
+        const cartItems = await getCartData(userId);
+
+        const totalPrice = parseFloat(document.getElementById('Subtotal').textContent.replace(/[^0-9.]/g, ""));
+        const promoCode = document.getElementById('Promocode').value;
+        const discountAmount = parseFloat(document.getElementById('discount_amount').textContent.replace(/[^0-9.]/g, "")) || 0;
+        const pointAmount = parseFloat(document.getElementById('point_amount').textContent.replace(/[^0-9.]/g, "")) || 0;
+        const totalWeight = parseFloat(document.getElementById('Subweight').textContent.replace(/[^0-9.]/g, ""));
+        const shippingFees = parseFloat(document.getElementById('ShippingFees').textContent.replace(/[^0-9.]/g, ""));
+        const orderTotal = parseFloat(document.getElementById('OrderTotal').textContent.replace(/[^0-9.]/g, ""));
+        const trackingNumber = generateTrackingNumber(); // Generate a tracking number
+        
+        // Calculate points based on the order total
+        const points = await calculatePoints(orderTotal);
+
+        // Update points in the user's profile
+        if (userId) {
+            await updatePoints(points);
+        }
+
+        const orderID = await generateOrderID();
+
+        return {
+            orderID,
+            userDetails,
+            cartItems,
+            totalPrice,
+            promoCode,
+            discountAmount,
+            pointAmount,
+            totalWeight,
+            shippingFees,
+            orderTotal,
+            orderDate: new Date().toISOString(),
+            trackingNumber,
+            status: "Order Placed",
+        };
     }
 
     // Function to generate a running order ID
@@ -544,69 +651,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    async function collectOrderDetails() {
-        const user = auth.currentUser;
-        const userId = user ? user.uid : null;
-    
-        const userDetails = {
-            name: document.getElementById('Name').value,
-            email: document.getElementById('Email').value,
-            contact: document.getElementById('Contact').value,
-            address: document.getElementById('Address').value,
-            state: document.getElementById('State').value,
-            city: document.getElementById('City').value,
-            postcode: document.getElementById('Postcode').value,
-        };
-    
-        // Fetch cart items from Firestore
-        const cartItems = await getCartData(userId);
-    
-        const totalPriceText = document.getElementById('Subtotal').textContent;
-        const totalPrice = parseFloat(totalPriceText.replace(/[^0-9.]/g, "")); // Ensure conversion to number
-    
-        const promoCode = document.getElementById('Promocode').value;
-        const discountAmountText = document.getElementById('discount_amount').textContent;
-        const discountAmount = parseFloat(discountAmountText.replace(/[^0-9.]/g, "")) || 0;
-    
-        const totalWeightText = document.getElementById('Subweight').textContent;
-        const totalWeight = parseFloat(totalWeightText.replace(/[^0-9.]/g, ""));
-    
-        const shippingFeesText = document.getElementById('ShippingFees').textContent;
-        const shippingFees = parseFloat(shippingFeesText.replace(/[^0-9.]/g, ""));
-    
-        const orderTotalText = document.getElementById('OrderTotal').textContent;
-        const orderTotal = parseFloat(orderTotalText.replace(/[^0-9.]/g, "")); // Ensure conversion to number
-    
-        // Generate a tracking number
-        const trackingNumber = generateTrackingNumber(); 
-    
-        // Calculate points based on the order total
-        const points = await calculatePoints(orderTotal);
-    
-        // Update points in the user's profile
-        if (userId) {
-            await updatePoints(points);
-        }
-    
-        const orderID = await generateOrderID();
-    
-        const orderDetails = {
-            orderID,
-            userDetails,
-            cartItems,
-            totalPrice,
-            promoCode,
-            discountAmount,
-            totalWeight,
-            shippingFees,
-            orderTotal,
-            orderDate: new Date().toISOString(),
-            trackingNumber,
-        };
-    
-        return orderDetails;
-    }   
-   
     // Function to clear user cart after order submission
     async function clearUserCart(userId) {
         const cartRef = doc(db, 'carts', userId);

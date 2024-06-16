@@ -75,6 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
         discountAmount.textContent = `Discount Amount: RM ${orderData.discountAmount || 'N/A'}`;
         orderDetails.appendChild(discountAmount);
 
+        const pointAmount = document.createElement('p');
+        pointAmount.textContent = `Point Amount: RM ${orderData.pointAmount || 'N/A'}`;
+        orderDetails.appendChild(pointAmount);
+
+
         const shippingFees = document.createElement('p');
         shippingFees.textContent = `Shipping Fees: RM ${orderData.shippingFees || 'N/A'}`;
         orderDetails.appendChild(shippingFees);
