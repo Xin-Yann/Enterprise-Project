@@ -1,5 +1,5 @@
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-import { getFirestore, collection, addDoc,doc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc,doc, getDocs, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
 // Initialize Firebase Firestore
 const db = getFirestore();
@@ -105,6 +105,7 @@ function SendMail() {
     };
     emailjs.send('service_wio03zw', 'template_vbpmxdq', params).then(function(res) {
         alert("Success!", res.status);
+        location.reload();
     });
 }
 
