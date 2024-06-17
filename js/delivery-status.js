@@ -1,4 +1,4 @@
-import { getFirestore, collection, query, getDocs, getDoc, doc, where } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { getFirestore, collection, query, getDocs, getDoc, doc, where, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
 // Initialize Firestore and Auth
@@ -9,6 +9,8 @@ function getCurrentUserId() {
     const user = auth.currentUser;
     return user ? user.uid : null;
 }
+
+
 
 // Function to fetch and display delivery status for the logged-in user based on email
 async function fetchAndDisplayDeliveryStatus() {
@@ -27,7 +29,7 @@ async function fetchAndDisplayDeliveryStatus() {
     }
 
     try {
-        const ordersQuery = query(collection(db, 'orders'), where('userDetails.email', '==', userEmail));
+        const ordersQuery = query(collection(db, 'orders'), where('userDetails.email', '==', userEmail), orderBy('orderID'));
         const querySnapshot = await getDocs(ordersQuery);
 
         const statusContainer = document.getElementById('statusContainer');
@@ -53,12 +55,13 @@ async function fetchAndDisplayDeliveryStatus() {
             const tbody = document.createElement('tbody');
             querySnapshot.forEach((doc) => {
                 const orderData = doc.data();
+                const orderId = orderData.orderID || 'N/A';
                 const trackingNumber = orderData.trackingNumber || 'N/A';
                 const deliveryStatus = orderData.status || 'Pending';
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${doc.id}</td>
+                    <td>${orderId}</td>
                     <td>${trackingNumber}</td>
                     <td>${deliveryStatus}</td>                 
                 `;
@@ -78,7 +81,6 @@ async function fetchAndDisplayDeliveryStatus() {
 
 // Authenticate user and display delivery status
 onAuthStateChanged(auth, (user) => {
-
     if (user) {
         const userId = getCurrentUserId();
         // User is signed in, update cart item count

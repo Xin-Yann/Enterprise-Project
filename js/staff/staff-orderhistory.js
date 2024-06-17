@@ -99,6 +99,11 @@ async function fetchOrdersAndDisplay() {
                 discountAmount.textContent = `Discount Amount: RM ${orderData.discountAmount || 'N/A'}`;
                 orderDetailsDiv.appendChild(discountAmount);
 
+                const pointAmount = document.createElement('p');
+                pointAmount.textContent = `Point Amount: RM ${orderData.pointAmount || 'N/A'}`;
+                orderDetailsDiv.appendChild(pointAmount);
+
+
                 const shippingFees = document.createElement('p');
                 shippingFees.textContent = `Shipping Fees: RM ${orderData.shippingFees || 'N/A'}`;
                 orderDetailsDiv.appendChild(shippingFees);

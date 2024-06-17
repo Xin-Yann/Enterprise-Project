@@ -37,7 +37,7 @@ async function fetchAndDisplayDeliveryStatus() {
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${orderId}</td>  <!-- Display orderId here -->
+                    <td>${orderId}</td> 
                     <td>${trackingNumber}</td>
                     <td>${deliveryStatus}</td>
                     <td>
