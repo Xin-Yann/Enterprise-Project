@@ -395,24 +395,24 @@ async function updateUserPointsByEmail(email, pointsToDeduct) {
 
 document.getElementById('redeem').addEventListener('click', redeemPoints);
 
-// async function sendOrderConfirmationEmail(orderDetails) {
-//     const emailParams = {
-//         user_name: orderDetails.userDetails.name,
-//         user_email: orderDetails.userDetails.email, // Correct the userEmail reference
-//         order_id: orderDetails.orderID,
-//         order_date: orderDetails.orderDate,
-//         tracking_number: orderDetails.trackingNumber,
-//         order_total: `RM ${orderDetails.orderTotal.toFixed(2)}`, // Format the total price
-//         payment_method: orderDetails.paymentMethod,
-//     };
+async function sendOrderConfirmationEmail(orderDetails) {
+    const emailParams = {
+        user_name: orderDetails.userDetails.name,
+        user_email: orderDetails.userDetails.email, // Correct the userEmail reference
+        order_id: orderDetails.orderID,
+        order_date: orderDetails.orderDate,
+        tracking_number: orderDetails.trackingNumber,
+        order_total: `RM ${orderDetails.orderTotal.toFixed(2)}`, // Format the total price
+        payment_method: orderDetails.paymentMethod,
+    };
 
-//     try {
-//         const response = await emailjs.send('service_wio03zw', 'template_qicmnu7', emailParams);
-//         console.log('Order confirmation email sent successfully:', response);
-//     } catch (error) {
-//         console.error('Error sending order confirmation email:', error);
-//     }
-// }
+    try {
+        const response = await emailjs.send('service_wio03zw', 'template_qicmnu7', emailParams);
+        console.log('Order confirmation email sent successfully:', response);
+    } catch (error) {
+        console.error('Error sending order confirmation email:', error);
+    }
+}
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -482,7 +482,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 await updateStock(orderDetails.cartItems); // Update stock after order submission
                 await sendOrderConfirmationEmail(orderDetails);
                 paymentModal.hide();
-                window.location.href = "/html/staff/staff-orderhistory.html";
+                window.location.href = "/html/orderhistory.html";
             } catch (error) {
                 alert('Error submitting order:', error);
             }
