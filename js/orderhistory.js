@@ -180,6 +180,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    const cart = document.getElementById('cart');
+    if (cart) {
+        // Add event listener to the cart button
+        cart.addEventListener('click', handleCartClick);
+    }
+
+    function handleCartClick() {
+        if (auth.currentUser) {
+            // User is signed in, redirect to cart page
+            window.location.href = "../html/cart.html";
+        } else {
+            // User is not logged in, display alert message
+            window.alert('Please Login to view your cart.');
+            // Optionally, redirect to the login page
+            window.location.href = "../html/login.html";
+        }
+    }
+
     // Function to update the cart item count in the UI
     async function updateCartItemCount(userId) {
         try {
