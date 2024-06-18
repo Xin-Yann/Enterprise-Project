@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ordersContainer.appendChild(orderDiv);
                 });
             } else {
-                console.log('No orders found for this user.');
+                ordersContainer.innerHTML = '<p class="pt-3" style="padding-left: 39rem;">No orders found.</p>';
             }
         } catch (error) {
             console.error('Error fetching order history:', error);
