@@ -16,6 +16,8 @@ document.getElementById('signUpButton').addEventListener('click', async () => {
         const state = document.getElementById('State').value.trim();
         const city = document.getElementById('City').value.trim();
         const post = document.getElementById('Postcode').value.trim();
+        const checkbox = document.getElementById('checkbox');
+
 
         // Check if any field is empty
         if (!name || !email || !password || !contact || !address || !state || !city || !post) {
@@ -29,6 +31,11 @@ document.getElementById('signUpButton').addEventListener('click', async () => {
         if (password.length < 8 || !uppercase.test(password) || !lowercase.test(password)) {
             window.alert("Password must be at least 8 characters long and contain at least one uppercase and one lowercase character");
             return; // prevent further execution
+        }
+
+        if (!checkbox.checked) {
+            window.alert('You must agree to the Privacy Policy & T&C.');
+            return;
         }
 
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
