@@ -47,25 +47,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Ensure the user is authenticated before fetching details
     onAuthStateChanged(auth, (user) => {
-        if (user) {
-            const userId = getCurrentUserId();
-            // User is signed in, update cart item count
-            updateCartItemCount(userId);
-            const email = user.email;
-            console.log('User is logged in:', user.email);
-            fetchAndDisplayPersonalDetails(email);
-            // const userEmail = sessionStorage.getItem('userEmail');
-            // if (userEmail) {
-            //     fetchAndDisplayPersonalDetails(userEmail);
-            // } else {
-            //     console.log('No user email found in session storage.');
-            // }
+        if (user) {           
+            const userEmail = sessionStorage.getItem('userEmail');
+            if (userEmail) {
+                fetchAndDisplayPersonalDetails(userEmail);
+            } else {
+                console.log('No user email found in session storage.');
+            }
 
         } else {
             console.log('No user is authenticated. Redirecting to login page.');
             window.location.href = "/html/login.html";
         }
     });
+
+    function handleCartClick() {
+        if (auth.currentUser) {
+            // User is signed in, redirect to cart page
+            window.location.href = "../html/cart.html";
+        } else {
+            // User is not logged in, display alert message
+            window.alert('Please Login to view your cart.');
+            // Optionally, redirect to the login page
+            window.location.href = "../html/login.html";
+        }
+    }
 
     function validateProfileDetails() {
         const name = document.getElementById('Name').value;
