@@ -125,6 +125,11 @@ document.getElementById('Submit').addEventListener('click', async (event) => {
             message: message
         });
 
+        if (!name || !email || !title || !message) {
+            window.alert('All field must be filled out.');
+            return; 
+          }
+
         SendMail();
 
         console.log('Document written with ID: ', docRef.id);        

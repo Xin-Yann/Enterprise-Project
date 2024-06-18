@@ -2,6 +2,7 @@ import { getFirestore, collection, getDocs, getDoc, query, where, updateDoc, doc
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
+
     // Initialize Firestore and Authentication
     const db = getFirestore();
     const auth = getAuth();
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('State').value = userData.state || '';
                     document.getElementById('City').value = userData.city || '';
                     document.getElementById('Postcode').value = userData.post || '';
+
                 });
             } else {
                 console.log('User details document does not exist.');
@@ -49,12 +51,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const userId = getCurrentUserId();
             // User is signed in, update cart item count
             updateCartItemCount(userId);
-            const userEmail = sessionStorage.getItem('userEmail');
-            if (userEmail) {
-                fetchAndDisplayPersonalDetails(userEmail);
-            } else {
-                console.log('No user email found in session storage.');
-            }
+            const email = user.email;
+            console.log('User is logged in:', user.email);
+            fetchAndDisplayPersonalDetails(email);
+            // const userEmail = sessionStorage.getItem('userEmail');
+            // if (userEmail) {
+            //     fetchAndDisplayPersonalDetails(userEmail);
+            // } else {
+            //     console.log('No user email found in session storage.');
+            // }
 
         } else {
             console.log('No user is authenticated. Redirecting to login page.');
@@ -62,8 +67,54 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    function validateProfileDetails() {
+        const name = document.getElementById('Name').value;
+        const email = document.getElementById('Email').value;
+        const contact = document.getElementById('Contact').value;
+        const address = document.getElementById('Address').value;
+        const state = document.getElementById('State').value;
+        const city = document.getElementById('City').value;
+        const postcode = document.getElementById('Postcode').value;
+
+        const namePattern = /^[A-Za-z\s]+$/;
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const contactPattern = /^\d{10,11}$/;
+        const postcodePattern = /^\d{5}$/;
+
+        if (!name || !email || !contact || !address || !state || !city || !postcode) {
+            alert('Please fill out all required fields: name, email, contact, address, state, city and postcode.');
+            return false;
+        }
+
+        if (!namePattern.test(name)) {
+            alert('Name should contain only letters and spaces.');
+            return false;
+        }
+
+        if (!emailPattern.test(email)) {
+            alert('Please enter a valid email address.');
+            return false;
+        }
+
+        if (!contactPattern.test(contact)) {
+            alert('Please enter a valid 10 or 11-digit contact number.');
+            return false;
+        }
+
+        if (!postcodePattern.test(postcode)) {
+            alert('Please enter a valid 5-digit postcode.');
+            return false;
+        }
+
+        return true;
+    }
+
+
     // Function to save the edited details
     async function saveEditedDetails(email) {
+        if (!validateProfileDetails()) {
+            return;
+        }
         try {
             // Query the user's details document using the email
             const q = query(collection(db, 'users'), where('email', '==', email));
@@ -83,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         state: document.getElementById('State').value,
                         city: document.getElementById('City').value,
                         post: document.getElementById('Postcode').value,
+
                     };
 
                     // Update the document with the new data
@@ -96,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error updating user details:', error);
         }
     }
+
 
     // Add event listener to the save button
     const saveBtn = document.getElementById('save');
@@ -131,4 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Error updating cart item count:", error);
         }
     }
+
+
 });
