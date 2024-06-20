@@ -1,28 +1,24 @@
 import { getFirestore, collection, getDoc, getDocs, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
-// Initialize Firestore
 const db = getFirestore();
-const auth = getAuth(); // Initialize Firebase Authentication
+const auth = getAuth(); 
 
-// Function to get the current user ID
 function getCurrentUserId() {
     const user = auth.currentUser;
     return user ? user.uid : null;
 }
 
-// Listen for authentication state changes
 auth.onAuthStateChanged(async (user) => {
     try {
         if (user) {
-            const userId = getCurrentUserId(); // Get the current user ID
+            const userId = getCurrentUserId(); 
             if (!userId) {
                 console.error("Invalid userId:", userId);
                 return;
             }
-            // User is signed in, update cart item count and display cart items
             updateCartItemCount(userId);
-            await displayCartItems(userId); // Pass the user's ID to fetch their cart data
+            await displayCartItems(userId);
             await getCartData(userId);
             await displayLimitedStockMessage(userId);
             console.log("User authenticated. User ID:", userId);
@@ -33,22 +29,20 @@ auth.onAuthStateChanged(async (user) => {
     }
 });
 
-
 // Function to fetch cart data for a user
 async function getCartData(user) {
     try {
         if (user) {
             const userId = getCurrentUserId();
-            // Validate userId
             if (!userId) {
                 console.error("Invalid userId:", userId);
                 return [];
             }
 
-            const cartRef = doc(collection(db, 'carts'), userId); // Reference the user's cart document
+            const cartRef = doc(collection(db, 'carts'), userId); 
             const cartDoc = await getDoc(cartRef);
             if (cartDoc.exists()) {
-                return cartDoc.data().cart || []; // Return the cart data if the document exists
+                return cartDoc.data().cart || []; 
             } else {
                 console.log("Cart document does not exist for the current user.");
 
@@ -82,23 +76,21 @@ const cartContainer = document.getElementById('cartItems');
 
 async function displayCartItems() {
     const userId = getCurrentUserId();
-    let cartItems = await getCartData(userId); // Changed from const to let
+    let cartItems = await getCartData(userId); 
     if (!cartItems) {
-        cartItems = []; // Initialize cartItems to an empty array if it's null
+        cartItems = [];
     }
 
     cartTableBody.innerHTML = '';
 
     // Check if the cart is empty
     if (cartItems == 0) {
-        // Hide total section
         const noSection = document.getElementById('none');
         noSection.style.display = 'block';
 
         const headSection = document.getElementById('cartItems');
         headSection.style.display = 'none';
 
-        // Hide total section
         const totalSection = document.getElementById('total');
         totalSection.style.display = 'none';
     } else {
@@ -113,7 +105,7 @@ async function displayCartItems() {
     }
 
 
-    let totalPrice = 0; // Declare totalPrice variable outside the loop
+    let totalPrice = 0;
 
     cartItems.forEach((item, index) => {
         const row = document.createElement('tr');
@@ -134,11 +126,10 @@ async function displayCartItems() {
         cartTableBody.appendChild(row);
 
         calculateTotalPrice(item).then(itemTotalPrice => {
-            // Update total price for the current row
+            // Update total price
             const totalPriceCell = row.querySelector('.total-price-cell');
             totalPriceCell.textContent = `RM ${itemTotalPrice.toFixed(2)}`;
 
-            // Accumulate totalPrice
             totalPrice += itemTotalPrice;
 
             // Update the subtotal after all items' total prices are calculated
@@ -180,7 +171,7 @@ async function displayLimitedStockMessage(userId) {
         // Check if cartItems is defined and not empty
         if (!cartItems || cartItems.length === 0) {
             console.log("Cart is empty or undefined.");
-            return; // Exit the function if cart is empty or undefined
+            return; 
         }
 
         // Get the stock data for the products in the cart
@@ -223,24 +214,18 @@ async function incrementQuantity(event) {
         return;
     }
 
-    // Calculate the available stock considering previous user additions
     const availableStock = productStock.productStock - productStock.userAddedQuantity;
 
     if (newQuantity > availableStock) {
-        // Highlight that the user previously added quantities and now only certain quantities are left
         const message = `Only ${availableStock} items in stock for ${productName}.`;
         window.alert(message);
-        // Set newQuantity to available stock instead of currentQuantity + 1
         newQuantity = availableStock;
     }
 
-    // Update the quantity input in the UI
     input.value = newQuantity;
 
-    // Update the quantity in Firestore to match the UI
     await updateQuantityAndPrice(getCurrentUserId(), productName, newQuantity);
 
-    // Update cart item count in the UI
     updateCartItemCount(getCurrentUserId());
 }
 
@@ -492,7 +477,7 @@ async function getProductStock() {
 
 
 async function decrementQuantity(event) {
-    event.preventDefault(); // Prevent the default action (e.g., form submission)
+    event.preventDefault(); 
 
     const productName = this.getAttribute('data-product-name');
     const input = this.parentElement.querySelector('.quantity');
@@ -564,6 +549,7 @@ async function updateQuantityAndPrice(userId, productName, newQuantity, availabl
         console.error("Error updating item quantity and price in Firestore:", error);
     }
 }
+
 async function deleteCartItem() {
     const productName = this.getAttribute('data-product-name');
     const userId = getCurrentUserId();
