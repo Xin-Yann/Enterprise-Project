@@ -61,8 +61,54 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    function validateProfileDetails() {
+        const name = document.getElementById('Name').value;
+        const email = document.getElementById('Email').value;
+        const contact = document.getElementById('Contact').value;
+        const address = document.getElementById('Address').value;
+        const state = document.getElementById('State').value;
+        const city = document.getElementById('City').value;
+        const postcode = document.getElementById('Postcode').value;
+
+        const namePattern = /^[A-Za-z\s]+$/;
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const contactPattern = /^\d{10,11}$/;
+        const postcodePattern = /^\d{5}$/;
+
+        if (!name || !email || !contact || !address || !state || !city || !postcode) {
+            alert('Please fill out all required fields: name, email, contact, address, state, city and postcode.');
+            return false;
+        }
+
+        if (!namePattern.test(name)) {
+            alert('Name should contain only letters and spaces.');
+            return false;
+        }
+
+        if (!emailPattern.test(email)) {
+            alert('Please enter a valid email address.');
+            return false;
+        }
+
+        if (!contactPattern.test(contact)) {
+            alert('Please enter a valid 10 or 11-digit contact number.');
+            return false;
+        }
+
+        if (!postcodePattern.test(postcode)) {
+            alert('Please enter a valid 5-digit postcode.');
+            return false;
+        }
+
+        return true;
+    }
+
     // Function to save the edited details
     async function saveEditedDetails(email) {
+        if (!validateProfileDetails()) {
+            return;
+        }
+        
         try {
             // Query the user's details document using the email
             const q = query(collection(db, 'users'), where('email', '==', email));

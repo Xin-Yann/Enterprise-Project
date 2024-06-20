@@ -349,6 +349,15 @@ async function sendOrderConfirmationEmail(orderDetails) {
 
 
 document.addEventListener('DOMContentLoaded', function() {
+    const startDateInput = document.getElementById('ExpiryDate');
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const day = String(tomorrow.getDate()).padStart(2, '0');
+    const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    const year = tomorrow.getFullYear();
+    startDateInput.min = `${year}-${month}-${day}`;
+
     const payButton = document.getElementById('payButton');
     const paymentModalElement = document.getElementById('paymentModal');
     const paymentModal = new bootstrap.Modal(paymentModalElement);
@@ -415,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 await updateStock(orderDetails.cartItems); // Update stock after order submission
                 await sendOrderConfirmationEmail(orderDetails);
                 paymentModal.hide();
-                window.location.href = "/html/staff/staff-orderhistory.html";
+                window.location.href = "/html/orderhistory.html";
             } catch (error) {
                 alert('Error submitting order:', error);
             }
