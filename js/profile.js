@@ -199,27 +199,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Function to update the cart item count in the UI
-    async function updateCartItemCount(userId) {
-        try {
-            if (userId) {
-                const userCartDocRef = doc(collection(db, 'carts'), userId);
-                const userCartDocSnap = await getDoc(userCartDocRef);
-
-                if (userCartDocSnap.exists()) {
-                    const cartItems = userCartDocSnap.data().cart || [];
-                    const cartItemCount = document.getElementById('cartItemCount');
-                    let totalCount = 0;
-                    cartItems.forEach(item => {
-                        totalCount += item.quantity;
-                    });
-                    cartItemCount.textContent = totalCount;
-                }
-            }
-        } catch (error) {
-            console.error("Error updating cart item count:", error);
-        }
-    }
-
-
 });
