@@ -91,7 +91,6 @@ async function fetchUserDataFromFirestore(userId) {
     }
   } catch (e) {
     console.error('Error fetching user data: ', e);
-    // You can handle errors here, such as displaying an error message
   }
 }
 
