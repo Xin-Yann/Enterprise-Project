@@ -75,6 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
         discountAmount.textContent = `Discount Amount: RM ${orderData.discountAmount || 'N/A'}`;
         orderDetails.appendChild(discountAmount);
 
+        const pointAmount = document.createElement('p');
+        pointAmount.textContent = `Point Amount: RM ${orderData.pointAmount || 'N/A'}`;
+        orderDetails.appendChild(pointAmount);
+
+
         const shippingFees = document.createElement('p');
         shippingFees.textContent = `Shipping Fees: RM ${orderData.shippingFees || 'N/A'}`;
         orderDetails.appendChild(shippingFees);
@@ -104,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         status.textContent = 'Status: Complete';
                         completeButton.disabled = true;  // Disable the button after clicking
                     }
+                    window.location.reload();
                 } catch (error) {
                     console.error('Error updating order status:', error);
                 }
@@ -149,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ordersContainer.appendChild(orderDiv);
                 });
             } else {
-                console.log('No orders found for this user.');
+                ordersContainer.innerHTML = '<p class="pt-3" style="padding-left: 39rem;">No orders found.</p>';
             }
         } catch (error) {
             console.error('Error fetching order history:', error);
@@ -173,6 +179,24 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = "/html/login.html";
         }
     });
+
+    const cart = document.getElementById('cart');
+    if (cart) {
+        // Add event listener to the cart button
+        cart.addEventListener('click', handleCartClick);
+    }
+
+    function handleCartClick() {
+        if (auth.currentUser) {
+            // User is signed in, redirect to cart page
+            window.location.href = "../html/cart.html";
+        } else {
+            // User is not logged in, display alert message
+            window.alert('Please Login to view your cart.');
+            // Optionally, redirect to the login page
+            window.location.href = "../html/login.html";
+        }
+    }
 
     // Function to update the cart item count in the UI
     async function updateCartItemCount(userId) {

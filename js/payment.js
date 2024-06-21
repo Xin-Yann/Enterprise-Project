@@ -86,6 +86,12 @@ async function fetchAndDisplayPersonalDetails(email) {
                 document.getElementById('State').value = userData.state || '';
                 document.getElementById('City').value = userData.city || '';
                 document.getElementById('Postcode').value = userData.post || '';
+
+                // Display points
+                const pointsDisplay = document.getElementById('point');
+                const points = userData.points || 0;
+                pointsDisplay.textContent = `Point: ${points}`;
+                console.log(`User points: ${points}`);
             });
         } else {
             console.log('User details document does not exist.');
@@ -248,7 +254,7 @@ async function updateSubweight(totalWeight) {
 
 displayCartItems(getCurrentUserId());
 
-document.getElementById("apply").onclick = function() {
+document.getElementById("apply").onclick = function () {
     const totalPriceText = document.getElementById('Subtotal').textContent;
     const totalPrice = parseFloat(totalPriceText.replace(/[^0-9.]/g, "").trim());
 
@@ -287,7 +293,7 @@ window.onload = function () {
     const totalPrice = parseFloat(totalPriceText.replace(/[^0-9.]/g, "").trim());
 
     if (!isNaN(totalPrice)) {
-        calculateShippingFees(); // Initial call with no discount
+        calculateShippingFees(); 
     } else {
         printAmount("discount_amount", "Total price is invalid.");
     }
@@ -319,7 +325,7 @@ function calculateShippingFees(totalWeight) {
     const totalPriceText = document.getElementById('Subtotal').textContent;
     const totalPrice = parseFloat(totalPriceText.replace(/[^0-9.]/g, "").trim());
 
-    ordertotal(totalPrice, 0, fees); // Pass initial total price and fees with no discount
+    ordertotal(totalPrice, 0, fees); 
 }
 
 function ordertotal(totalPrice, discount, fees) {
@@ -328,14 +334,75 @@ function ordertotal(totalPrice, discount, fees) {
     OrderTotalDisplay.textContent = `Order Total: RM ${orderTotal.toFixed(2)}`;
 }
 
+async function redeemPoints() {
+    try {
+        const pointsText = document.getElementById('point').textContent;
+        let points = parseFloat(pointsText.replace(/[^0-9.]/g, "").trim());
+
+        if (points <= 0) {
+            console.error('No points available for redemption.');
+            return;
+        }
+
+        // Calculate the redeemed discount
+        const redeemedDiscount = points / 1000;
+        printAmount("point_amount", `-RM${redeemedDiscount.toFixed(2)}`);
+
+        const totalPriceText = document.getElementById('Subtotal').textContent;
+        const totalPrice = parseFloat(totalPriceText.replace(/[^0-9.]/g, "").trim());
+
+        const shippingFeesText = document.getElementById('ShippingFees').textContent.replace(/[^0-9.]/g, "").trim();
+        const shippingFees = parseFloat(shippingFeesText);
+
+        // Update order total with redeemed discount
+        ordertotal(totalPrice, redeemedDiscount, shippingFees);
+
+        // Deduct points from user's profile using email
+        const user = auth.currentUser;
+        const email = user ? user.email : null;
+        if (email) {
+            const pointsToDeduct = redeemedDiscount * 1000; 
+            await updateUserPointsByEmail(email, pointsToDeduct); 
+        }
+
+        // Fetch and update the displayed points after deduction
+        await fetchAndDisplayPersonalDetails(email);
+    } catch (error) {
+        console.error('Error redeeming points:', error);
+    }
+}
+
+// Function to update the user's points in Firestore using email
+async function updateUserPointsByEmail(email, pointsToDeduct) {
+    const q = query(collection(db, 'users'), where('email', '==', email));
+    try {
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+            const userDoc = querySnapshot.docs[0]; 
+            const userRef = userDoc.ref;
+            const userData = userDoc.data();
+            const currentPoints = userData.points || 0;
+            const updatedPoints = Math.max(0, currentPoints - pointsToDeduct); 
+            await updateDoc(userRef, { points: updatedPoints });
+            console.log(`User points updated successfully. New points: ${updatedPoints}`);
+        } else {
+            console.error('User document does not exist for the given email.');
+        }
+    } catch (error) {
+        console.error('Error updating user points by email:', error);
+    }
+}
+
+document.getElementById('redeem').addEventListener('click', redeemPoints);
+
 async function sendOrderConfirmationEmail(orderDetails) {
     const emailParams = {
         user_name: orderDetails.userDetails.name,
-        user_email: orderDetails.userDetails.email, // Correct the userEmail reference
+        user_email: orderDetails.userDetails.email, 
         order_id: orderDetails.orderID,
         order_date: orderDetails.orderDate,
         tracking_number: orderDetails.trackingNumber,
-        order_total: `RM ${orderDetails.orderTotal.toFixed(2)}`, // Format the total price
+        order_total: `RM ${orderDetails.orderTotal.toFixed(2)}`, 
         payment_method: orderDetails.paymentMethod,
     };
 
@@ -392,7 +459,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } catch (error) {
                 alert('Error submitting order:', error);
             }
-        } else if (!referenceId || !receipt){
+        } else if (!referenceId || !receipt) {
             alert('Please fill out all required fields: reference id and receipt.');
         }
     });
@@ -435,44 +502,91 @@ document.addEventListener('DOMContentLoaded', function() {
         const namePattern = /^[A-Za-z\s]+$/;
         const numberPattern = /^\d{4}\s\d{4}\s\d{4}\s\d{4}$/;
         const cvvPattern = /^\d{3}$/;
-    
+
         if (!cardName || !cardNumber || !expiryDate || !cvv || !referenceId || !receipt) {
             alert('Please fill out all required fields: card name, card number, expiry date, cvv, reference id, and receipt.');
             return false;
         }
-    
+
         if (!namePattern.test(cardName)) {
             alert('Card name should contain only letters and spaces.');
             return false;
         }
-    
+
         if (!numberPattern.test(cardNumber)) {
             alert('Card number should be in the format "xxxx xxxx xxxx xxxx".');
             return false;
         }
-    
+
         if (!cvvPattern.test(cvv)) {
             alert('CVV should be exactly 3 digits.');
             return false;
         }
-    
+
         if (!referenceId) {
             alert('Please enter the reference ID.');
             return false;
         }
-    
+
         if (!receipt) {
             alert('Please upload the receipt.');
             return false;
         }
-    
+
         return true;
-    }    
+    }
+
+    async function calculatePoints(totalPrice) {
+        const pointsPerRM = 1; 
+        const wholeRM = Math.floor(totalPrice); 
+        const points = wholeRM * pointsPerRM;
+        return points;
+    }
+
+    // Function to update points in the user's profile using email
+    async function updatePoints(points) {
+        try {
+            const user = auth.currentUser; 
+            if (!user) {
+                console.error("No user is currently logged in.");
+                return;
+            }
+
+            const userEmail = user.email; 
+            if (!userEmail) {
+                console.error("User email is not available.");
+                return;
+            }
+
+            const usersCollection = collection(db, 'users');
+            const q = query(usersCollection, where("email", "==", userEmail));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const userDocRef = querySnapshot.docs[0].ref;
+                const userDocSnap = await getDoc(userDocRef);
+                if (userDocSnap.exists()) {
+                    const userData = userDocSnap.data();
+                    const existingPoints = Number(userData.points) || 0; 
+                    const updatedPoints = existingPoints + Number(points); 
+
+                    await updateDoc(userDocRef, { points: updatedPoints });
+                    window.alert(`Points updated successfully. New points: ${updatedPoints}`);
+                    console.log(`Points updated successfully. New points: ${updatedPoints}`);
+                } else {
+                    console.log('User document does not exist.');
+                }
+            } else {
+                console.log('No user document found with the specified email.');
+            }
+        } catch (error) {
+            console.error('Error updating points:', error);
+        }
+    }
 
     function generateTrackingNumber() {
-        // Example: Generate a random tracking number (could be more sophisticated in a real-world scenario)
         const prefix = "TRK";
-        const randomNumber = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit random number
+        const randomNumber = Math.floor(100000 + Math.random() * 900000); 
         return `${prefix}${randomNumber}`;
     }
 
@@ -495,10 +609,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalPrice = parseFloat(document.getElementById('Subtotal').textContent.replace(/[^0-9.]/g, ""));
         const promoCode = document.getElementById('Promocode').value;
         const discountAmount = parseFloat(document.getElementById('discount_amount').textContent.replace(/[^0-9.]/g, "")) || 0;
+        const pointAmount = parseFloat(document.getElementById('point_amount').textContent.replace(/[^0-9.]/g, "")) || 0;
         const totalWeight = parseFloat(document.getElementById('Subweight').textContent.replace(/[^0-9.]/g, ""));
         const shippingFees = parseFloat(document.getElementById('ShippingFees').textContent.replace(/[^0-9.]/g, ""));
         const orderTotal = parseFloat(document.getElementById('OrderTotal').textContent.replace(/[^0-9.]/g, ""));
-        const trackingNumber = generateTrackingNumber(); // Generate a tracking number
+        const trackingNumber = generateTrackingNumber(); 
+        
+        // Calculate points based on the order total
+        const points = await calculatePoints(orderTotal);
+
+        // Update points in the user's profile
+        if (userId) {
+            await updatePoints(points);
+        }
 
         const orderID = await generateOrderID();
 
@@ -509,6 +632,7 @@ document.addEventListener('DOMContentLoaded', function() {
             totalPrice,
             promoCode,
             discountAmount,
+            pointAmount,
             totalWeight,
             shippingFees,
             orderTotal,
@@ -550,10 +674,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const errors = [];
         for (const item of cartItems) {
             try {
-                console.log('Updating stock for item:', item); // Log item details
+                console.log('Updating stock for item:', item); 
                 let category;
                 let type;
-    
+
                 // Extract category and type from the image URL if not present
                 const imageUrlParts = item.image.split('/');
                 if (imageUrlParts.length > 4) {
@@ -563,23 +687,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     const errorMessage = `Cannot determine category or type from image URL: ${item.image}`;
                     console.error(errorMessage);
                     errors.push(errorMessage);
-                    continue; // Skip to the next item
+                    continue; 
                 }
-    
-                const productId = item.id; // Use item.id as the product ID
-    
+
+                const productId = item.id; 
+
                 if (!productId || !category || !type) {
                     const errorMessage = `Invalid product ID, category, or type for item: ${JSON.stringify(item)}`;
                     console.error(errorMessage);
                     errors.push(errorMessage);
-                    continue; // Skip to the next item
+                    continue; 
                 }
-    
-                // Log extracted category and type
+
                 console.log(`Extracted category: ${category}`);
                 console.log(`Extracted type: ${type}`);
                 console.log(`Product ID: ${productId}`);
-    
+
                 // Reference the product document correctly
                 const productRef = doc(db, `products/${category}/${type}/${productId}`);
                 const productDoc = await getDoc(productRef);
@@ -589,13 +712,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         const errorMessage = `Product stock field is not a number for product ${productId}`;
                         console.error(errorMessage);
                         errors.push(errorMessage);
-                        continue; // Skip to the next item
+                        continue;
                     }
                     console.log(`Current stock for product ${productId}: ${productData.product_stock}`);
-                    
+
                     const updatedStock = productData.product_stock - item.quantity;
                     await updateDoc(productRef, { product_stock: updatedStock });
-    
+
                     // Fetch the document again to verify the update
                     const updatedProductDoc = await getDoc(productRef);
                     const updatedProductData = updatedProductDoc.data();
@@ -614,7 +737,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (errors.length > 0) {
             alert(`Errors occurred while updating stock:\n${errors.join('\n')}`);
         }
-    }    
+    }
 
     // Remove modal-backdrop when modal is hidden
     paymentModalElement.addEventListener('hidden.bs.modal', () => {

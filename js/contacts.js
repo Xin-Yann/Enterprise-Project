@@ -1,5 +1,5 @@
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-import { getFirestore, collection, addDoc,doc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc,doc, getDocs, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
 // Initialize Firebase Firestore
 const db = getFirestore();
@@ -91,7 +91,6 @@ async function fetchUserDataFromFirestore(userId) {
     }
   } catch (e) {
     console.error('Error fetching user data: ', e);
-    // You can handle errors here, such as displaying an error message
   }
 }
 
@@ -105,6 +104,7 @@ function SendMail() {
     };
     emailjs.send('service_wio03zw', 'template_vbpmxdq', params).then(function(res) {
         alert("Success!", res.status);
+        location.reload();
     });
 }
 
@@ -123,6 +123,11 @@ document.getElementById('Submit').addEventListener('click', async (event) => {
             title: title,
             message: message
         });
+
+        if (!name || !email || !title || !message) {
+            window.alert('All field must be filled out.');
+            return; 
+          }
 
         SendMail();
 

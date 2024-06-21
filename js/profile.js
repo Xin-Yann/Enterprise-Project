@@ -2,6 +2,7 @@ import { getFirestore, collection, getDocs, getDoc, query, where, updateDoc, doc
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
+
     // Initialize Firestore and Authentication
     const db = getFirestore();
     const auth = getAuth();
@@ -29,10 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('Name').value = userData.name || '';
                     document.getElementById('Email').value = userData.email || '';
                     document.getElementById('Contact').value = userData.contact || '';
+                    document.getElementById('Points').value = userData.points || '';
                     document.getElementById('Address').value = userData.address || '';
                     document.getElementById('State').value = userData.state || '';
                     document.getElementById('City').value = userData.city || '';
                     document.getElementById('Postcode').value = userData.post || '';
+
                 });
             } else {
                 console.log('User details document does not exist.');
@@ -46,20 +49,59 @@ document.addEventListener('DOMContentLoaded', () => {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             const userId = getCurrentUserId();
-            // User is signed in, update cart item count
-            updateCartItemCount(userId);
             const userEmail = sessionStorage.getItem('userEmail');
             if (userEmail) {
                 fetchAndDisplayPersonalDetails(userEmail);
             } else {
                 console.log('No user email found in session storage.');
             }
+            updateCartItemCount(userId);
 
         } else {
             console.log('No user is authenticated. Redirecting to login page.');
             window.location.href = "/html/login.html";
         }
     });
+
+    const cart = document.getElementById('cart');
+    if (cart) {
+        // Add event listener to the cart button
+        cart.addEventListener('click', handleCartClick);
+    }
+
+    function handleCartClick() {
+        if (auth.currentUser) {
+            // User is signed in, redirect to cart page
+            window.location.href = "../html/cart.html";
+        } else {
+            // User is not logged in, display alert message
+            window.alert('Please Login to view your cart.');
+            // Optionally, redirect to the login page
+            window.location.href = "../html/login.html";
+        }
+    }
+
+    // Function to update the cart item count in the UI
+    async function updateCartItemCount(userId) {
+        try {
+            if (userId) {
+                const userCartDocRef = doc(collection(db, 'carts'), userId);
+                const userCartDocSnap = await getDoc(userCartDocRef);
+
+                if (userCartDocSnap.exists()) {
+                    const cartItems = userCartDocSnap.data().cart || [];
+                    const cartItemCount = document.getElementById('cartItemCount');
+                    let totalCount = 0;
+                    cartItems.forEach(item => {
+                        totalCount += item.quantity;
+                    });
+                    cartItemCount.textContent = totalCount;
+                }
+            }
+        } catch (error) {
+            console.error("Error updating cart item count:", error);
+        }
+    }
 
     function validateProfileDetails() {
         const name = document.getElementById('Name').value;
@@ -103,12 +145,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
+
     // Function to save the edited details
     async function saveEditedDetails(email) {
         if (!validateProfileDetails()) {
             return;
         }
-        
+
         try {
             // Query the user's details document using the email
             const q = query(collection(db, 'users'), where('email', '==', email));
@@ -123,10 +166,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         name: document.getElementById('Name').value,
                         email: document.getElementById('Email').value,
                         contact: document.getElementById('Contact').value,
+                        points: document.getElementById('Points').value,
                         address: document.getElementById('Address').value,
                         state: document.getElementById('State').value,
                         city: document.getElementById('City').value,
                         post: document.getElementById('Postcode').value,
+
                     };
 
                     // Update the document with the new data
@@ -141,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+
     // Add event listener to the save button
     const saveBtn = document.getElementById('save');
     if (saveBtn) {
@@ -154,25 +200,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Function to update the cart item count in the UI
-    async function updateCartItemCount(userId) {
-        try {
-            if (userId) {
-                const userCartDocRef = doc(collection(db, 'carts'), userId);
-                const userCartDocSnap = await getDoc(userCartDocRef);
-
-                if (userCartDocSnap.exists()) {
-                    const cartItems = userCartDocSnap.data().cart || [];
-                    const cartItemCount = document.getElementById('cartItemCount');
-                    let totalCount = 0;
-                    cartItems.forEach(item => {
-                        totalCount += item.quantity;
-                    });
-                    cartItemCount.textContent = totalCount;
-                }
-            }
-        } catch (error) {
-            console.error("Error updating cart item count:", error);
-        }
-    }
 });

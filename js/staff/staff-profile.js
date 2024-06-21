@@ -48,9 +48,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Function to validate input fields
+    function validateInputs() {
+        const name = document.getElementById('Name').value.trim();
+        const email = document.getElementById('Email').value.trim();
+        const contact = document.getElementById('Contact').value.trim();
+
+        const contactPattern = /^[0-9\s\-]+$/; // Allows numbers, spaces, and dashes
+
+        if (!name || !email || !contact) {
+            window.alert('Please fill in all the details.');
+            return false;
+        }
+
+        if (!contactPattern.test(contact)) {
+            window.alert('Invalid contact number format.');
+            return false;
+        }
+
+        return true;
+    }
+
     // Function to save the edited details
     async function saveEditedDetails(email) {
         try {
+            if (!validateInputs()) {
+                return; // Stop the function if inputs are invalid
+            }
             // Query the staff's details document using the email
             const q = query(collection(db, 'staffs'), where('email', '==', email));
             const querySnapshot = await getDocs(q);

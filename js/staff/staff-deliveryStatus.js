@@ -1,24 +1,19 @@
-import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { getFirestore, collection, query, getDocs, updateDoc, doc, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
 // Initialize Firestore and Auth
 const db = getFirestore();
 const auth = getAuth();
 
-// Function to get the current user ID
-function getCurrentUserId() {
-    const user = auth.currentUser;
-    return user ? user.uid : null;
-}
-
 // Function to fetch and display delivery status
 async function fetchAndDisplayDeliveryStatus() {
     try {
-        const q = query(collection(db, 'orders'));
+        // Create a query ordered by orderId in ascending order
+        const q = query(collection(db, 'orders'), orderBy('orderID', 'asc'));
         const querySnapshot = await getDocs(q);
 
         const statusContainer = document.getElementById('statusContainer');
-        statusContainer.innerHTML = ''; // Clear any existing content
+        statusContainer.innerHTML = ''; 
 
         if (!querySnapshot.empty) {
             const table = document.createElement('table');
@@ -36,12 +31,13 @@ async function fetchAndDisplayDeliveryStatus() {
 
             querySnapshot.forEach((doc) => {
                 const orderData = doc.data();
+                const orderId = orderData.orderID || 'N/A'; 
                 const trackingNumber = orderData.trackingNumber || 'N/A';
                 const deliveryStatus = orderData.status || 'Pending';
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${doc.id}</td>
+                    <td>${orderId}</td> 
                     <td>${trackingNumber}</td>
                     <td>${deliveryStatus}</td>
                     <td>
@@ -81,10 +77,13 @@ async function updateOrderStatus(orderId) {
             status: newStatus
         });
 
-        // Refresh the status display
-        fetchAndDisplayDeliveryStatus(); // Updated to fetch and display status without passing userId
+        window.alert('Order status updated successfully')
+
+        // Refresh the status displayA
+        fetchAndDisplayDeliveryStatus(); 
     } catch (error) {
         console.error('Error updating order status:', error);
+        window.alert('Error updating order status')
     }
 }
 
