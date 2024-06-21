@@ -12,7 +12,7 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log('User is logged in:', user.email);
     // Redirect to the staff home page if necessary
-    // window.location.href = "../staff/staff-home.html";
+    window.location.href = "../staff/staff-home.html";
   } else {
     console.log('No user is logged in.');
   }
@@ -61,7 +61,6 @@ document.getElementById('signUp').addEventListener('click', async (event) => {
     console.log('Staff created with email: ', staffCredential.user.email);
     console.log('Document written with ID: ', docRef.id);
     window.location.href = "../staff/staff-home.html";
-    document.getElementById('output').innerText = 'Data added to Firestore!';
   } catch (error) {
     const errorCode = error.code;
     const errorMessage = error.message;
