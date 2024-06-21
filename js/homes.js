@@ -71,7 +71,7 @@ async function updateCartItemCount(userId) {
     }
 }
 
-async function addToCart(productId, productImages, productName, productPrice, productType, productStock) {
+async function addToCart(productId, productImages, productName, productPrice, productType, productStock, productWeight) {
     try {
         const userId = getCurrentUserId();
         if (!userId) {
@@ -102,7 +102,8 @@ async function addToCart(productId, productImages, productName, productPrice, pr
             price: productPrice,
             type: productType,
             quantity: 1,
-            totalPrice: parseFloat(productPrice).toFixed(2)
+            totalPrice: parseFloat(productPrice).toFixed(2),
+            weight:productWeight
         };
 
         await saveProductToFirestore(product, productName);
@@ -116,9 +117,6 @@ async function addToCart(productId, productImages, productName, productPrice, pr
     }
 }
 
-
-
-// Function to save product to Firestore
 async function saveProductToFirestore(product, productName) {
     try {
         const userId = getCurrentUserId();
@@ -155,7 +153,6 @@ async function saveProductToFirestore(product, productName) {
         throw error;
     }
 }
-
 
 // Function to fetch data and display it
 async function fetchDataAndDisplay() {
@@ -251,7 +248,11 @@ async function fetchDataAndDisplay() {
         combinedQuerySnapshot.forEach(doc => {
             const foodType = doc.ref.parent.parent.id;
             const productType = doc.ref.parent.id;
-            const imageUrl = `/image/products/${foodType}/${productType}/${doc.data().product_image}`;
+            const productImage = doc.data().product_image;
+        
+            // Construct the image URL directly
+            const imageUrl = `/image/products/${foodType}/${productType}/${productImage}`;
+        
             const productHTML = `
                 <div class="card">
                     <span class="product-id" style="display: none;">${doc.data().product_id}</span>
@@ -261,13 +262,14 @@ async function fetchDataAndDisplay() {
                         <p class="card-desc" style="height:25px">${doc.data().product_description}</p>
                         <p class="card-text"><small class="text-muted">Available Stock: ${doc.data().product_stock}</small></p>
                         <p class="product-price pt-3">Price: RM${doc.data().product_price}</p>
+                        <span class="product-weight" style="display: none;">${doc.data().product_weight}</span>
                         <a href="" class="btn btn-primary add-cart">Add To Cart</a>
                     </div>
                 </div>
             `;
             owlCarousel.innerHTML += productHTML;
         });
-
+        
         $(owlCarousel).owlCarousel({
             loop: true,
             margin: 10,
@@ -291,7 +293,7 @@ async function fetchDataAndDisplay() {
             autoplayTimeout: 3000,
             autoplayHoverPause: true
         });
-
+        
         const addToCartButtons = document.querySelectorAll('.btn.btn-primary');
         addToCartButtons.forEach(button => {
             button.addEventListener('click', async function (event) {
@@ -299,13 +301,14 @@ async function fetchDataAndDisplay() {
                 const item = this.closest('.card');
                 const productId = item.querySelector('.product-id').textContent;
                 const productImageElement = item.querySelector('.card-img-top');
-                const productImages = productImageElement ? productImageElement.src : '/image/dog1.jpg';
+                const productImages = productImageElement.getAttribute('src');
                 const productName = item.querySelector('h5').textContent;
                 const productPriceText = item.querySelector('.product-price').textContent;
                 const productPrice = parseFloat(productPriceText.split(':')[1].trim().replace('RM', ''));
                 const productStockText = item.querySelector('.text-muted').textContent.split(':')[1].trim();
                 const productStock = parseInt(productStockText);
-
+                const productWeight = item.querySelector('.product-weight').textContent;
+        
                 let productType = "";
                 if (productId.includes("DF")) {
                     productType = "Dry Food";
@@ -320,10 +323,10 @@ async function fetchDataAndDisplay() {
                 } else {
                     productType = "Unknown";
                 }
-
-                await addToCart(productId, productImages, productName, productPrice, productType, productStock);
+        
+                await addToCart(productId, productImages, productName, productPrice, productType, productStock, productWeight);
             });
-        });
+        });     
 
     } catch (error) {
         console.error("Error fetching and displaying data:", error);
