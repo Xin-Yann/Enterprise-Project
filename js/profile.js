@@ -151,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!validateProfileDetails()) {
             return;
         }
+
         try {
             // Query the user's details document using the email
             const q = query(collection(db, 'users'), where('email', '==', email));

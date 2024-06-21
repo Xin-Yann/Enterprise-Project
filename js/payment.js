@@ -415,7 +415,7 @@ async function sendOrderConfirmationEmail(orderDetails) {
 }
 
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     const startDateInput = document.getElementById('ExpiryDate');
     const today = new Date();
     const tomorrow = new Date(today);
