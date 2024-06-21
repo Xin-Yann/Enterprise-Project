@@ -50,7 +50,8 @@ async function displayMonthlySalesReport(year, month) {
     new Chart("myChart", {
         type: "pie",
         data: {
-            labels: xValues.map((label, index) => `${label} - RM ${yValues[index].toFixed(2)}`), // Append price to each label
+            // Append price to each label
+            labels: xValues.map((label, index) => `${label} - RM ${yValues[index].toFixed(2)}`), 
             datasets: [{
                 backgroundColor: barColors,
                 data: yValues

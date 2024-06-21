@@ -165,7 +165,6 @@ async function displayCartItems() {
 
 async function displayLimitedStockMessage(userId) {
     try {
-        // Get the user's cart data
         const cartItems = await getCartData(userId);
 
         // Check if cartItems is defined and not empty
@@ -174,12 +173,9 @@ async function displayLimitedStockMessage(userId) {
             return; 
         }
 
-        // Get the stock data for the products in the cart
         const productStocks = await getProductStock();
 
-        // Iterate over each item in the cart
-        cartItems.forEach(cartItem => {
-            // Find the corresponding product stock data
+        for (const cartItem of cartItems) {
             const productStock = productStocks.find(stock => stock.productName === cartItem.name);
 
             // Calculate the available stock considering previously added quantities
@@ -187,14 +183,23 @@ async function displayLimitedStockMessage(userId) {
 
             // Check if the available stock is less than the quantity in the cart
             if (availableStock < cartItem.quantity) {
-                const message = `Stock for ${cartItem.name} for now only ${availableStock} are left.`;
-                window.alert(message);
+                if (availableStock === 0) {
+                    await deleteItemFromFirestore(userId, cartItem.name);
+                    window.alert(`${cartItem.name} removed from cart due to ${availableStock} stock are left.`);
+                    location.reload();
+                } else {
+                    await updateQuantityAndPrice(userId, cartItem.name, availableStock, availableStock);
+                    const message = `Stock for ${cartItem.name} for now only ${availableStock} are left.`;
+                    window.alert(message);
+                    location.reload();
+                }
             }
-        });
+        }
     } catch (error) {
         console.error("Error displaying limited stock message:", error);
     }
 }
+
 
 // Function to handle quantity increment
 async function incrementQuantity(event) {
