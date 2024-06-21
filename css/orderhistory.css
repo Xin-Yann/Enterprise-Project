@@ -5,7 +5,7 @@
 }
 
 .orders {
-    width: calc(32.4% - 20px);
+    width: calc(50% - 30px);
     box-sizing: border-box;
     padding: 20px;
     background-color: #faecd1;
