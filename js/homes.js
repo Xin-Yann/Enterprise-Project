@@ -74,53 +74,45 @@ async function updateCartItemCount(userId) {
 async function addToCart(productId, productImages, productName, productPrice, productType, productStock) {
     try {
         const userId = getCurrentUserId();
-        if (userId) {
-            // Check if the product is already in the cart and calculate total quantity
-            let totalQuantity = 0;
-            const userCartDocRef = doc(collection(db, 'carts'), userId);
-            const userCartDocSnap = await getDoc(userCartDocRef);
-
-            if (userCartDocSnap.exists()) {
-                const cartItems = userCartDocSnap.data().cart || [];
-                const existingProduct = cartItems.find(item => item.id === productId);
-                totalQuantity = existingProduct ? existingProduct.quantity : 0;
-            }
-
-            // Check if adding one more item exceeds available stock or if stock is already 0
-            if (productStock === 0 || totalQuantity + 1 > productStock) {
-                window.alert(`Insufficient stock for ${productName}.`);
-                return;
-            }
-
-            // Construct the product object
-            let product = {
-                id: productId,
-                image: productImages,
-                name: productName,
-                price: productPrice,
-                type: productType,
-                quantity: 1,
-                totalPrice: parseFloat(productPrice).toFixed(2)
-               // stock: productStock
-            };
-
-            // Save the product to Firestore
-            await saveProductToFirestore(product, productName);
-
-            // Update cart item count
-            await updateCartItemCount(userId);
-
-
-            // Display a message to the user
-            window.alert(`${productName} has been added to your cart!`);
-            window.location.href = "/html/cart.html";
-        } else {
-            // If user is not logged in, prompt them to log in
+        if (!userId) {
             window.alert(`Please login to add products to your cart.`);
             window.location.href = "/html/login.html";
+            return;
         }
+
+        const userCartDocRef = doc(collection(db, 'carts'), userId);
+        const userCartDocSnap = await getDoc(userCartDocRef);
+        let totalQuantity = 0;
+
+        if (userCartDocSnap.exists()) {
+            const cartItems = userCartDocSnap.data().cart || [];
+            const existingProduct = cartItems.find(item => item.id === productId);
+            totalQuantity = existingProduct ? existingProduct.quantity : 0;
+        }
+
+        if (productStock === 0 || totalQuantity + 1 > productStock) {
+            window.alert(`Insufficient stock for ${productName}.`);
+            return;
+        }
+
+        let product = {
+            id: productId,
+            image: productImages,
+            name: productName,
+            price: productPrice,
+            type: productType,
+            quantity: 1,
+            totalPrice: parseFloat(productPrice).toFixed(2)
+        };
+
+        await saveProductToFirestore(product, productName);
+        await updateCartItemCount(userId);
+
+        window.alert(`${productName} has been added to your cart!`);
+        window.location.href = "/html/cart.html";
     } catch (error) {
         console.error("Error adding product to cart:", error);
+        window.alert(`An error occurred while adding the product to your cart. Please try again.`);
     }
 }
 

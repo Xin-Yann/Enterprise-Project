@@ -47,19 +47,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Ensure the user is authenticated before fetching details
     onAuthStateChanged(auth, (user) => {
-        if (user) {           
+        if (user) {
+            const userId = getCurrentUserId();
             const userEmail = sessionStorage.getItem('userEmail');
             if (userEmail) {
                 fetchAndDisplayPersonalDetails(userEmail);
             } else {
                 console.log('No user email found in session storage.');
             }
+            updateCartItemCount(userId);
 
         } else {
             console.log('No user is authenticated. Redirecting to login page.');
             window.location.href = "/html/login.html";
         }
     });
+
+    const cart = document.getElementById('cart');
+    if (cart) {
+        // Add event listener to the cart button
+        cart.addEventListener('click', handleCartClick);
+    }
 
     function handleCartClick() {
         if (auth.currentUser) {
@@ -70,6 +78,28 @@ document.addEventListener('DOMContentLoaded', () => {
             window.alert('Please Login to view your cart.');
             // Optionally, redirect to the login page
             window.location.href = "../html/login.html";
+        }
+    }
+
+    // Function to update the cart item count in the UI
+    async function updateCartItemCount(userId) {
+        try {
+            if (userId) {
+                const userCartDocRef = doc(collection(db, 'carts'), userId);
+                const userCartDocSnap = await getDoc(userCartDocRef);
+
+                if (userCartDocSnap.exists()) {
+                    const cartItems = userCartDocSnap.data().cart || [];
+                    const cartItemCount = document.getElementById('cartItemCount');
+                    let totalCount = 0;
+                    cartItems.forEach(item => {
+                        totalCount += item.quantity;
+                    });
+                    cartItemCount.textContent = totalCount;
+                }
+            }
+        } catch (error) {
+            console.error("Error updating cart item count:", error);
         }
     }
 

@@ -13,7 +13,7 @@ async function fetchAndDisplayDeliveryStatus() {
         const querySnapshot = await getDocs(q);
 
         const statusContainer = document.getElementById('statusContainer');
-        statusContainer.innerHTML = ''; // Clear any existing content
+        statusContainer.innerHTML = ''; 
 
         if (!querySnapshot.empty) {
             const table = document.createElement('table');
@@ -31,7 +31,7 @@ async function fetchAndDisplayDeliveryStatus() {
 
             querySnapshot.forEach((doc) => {
                 const orderData = doc.data();
-                const orderId = orderData.orderID || 'N/A';  // Use orderId from the document data
+                const orderId = orderData.orderID || 'N/A'; 
                 const trackingNumber = orderData.trackingNumber || 'N/A';
                 const deliveryStatus = orderData.status || 'Pending';
 
@@ -77,10 +77,13 @@ async function updateOrderStatus(orderId) {
             status: newStatus
         });
 
-        // Refresh the status display
-        fetchAndDisplayDeliveryStatus(); // Updated to fetch and display status without passing userId
+        window.alert('Order status updated successfully')
+
+        // Refresh the status displayA
+        fetchAndDisplayDeliveryStatus(); 
     } catch (error) {
         console.error('Error updating order status:', error);
+        window.alert('Error updating order status')
     }
 }
 

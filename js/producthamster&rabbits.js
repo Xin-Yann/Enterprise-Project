@@ -72,11 +72,30 @@ async function updateCartItemCount(userId) {
     }
 }
 
-async function addToCart(productId, productImage, productName, productPrice, productWeight, quantity) {
+async function addToCart(productId, productImage, productName, productPrice, productWeight, quantity, productStock) {
     try {
         const userId = getCurrentUserId();
         if (userId) {
             let productType = getProductType(productId); // Determine product type based on product ID
+
+            // Get current quantity of the product in the cart
+            const userCartDocRef = doc(collection(db, 'carts'), userId);
+            const userCartDocSnap = await getDoc(userCartDocRef);
+
+            let existingQuantity = 0;
+            if (userCartDocSnap.exists()) {
+                const cartItems = userCartDocSnap.data().cart || [];
+                const existingProduct = cartItems.find(item => item.id === productId);
+                if (existingProduct) {
+                    existingQuantity = existingProduct.quantity;
+                }
+            }
+
+            // Check if adding the new quantity exceeds available stock
+            if (productStock === 0 || existingQuantity + quantity > productStock) {
+                window.alert(`Insufficient stock for ${productName}.`);
+                return;
+            }
 
             // Construct the product object
             let product = {
@@ -86,9 +105,9 @@ async function addToCart(productId, productImage, productName, productPrice, pro
                 price: productPrice,
                 type: productType, // Assign the determined product type
                 weight: productWeight,
-                quantity: quantity,
-                totalPrice: (productPrice * quantity).toFixed(2),
-                totalWeight: productWeight * quantity
+                quantity: existingQuantity + quantity, // Add the new quantity to the existing quantity
+                totalPrice: (productPrice * (existingQuantity + quantity)).toFixed(2),
+                totalWeight: productWeight * (existingQuantity + quantity)
             };
 
             // Save the product to Firestore
@@ -103,7 +122,7 @@ async function addToCart(productId, productImage, productName, productPrice, pro
         } else {
             // If user is not logged in, prompt them to log in
             window.alert('Please login to add products to your cart.');
-            window.location.href = "/html/login.html";
+            window.location.href = "../html/login.html";
         }
     } catch (error) {
         console.error("Error adding product to cart:", error);
@@ -274,7 +293,9 @@ function createProductDiv(foodData, foodType) {
     const addToCartButton = createButton('ADD TO CART', () => {
         const quantity = parseInt(quantityInput.value);
         const productImage = `/image/products/hamster&rabbits/${foodType}/${foodData.product_image}`;
-        addToCart(foodData.id, productImage, foodData.product_name, foodData.product_price, foodData.product_weight, quantity);
+        const productStock = parseInt(foodData.product_stock);
+    
+        addToCart(foodData.id, productImage, foodData.product_name, foodData.product_price, foodData.product_weight, quantity, productStock);
     });
 
     addToCartButton.classList.add('btn', 'btn-primary', 'add-cart');
@@ -362,7 +383,9 @@ function showModal(foodData, foodType) {
     const addToCartButton = createButton('ADD TO CART', () => {
         const quantity = parseInt(quantityInput.value);
         const productImage = `/image/products/hamster&rabbits/${foodType}/${foodData.product_image}`;
-        addToCart(foodData.id, productImage, foodData.product_name, foodData.product_price, foodData.product_weight, quantity);
+        const productStock = parseInt(foodData.product_stock);
+    
+        addToCart(foodData.id, productImage, foodData.product_name, foodData.product_price, foodData.product_weight, quantity, productStock);
     });
 
     addToCartButton.classList.add('btn', 'btn-primary', 'add-cart');
