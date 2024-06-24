@@ -1,18 +1,14 @@
-// Import necessary Firebase modules
 import { getFirestore, doc, collection, getDocs, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
-// Initialize Firestore and Authentication
 const db = getFirestore();
 const auth = getAuth();
 
-// Function to get the current user ID
 function getCurrentUserId() {
     const user = auth.currentUser;
     return user ? user.uid : null;
 }
 
-// Listen for authentication state changes
 auth.onAuthStateChanged(async (user) => {
     try {
         if (user) {
@@ -21,7 +17,6 @@ auth.onAuthStateChanged(async (user) => {
                 console.error("Invalid userId:", userId);
                 return;
             }
-            // User is signed in, update cart item count
             updateCartItemCount(userId);
             console.log("User authenticated. User ID:", userId);
         } else {
@@ -34,18 +29,14 @@ auth.onAuthStateChanged(async (user) => {
 
 const cart = document.getElementById('cart');
 if (cart) {
-    // Add event listener to the cart button
     cart.addEventListener('click', handleCartClick);
 }
 
 function handleCartClick() {
     if (auth.currentUser) {
-        // User is signed in, redirect to cart page
         window.location.href = "../html/cart.html";
     } else {
-        // User is not logged in, display alert message
         window.alert('Please Login to view your cart.');
-        // Optionally, redirect to the login page
         window.location.href = "../html/login.html";
     }
 }
@@ -75,9 +66,8 @@ async function addToCart(productId, productImage, productName, productPrice, pro
     try {
         const userId = getCurrentUserId();
         if (userId) {
-            let productType = getProductType(productId); // Determine product type based on product ID
+            let productType = getProductType(productId); 
 
-            // Get current quantity of the product in the cart
             const userCartDocRef = doc(collection(db, 'carts'), userId);
             const userCartDocSnap = await getDoc(userCartDocRef);
 
@@ -96,30 +86,25 @@ async function addToCart(productId, productImage, productName, productPrice, pro
                 return;
             }
 
-            // Construct the product object
             let product = {
                 id: productId,
-                image: productImage, // Use the passed productImageSrc argument
+                image: productImage, 
                 name: productName,
                 price: productPrice,
-                type: productType, // Assign the determined product type
+                type: productType, 
                 weight: productWeight,
-                quantity: existingQuantity + quantity, // Add the new quantity to the existing quantity
+                quantity: existingQuantity + quantity, 
                 totalPrice: (productPrice * (existingQuantity + quantity)).toFixed(2),
                 totalWeight: productWeight * (existingQuantity + quantity)
             };
 
-            // Save the product to Firestore
             await saveProductToFirestore(product, productName);
 
-            // Update cart item count
             await updateCartItemCount(userId);
 
-            // Display a message to the user
             window.alert(`${productName} has been added to your cart!`);
             window.location.href = "/html/cart.html";
         } else {
-            // If user is not logged in, prompt them to log in
             window.alert('Please login to add products to your cart.');
             window.location.href = "../html/login.html";
         }
@@ -182,7 +167,6 @@ async function saveProductToFirestore(product, productName) {
     }
 }
 
-// Helper function to create a button with a given text and event handler
 function createButton(text, onClickHandler) {
     const button = document.createElement('button');
     button.textContent = text;
@@ -191,7 +175,6 @@ function createButton(text, onClickHandler) {
     return button;
 }
 
-// Function to fetch data and display it in the webpage based on food type
 async function fetchDataAndDisplay() {
     try {
         const foodType = document.getElementById('food-type').value;
@@ -219,7 +202,6 @@ function naturalSort(a, b) {
     return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
 }
 
-// Function to create product div
 function createProductDiv(foodData, foodType) {
     const productDiv = document.createElement('div');
     productDiv.classList.add('product');
@@ -393,10 +375,8 @@ function showModal(foodData, foodType) {
     $('#productModal').modal('show');
 }
 
-// Event listener for dropdown list change
 document.getElementById('food-type').addEventListener('change', fetchDataAndDisplay);
 
-// Initial fetch and display based on the default food type when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     fetchDataAndDisplay();
 });

@@ -1,7 +1,6 @@
 import { getFirestore, collection, query, getDocs, getDoc, doc, where, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
-// Initialize Firestore and Auth
 const db = getFirestore();
 const auth = getAuth();
 
@@ -12,23 +11,18 @@ function getCurrentUserId() {
 
 const cart = document.getElementById('cart');
 if (cart) {
-    // Add event listener to the cart button
     cart.addEventListener('click', handleCartClick);
 }
 
 function handleCartClick() {
     if (auth.currentUser) {
-        // User is signed in, redirect to cart page
         window.location.href = "../html/cart.html";
     } else {
-        // User is not logged in, display alert message
         window.alert('Please Login to view your cart.');
-        // Optionally, redirect to the login page
         window.location.href = "../html/login.html";
     }
 }
 
-// Function to fetch and display delivery status for the logged-in user based on email
 async function fetchAndDisplayDeliveryStatus() {
     const user = auth.currentUser;
 
@@ -49,14 +43,12 @@ async function fetchAndDisplayDeliveryStatus() {
         const querySnapshot = await getDocs(ordersQuery);
 
         const statusContainer = document.getElementById('statusContainer');
-        statusContainer.innerHTML = ''; // Clear any existing content
-
+        statusContainer.innerHTML = ''; 
         if (!querySnapshot.empty) {
             const table = document.createElement('table');
             table.setAttribute('border', '1');
             table.setAttribute('width', '100%');
 
-            // Create table headers
             const thead = document.createElement('thead');
             thead.innerHTML = `
                 <tr>
@@ -67,7 +59,6 @@ async function fetchAndDisplayDeliveryStatus() {
             `;
             table.appendChild(thead);
 
-            // Create table body
             const tbody = document.createElement('tbody');
             querySnapshot.forEach((doc) => {
                 const orderData = doc.data();
@@ -85,7 +76,6 @@ async function fetchAndDisplayDeliveryStatus() {
             });
             table.appendChild(tbody);
 
-            // Append the table to the container
             statusContainer.appendChild(table);
         } else {
             statusContainer.innerHTML = '<p class="pt-3">No orders found.</p>';
@@ -95,11 +85,9 @@ async function fetchAndDisplayDeliveryStatus() {
     }
 }
 
-// Authenticate user and display delivery status
 onAuthStateChanged(auth, (user) => {
     if (user) {
         const userId = getCurrentUserId();
-        // User is signed in, update cart item count
         updateCartItemCount(userId);
         fetchAndDisplayDeliveryStatus();
     } else {
@@ -108,7 +96,6 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Function to update the cart item count in the UI
 async function updateCartItemCount(userId) {
     try {
         if (userId) {

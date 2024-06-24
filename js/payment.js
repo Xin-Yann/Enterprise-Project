@@ -1,15 +1,13 @@
 import { getFirestore, collection, getDoc, getDocs, setDoc, doc, query, where, addDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
-// Initialize Firestore
 const db = getFirestore();
-const auth = getAuth(); // Initialize Firebase Authentication
+const auth = getAuth(); 
 
 (function () {
     emailjs.init("86kjxi3kBUTZUUwYJ");
 })();
 
-// Function to get the current user ID
 function getCurrentUserId() {
     const user = auth.currentUser;
     return user ? user.uid : null;
@@ -18,15 +16,14 @@ function getCurrentUserId() {
 auth.onAuthStateChanged(async (user) => {
     try {
         if (user) {
-            const userId = getCurrentUserId(); // Get the current user ID
+            const userId = getCurrentUserId(); 
             if (!userId) {
                 console.error("Invalid userId:", userId);
                 return;
             }
 
-            // User is signed in, update cart item count and display cart items
             updateCartItemCount(userId);
-            await displayCartItems(userId); // Pass the user's ID to fetch their cart data
+            await displayCartItems(userId); 
             await getCartData(userId);
             console.log("User authenticated. User ID:", userId);
 
@@ -47,18 +44,14 @@ auth.onAuthStateChanged(async (user) => {
 
 const cart = document.getElementById('cart');
 if (cart) {
-    // Add event listener to the cart button
     cart.addEventListener('click', handleCartClick);
 }
 
 function handleCartClick() {
     if (auth.currentUser) {
-        // User is signed in, redirect to cart page
         window.location.href = "../html/cart.html";
     } else {
-        // User is not logged in, display alert message
         window.alert('Please Login to view your cart.');
-        // Optionally, redirect to the login page
         window.location.href = "../html/login.html";
     }
 }
@@ -69,7 +62,6 @@ async function fetchAndDisplayPersonalDetails(email) {
     try {
         console.log(`Fetching details for email: ${email}`);
 
-        // Query the user's details document using the email
         const q = query(collection(db, 'users'), where('email', '==', email));
         const querySnapshot = await getDocs(q);
 
@@ -104,10 +96,10 @@ async function fetchAndDisplayPersonalDetails(email) {
 // Function to fetch cart data for a user
 async function getCartData(userId) {
     try {
-        const cartRef = doc(collection(db, 'carts'), userId); // Reference the user's cart document
+        const cartRef = doc(collection(db, 'carts'), userId); 
         const cartDoc = await getDoc(cartRef);
         if (cartDoc.exists()) {
-            return cartDoc.data().cart || []; // Return the cart data if the document exists
+            return cartDoc.data().cart || []; 
         } else {
             console.log("Cart document does not exist for the current user.");
             return [];
@@ -140,16 +132,15 @@ const cartTableBody = cartTable.querySelector('tbody');
 const cartContainer = document.getElementById('cartItems');
 
 async function displayCartItems(userId) {
-    let cartItems = await getCartData(userId); // Changed from const to let
+    let cartItems = await getCartData(userId);
     if (!cartItems) {
-        cartItems = []; // Initialize cartItems to an empty array if it's null
+        cartItems = []; 
     }
 
     cartTableBody.innerHTML = '';
 
     // Check if the cart is empty
     if (cartItems.length === 0) {
-        // Hide total section
         document.getElementById('none').style.display = 'block';
         document.getElementById('cartItems').style.display = 'none';
         document.getElementById('total').style.display = 'none';
@@ -159,7 +150,7 @@ async function displayCartItems(userId) {
         document.getElementById('cartItems').style.display = 'block';
     }
 
-    let totalPrice = 0; // Declare totalPrice variable outside the loop
+    let totalPrice = 0; 
     let totalWeight = 0;
 
     for (const [index, item] of cartItems.entries()) {
@@ -199,11 +190,11 @@ async function displayCartItems(userId) {
 // Function to update the cart item count in the UI
 async function updateCartItemCount(userId) {
     try {
-        const userCartDocRef = doc(collection(db, 'carts'), userId); // Reference to the user's cart document
-        const userCartDocSnap = await getDoc(userCartDocRef); // Get the user's cart document snapshot
+        const userCartDocRef = doc(collection(db, 'carts'), userId); 
+        const userCartDocSnap = await getDoc(userCartDocRef); 
 
         if (userCartDocSnap.exists()) {
-            const cartItems = userCartDocSnap.data().cart || []; // Retrieve cart items from Firestore
+            const cartItems = userCartDocSnap.data().cart || []; 
             const cartItemCount = document.getElementById('cartItemCount');
             let totalCount = 0;
             cartItems.forEach(item => {
@@ -222,7 +213,7 @@ async function calculateTotalPrice(item) {
     const price = item.price ? parseFloat(item.price) : 0;
     const quantity = parseInt(item.quantity);
     if (!isNaN(price) && !isNaN(quantity)) {
-        return price * quantity; // Return the total price as a number
+        return price * quantity; 
     } else {
         console.error(`Invalid price or quantity for product: ${item.name}`);
         return 0;
@@ -230,7 +221,7 @@ async function calculateTotalPrice(item) {
 }
 
 async function updateSubtotal(totalPrice) {
-    const formattedTotalPrice = totalPrice.toFixed(2); // Format totalPrice to have exactly two decimal places
+    const formattedTotalPrice = totalPrice.toFixed(2);
     const TotalPriceDisplay = document.getElementById('Subtotal');
     TotalPriceDisplay.textContent = `Subtotal: RM ${formattedTotalPrice}`;
 }
@@ -239,7 +230,7 @@ async function calculateTotalWeight(item) {
     const weight = item.weight ? parseFloat(item.weight) : 0;
     const quantity = parseInt(item.quantity);
     if (!isNaN(weight) && !isNaN(quantity)) {
-        return weight * quantity; // Return the total weight as a number
+        return weight * quantity; 
     } else {
         console.error(`Invalid weight or quantity for product: ${item.name}`);
         return 0;
@@ -278,7 +269,6 @@ function applyDiscount(totalPrice) {
     } else {
         printAmount("discount_amount", "Promo code is invalid.");
     }
-    // Update the order total without changing the shipping fees
     const shippingFeesText = document.getElementById('ShippingFees').textContent.replace(/[^0-9.]/g, "").trim();
     const shippingFees = parseFloat(shippingFeesText);
     ordertotal(totalPrice, discount, shippingFees);
@@ -354,10 +344,8 @@ async function redeemPoints() {
         const shippingFeesText = document.getElementById('ShippingFees').textContent.replace(/[^0-9.]/g, "").trim();
         const shippingFees = parseFloat(shippingFeesText);
 
-        // Update order total with redeemed discount
         ordertotal(totalPrice, redeemedDiscount, shippingFees);
 
-        // Deduct points from user's profile using email
         const user = auth.currentUser;
         const email = user ? user.email : null;
         if (email) {
@@ -365,14 +353,12 @@ async function redeemPoints() {
             await updateUserPointsByEmail(email, pointsToDeduct); 
         }
 
-        // Fetch and update the displayed points after deduction
         await fetchAndDisplayPersonalDetails(email);
     } catch (error) {
         console.error('Error redeeming points:', error);
     }
 }
 
-// Function to update the user's points in Firestore using email
 async function updateUserPointsByEmail(email, pointsToDeduct) {
     const q = query(collection(db, 'users'), where('email', '==', email));
     try {
@@ -431,12 +417,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const tngForm = document.getElementById('tngForm');
     const CardForm = document.getElementById('CardForm');
 
-    // Show modal when "Pay" button is clicked
     payButton.addEventListener('click', () => {
         paymentModal.show();
     });
 
-    // Handle TnG payment form submission
     tngForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const referenceId = document.getElementById('tngReferenceId').value;
@@ -452,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 await addDoc(collection(db, 'orders'), orderDetails);
                 alert('Order submitted successfully');
                 await clearUserCart(getCurrentUserId());
-                await updateStock(orderDetails.cartItems); // Update stock after order submission
+                await updateStock(orderDetails.cartItems); 
                 await sendOrderConfirmationEmail(orderDetails);
                 paymentModal.hide();
                 window.location.href = "/html/orderhistory.html";
@@ -464,7 +448,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Handle Card payment form submission
     CardForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const cardName = document.getElementById('CardName').value;
@@ -488,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 await addDoc(collection(db, 'orders'), orderDetails);
                 alert('Order submitted successfully');
                 await clearUserCart(getCurrentUserId());
-                await updateStock(orderDetails.cartItems); // Update stock after order submission
+                await updateStock(orderDetails.cartItems); 
                 await sendOrderConfirmationEmail(orderDetails);
                 paymentModal.hide();
                 window.location.href = "/html/orderhistory.html";
@@ -543,7 +526,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return points;
     }
 
-    // Function to update points in the user's profile using email
     async function updatePoints(points) {
         try {
             const user = auth.currentUser; 
@@ -602,7 +584,6 @@ document.addEventListener('DOMContentLoaded', function() {
             postcode: document.getElementById('Postcode').value,
         };
 
-        // Fetch cart items from Firestore
         const userId = user ? user.uid : null;
         const cartItems = await getCartData(userId);
 
@@ -615,10 +596,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const orderTotal = parseFloat(document.getElementById('OrderTotal').textContent.replace(/[^0-9.]/g, ""));
         const trackingNumber = generateTrackingNumber(); 
         
-        // Calculate points based on the order total
         const points = await calculatePoints(orderTotal);
 
-        // Update points in the user's profile
         if (userId) {
             await updatePoints(points);
         }
@@ -642,7 +621,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    // Function to generate a running order ID
+    // Function to generate order ID
     async function generateOrderID() {
         const orderCounterDocRef = doc(db, 'metadata', 'orderCounter');
         try {
@@ -678,7 +657,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 let category;
                 let type;
 
-                // Extract category and type from the image URL if not present
                 const imageUrlParts = item.image.split('/');
                 if (imageUrlParts.length > 4) {
                     category = imageUrlParts[3];
@@ -703,7 +681,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(`Extracted type: ${type}`);
                 console.log(`Product ID: ${productId}`);
 
-                // Reference the product document correctly
                 const productRef = doc(db, `products/${category}/${type}/${productId}`);
                 const productDoc = await getDoc(productRef);
                 if (productDoc.exists()) {
@@ -719,7 +696,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const updatedStock = productData.product_stock - item.quantity;
                     await updateDoc(productRef, { product_stock: updatedStock });
 
-                    // Fetch the document again to verify the update
                     const updatedProductDoc = await getDoc(productRef);
                     const updatedProductData = updatedProductDoc.data();
                     console.log(`Updated stock for product ${productId}: ${updatedProductData.product_stock}`);
@@ -739,7 +715,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Remove modal-backdrop when modal is hidden
     paymentModalElement.addEventListener('hidden.bs.modal', () => {
         const backdrops = document.querySelectorAll('.modal-backdrop');
         backdrops.forEach(backdrop => backdrop.remove());

@@ -2,16 +2,13 @@ import { getFirestore, collection, getDocs, query, where, updateDoc, doc } from 
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize Firestore and Authentication
     const db = getFirestore();
     const auth = getAuth();
 
-    // Function to fetch and display personal details
     async function fetchAndDisplayPersonalDetails(email) {
         try {
             console.log(`Fetching details for email: ${email}`);
 
-            // Query the staff's details document using the email
             const q = query(collection(db, 'staffs'), where('email', '==', email));
             const querySnapshot = await getDocs(q);
 
@@ -20,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const staffData = doc.data();
                     console.log('Staff data fetched:', staffData);
 
-                    // Populate form fields
                     document.getElementById('Name').value = staffData.name || '';
                     document.getElementById('Email').value = staffData.email || '';
                     document.getElementById('Contact').value = staffData.contact || '';
@@ -33,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Ensure the staff is authenticated before fetching details
     onAuthStateChanged(auth, (staff) => {
         if (staff) {
             const staffEmail = sessionStorage.getItem('staffEmail');
@@ -54,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = document.getElementById('Email').value.trim();
         const contact = document.getElementById('Contact').value.trim();
 
-        const contactPattern = /^[0-9\s\-]+$/; // Allows numbers, spaces, and dashes
+        const contactPattern = /^[0-9\s\-]+$/;
 
         if (!name || !email || !contact) {
             window.alert('Please fill in all the details.');
@@ -73,9 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
     async function saveEditedDetails(email) {
         try {
             if (!validateInputs()) {
-                return; // Stop the function if inputs are invalid
+                return; 
             }
-            // Query the staff's details document using the email
             const q = query(collection(db, 'staffs'), where('email', '==', email));
             const querySnapshot = await getDocs(q);
 
@@ -83,14 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 querySnapshot.forEach(async (docSnapshot) => {
                     const docRef = doc(db, 'staffs', docSnapshot.id);
 
-                    // Get values from form fields
                     const updatedData = {
                         name: document.getElementById('Name').value,
                         email: document.getElementById('Email').value,
                         contact: document.getElementById('Contact').value,
                     };
 
-                    // Update the document with the new data
                     await updateDoc(docRef, updatedData);
                     alert('Staff details updated successfully.');
                 });
@@ -102,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Add event listener to the save button
     const saveBtn = document.getElementById('save');
     if (saveBtn) {
         saveBtn.addEventListener('click', () => {

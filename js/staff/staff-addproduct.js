@@ -1,17 +1,13 @@
-// Import necessary Firebase modules
 import { getFirestore, collection, setDoc, doc, getDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-// Initialize Firestore
 const db = getFirestore();
 
-// Add event listener to interact with Firebase services when the "add" button is clicked
 document.getElementById("add").addEventListener("click", async () => {
     try {
         const category = document.getElementById('product_category').value;
         const type = document.getElementById('product_type').value;
         const productId = document.getElementById('product_id').value;
 
-        // Validate required fields
         const productName = document.getElementById('product_name').value;
         const productDescription = document.getElementById('product_description').value;
         const productPrice = document.getElementById('product_price').value;
@@ -87,7 +83,6 @@ function updateOptions() {
     var typeSelect = document.getElementById("product_type");
     var selectedCategory = categorySelect.value;
 
-    // Clear existing type options
     typeSelect.innerHTML = '<option disabled selected>Select type</option>';
 
     // Add type options based on the selected category

@@ -75,12 +75,11 @@
 }
 
 .quantity-input {
-    -webkit-appearance: none; /* Removes up-down arrows in WebKit browsers */
-    -moz-appearance: textfield; /* Removes up-down arrows in Firefox */
-    appearance: none; /* Standard syntax */
+    -webkit-appearance: none; 
+    -moz-appearance: textfield; 
+    appearance: none; 
 }
 
-/* Additionally, to remove the spinner in Firefox */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;

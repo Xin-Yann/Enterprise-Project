@@ -1,17 +1,12 @@
-// Initialize Firebase Auth and Firestore
 import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-// Get a reference to the Firestore database
 const db = getFirestore();
-
-// Get a reference to the Firebase Authentication service
 const auth = getAuth();
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log('User is logged in:', user.email);
-    // Redirect to the staff home page if necessary
     window.location.href = "../staff/staff-home.html";
   } else {
     console.log('No user is logged in.');

@@ -1,16 +1,12 @@
-// Import necessary Firebase modules
 import { getFirestore, collection, query, orderBy, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-// Initialize Firestore
 const db = getFirestore();
 
 // Function to fetch order data and display it on the webpage
 async function fetchOrdersAndDisplay() {
     try {
-        // Reference to the 'orders' collection and order by 'orderDate' field
         const ordersCollection = query(collection(db, 'orders'), orderBy('orderDate', 'desc'));
         
-        // Get all documents from the 'orders' collection
         const ordersSnapshot = await getDocs(ordersCollection);
 
         const ordersContainer = document.getElementById('orders-container');
@@ -188,7 +184,6 @@ async function fetchOrdersAndDisplay() {
     }
 }
 
-// Initial fetch and display when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     fetchOrdersAndDisplay();
 });

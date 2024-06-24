@@ -1,16 +1,12 @@
-// Import necessary Firebase modules
 import { getFirestore, doc, collection, query, orderBy, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-// Initialize Firestore
 const db = getFirestore();
 
 // Function to fetch promo data and display it on the webpage
 async function fetchPromosAndDisplay() {
     try {
-        // Reference to the 'promo' collection and order by 'promo_order' field
         const promoCollection = query(collection(db, 'promo'), orderBy('promo_order', 'asc'));
         
-        // Get all documents from the 'promo' collection
         const promoSnapshot = await getDocs(promoCollection);
 
         const promoContainer = document.getElementById('promo-container');
@@ -93,12 +89,10 @@ async function deletePromo(promoId) {
     }
 }
 
-// Function to navigate to the edit promo page
 function editPromo(promoId) {
     window.location.href = `/html/staff/staff-editpromo.html?id=${promoId}`;
 }
 
-// Initial fetch and display when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     fetchPromosAndDisplay();
 });

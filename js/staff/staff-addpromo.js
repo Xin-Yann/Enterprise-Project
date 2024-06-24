@@ -1,7 +1,5 @@
-// Import necessary Firebase modules
 import { getFirestore, collection, setDoc, doc, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-// Initialize Firestore
 const db = getFirestore();
 
 // Function to get the highest promo_order
@@ -17,7 +15,6 @@ async function getLastPromoOrder() {
     }
 }
 
-// Add event listener to interact with Firebase services when the "add" button is clicked
 document.getElementById("add").addEventListener("click", async () => {
     try {
         const promoDescription = document.getElementById('promo_description').value;
@@ -36,10 +33,8 @@ document.getElementById("add").addEventListener("click", async () => {
         const lastPromoOrder = await getLastPromoOrder();
         const newPromoOrder = lastPromoOrder + 1;
 
-        // Create a new document reference with a generated ID
         const promoRef = doc(collection(db, 'promo'));
 
-        // Set the document in Firestore
         await setDoc(promoRef, {
             promo_image: imageName,
             promo_description: promoDescription,

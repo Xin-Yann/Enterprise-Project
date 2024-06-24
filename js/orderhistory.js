@@ -10,10 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return user ? user.uid : null;
     }
 
-    // Function to create an order div
     function createOrderDiv(orderData) {
         const orderDiv = document.createElement('div');
-        orderDiv.classList.add('orders');  // Apply 'orders' class to each order div
+        orderDiv.classList.add('orders'); 
 
         // Order ID
         const orderId = document.createElement('h4');
@@ -22,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Status
         const status = document.createElement('p');
-        status.textContent = `Status: ${orderData.status || 'Incomplete'}`; // Ensure this defaults to 'Incomplete'
+        status.textContent = `Status: ${orderData.status || 'Incomplete'}`; 
         orderDiv.appendChild(status);
 
         // Order Date
@@ -107,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const orderRef = doc(db, 'orders', orderDoc.id);
                         await updateDoc(orderRef, { status: 'Complete' });
                         status.textContent = 'Status: Complete';
-                        completeButton.disabled = true;  // Disable the button after clicking
+                        completeButton.disabled = true; 
                     }
                     window.location.reload();
                 } catch (error) {
@@ -120,13 +119,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return orderDiv;
     }
 
-
     // Function to fetch and display order history
     async function fetchAndDisplayOrderHistory(email) {
         try {
             console.log(`Fetching order history for user email: ${email}`);
 
-            // Query the orders collection for orders associated with the user email
             const q = query(collection(db, 'orders'), where('userDetails.email', '==', email));
             const querySnapshot = await getDocs(q);
 
@@ -135,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 orders.push({ ...doc.data(), id: doc.id });
             });
 
-            // Sort orders first by status (Incomplete first) and then by orderDate in descending order
             orders.sort((a, b) => {
                 if (a.status === 'Incomplete' && b.status !== 'Incomplete') {
                     return -1;
@@ -162,15 +158,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Ensure the user is authenticated before fetching details
     onAuthStateChanged(auth, (user) => {
         if (user) {
             const userId = getCurrentUserId();
-            // User is signed in, update cart item count
             updateCartItemCount(userId);
             const userEmail = user.email;
             if (userEmail) {
-                fetchAndDisplayOrderHistory(userEmail); // Fetch order history based on user email
+                fetchAndDisplayOrderHistory(userEmail); 
             } else {
                 console.log('No user email found.');
             }
@@ -182,23 +176,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const cart = document.getElementById('cart');
     if (cart) {
-        // Add event listener to the cart button
         cart.addEventListener('click', handleCartClick);
     }
 
     function handleCartClick() {
         if (auth.currentUser) {
-            // User is signed in, redirect to cart page
             window.location.href = "../html/cart.html";
         } else {
-            // User is not logged in, display alert message
             window.alert('Please Login to view your cart.');
-            // Optionally, redirect to the login page
             window.location.href = "../html/login.html";
         }
     }
 
-    // Function to update the cart item count in the UI
     async function updateCartItemCount(userId) {
         try {
             if (userId) {
