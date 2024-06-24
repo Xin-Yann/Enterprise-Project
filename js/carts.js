@@ -126,13 +126,11 @@ async function displayCartItems() {
         cartTableBody.appendChild(row);
 
         calculateTotalPrice(item).then(itemTotalPrice => {
-            // Update total price
             const totalPriceCell = row.querySelector('.total-price-cell');
             totalPriceCell.textContent = `RM ${itemTotalPrice.toFixed(2)}`;
 
             totalPrice += itemTotalPrice;
 
-            // Update the subtotal after all items' total prices are calculated
             updateSubtotal(totalPrice);
         });
     });
@@ -178,7 +176,6 @@ async function displayLimitedStockMessage(userId) {
         for (const cartItem of cartItems) {
             const productStock = productStocks.find(stock => stock.productName === cartItem.name);
 
-            // Calculate the available stock considering previously added quantities
             const availableStock = productStock.productStock - productStock.userAddedQuantity;
 
             // Check if the available stock is less than the quantity in the cart
@@ -201,7 +198,6 @@ async function displayLimitedStockMessage(userId) {
 }
 
 
-// Function to handle quantity increment
 async function incrementQuantity(event) {
     event.preventDefault();
 
@@ -210,7 +206,6 @@ async function incrementQuantity(event) {
     let currentQuantity = parseInt(input.value);
     let newQuantity = currentQuantity + 1;
 
-    // Get product stock information from Firestore
     const productStocks = await getProductStock();
     const productStock = productStocks.find(product => product.productName === productName);
 
@@ -538,7 +533,6 @@ async function updateQuantityAndPrice(userId, productName, newQuantity, availabl
             const cartData = cartSnapshot.data();
             const updatedCart = await Promise.all(cartData.cart.map(async item => {
                 if (item.name === productName) {
-                    // If newQuantity exceeds available stock, set quantity to available stock
                     item.quantity = newQuantity > availableStock ? availableStock : newQuantity;
                     item.totalPrice = `RM ${(await calculateTotalPrice(item))}`;
                 }

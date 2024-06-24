@@ -1,7 +1,6 @@
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 import { getFirestore, collection, addDoc,doc, getDocs, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-// Initialize Firebase Firestore
 const db = getFirestore();
 const auth = getAuth();
 
@@ -9,13 +8,11 @@ const auth = getAuth();
     emailjs.init("86kjxi3kBUTZUUwYJ");
 })();
 
-// Function to get the current user ID
 function getCurrentUserId() {
     const user = auth.currentUser;
     return user ? user.uid : null;
 }
 
-// Listen for authentication state changes
 auth.onAuthStateChanged(async (user) => {
     try {
         if (user) {
@@ -24,7 +21,6 @@ auth.onAuthStateChanged(async (user) => {
                 console.error("Invalid userId:", userId);
                 return;
             }
-            // User is signed in, update cart item count
             updateCartItemCount(userId);
             fetchUserDataFromFirestore(userId);
             console.log("User authenticated. User ID:", userId);
@@ -38,23 +34,19 @@ auth.onAuthStateChanged(async (user) => {
 
 const cart = document.getElementById('cart');
 if (cart) {
-    // Add event listener to the cart button
     cart.addEventListener('click', handleCartClick);
 }
 
 function handleCartClick() {
     if (auth.currentUser) {
-        // User is signed in, redirect to cart page
         window.location.href = "../html/cart.html";
     } else {
-        // User is not logged in, display alert message
         window.alert('Please Login to view your cart.');
-        // Optionally, redirect to the login page
         window.location.href = "../html/login.html";
     }
 }
 
-// Function to update the cart item count in the UI
+// Function to update the cart item count
 async function updateCartItemCount(userId) {
     try {
         if (userId) {
@@ -84,7 +76,6 @@ async function fetchUserDataFromFirestore(userId) {
 
       querySnapshot.forEach((doc) => {
         const userData = doc.data();
-        // Populate the input fields with the fetched user data
         document.getElementById('from_name').value = userData.name || '';
         document.getElementById('email_id').value = userData.email || '';
       });
@@ -116,7 +107,6 @@ document.getElementById('Submit').addEventListener('click', async (event) => {
         const title = document.getElementById('title').value;
         const message = document.getElementById('message').value;
 
-        // Add data to Firestore
         const docRef = await addDoc(collection(db, 'contact'), {
             name: name,
             email: email,

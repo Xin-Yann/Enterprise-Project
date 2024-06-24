@@ -1,14 +1,12 @@
 import { getFirestore, collection, query, getDocs, updateDoc, doc, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
-// Initialize Firestore and Auth
 const db = getFirestore();
 const auth = getAuth();
 
 // Function to fetch and display delivery status
 async function fetchAndDisplayDeliveryStatus() {
     try {
-        // Create a query ordered by orderId in ascending order
         const q = query(collection(db, 'orders'), orderBy('orderID', 'asc'));
         const querySnapshot = await getDocs(q);
 
@@ -79,7 +77,6 @@ async function updateOrderStatus(orderId) {
 
         window.alert('Order status updated successfully')
 
-        // Refresh the status displayA
         fetchAndDisplayDeliveryStatus(); 
     } catch (error) {
         console.error('Error updating order status:', error);
@@ -87,13 +84,12 @@ async function updateOrderStatus(orderId) {
     }
 }
 
-// Make updateOrderStatus function globally accessible
 window.updateOrderStatus = updateOrderStatus;
 
 // Authenticate user and display delivery status
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        fetchAndDisplayDeliveryStatus(); // Fetch and display status directly
+        fetchAndDisplayDeliveryStatus(); 
     } else {
         console.log('No user is authenticated. Redirecting to login page.');
         window.location.href = "/html/login.html";

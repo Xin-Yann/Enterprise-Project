@@ -1,10 +1,7 @@
-// Import necessary Firebase modules
 import { getFirestore, doc, collection, query, orderBy, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-// Initialize Firestore
 const db = getFirestore();
 
-// Helper function to create a button with a given text and event handler
 function createButton(htmlContent, onClickHandler) {
     const button = document.createElement('button');
     button.innerHTML = htmlContent;
@@ -21,13 +18,11 @@ async function fetchDataAndDisplay() {
         const dogDocRef = doc(db, 'products', 'dog');
         const subcollectionRef = collection(dogDocRef, productType);
 
-        // Fetching without natural sorting in Firestore
         const q = query(subcollectionRef, orderBy("product_id", "asc")); 
         const querySnapshot = await getDocs(q);
 
         let documents = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        // Applying natural sorting after fetching
         documents.sort((a, b) => {
             return naturalSort(a.product_id, b.product_id);
         });
@@ -116,10 +111,8 @@ function editProduct(productId, productType) {
     window.location.href = `/html/staff/staff-editproduct.html?category=dog&id=${productId}&type=${encodeURIComponent(productType)}`;
 }
 
-// Event listener for dropdown list change
 document.getElementById('food-type').addEventListener('change', fetchDataAndDisplay);
 
-// Initial fetch and display based on the default food type when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     fetchDataAndDisplay();
 });

@@ -1,7 +1,5 @@
-// Import necessary Firebase modules
 import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-// Initialize Firestore
 const db = getFirestore();
 
 // Function to get query parameter by name
@@ -54,12 +52,11 @@ async function savePromoDetails() {
         let imageName;
 
         if (imageFile) {
-            imageName = imageFile.name; // Get the file name without uploading
+            imageName = imageFile.name; 
         } else {
-            // Fetch the existing data to potentially get the existing image
             const currentSnapshot = await getDoc(promoDocRef);
             const currentData = currentSnapshot.exists() ? currentSnapshot.data() : {};
-            imageName = currentData.promo_image; // Retain the existing image name if no new file is uploaded
+            imageName = currentData.promo_image; 
         }
 
         const updatedData = {
@@ -76,8 +73,6 @@ async function savePromoDetails() {
     }
 }
 
-// Event listener for "EDIT" button
 document.getElementById('edit').addEventListener('click', savePromoDetails);
 
-// Fetch and display promo details on page load
 document.addEventListener('DOMContentLoaded', fetchAndDisplayPromoDetails);

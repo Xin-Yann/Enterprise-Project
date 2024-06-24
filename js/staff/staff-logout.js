@@ -1,19 +1,13 @@
-// Initialize Firebase Auth and Firestore
 import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-// Get a reference to the Firestore database
 const db = getFirestore();
-
-// Get a reference to the Firebase Authentication service
 const auth = getAuth();
 
 function handleProfileClick() {
     if (auth.currentUser) {
-      // User is signed in, redirect to profile page
       window.location.href = "/html/staff/staff-profile.html";
     } else {
-      // No user is signed in, redirect to login page
       alert('Please Login to view your profile details.');
       window.location.href = "/html/staff/staff-login.html";
     }
@@ -36,7 +30,6 @@ document.getElementById('signOut').addEventListener('click', () => {
             history.replaceState(null, null, '/html/staff/staff-login.html');
         })
         .catch((error) => {
-            // An error happened.
             console.error('Sign-out error:', error);
         });
 });

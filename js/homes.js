@@ -1,17 +1,14 @@
 import { getFirestore, collection, getDocs, getDoc, setDoc, doc, query, limit } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
-// Initialize Firestore and Authentication
 const db = getFirestore();
 const auth = getAuth();
 
-// Function to get the current user ID
 function getCurrentUserId() {
     const user = auth.currentUser;
     return user ? user.uid : null;
 }
 
-// Listen for authentication state changes
 auth.onAuthStateChanged(async (user) => {
     try {
         if (user) {
@@ -20,7 +17,6 @@ auth.onAuthStateChanged(async (user) => {
                 console.error("Invalid userId:", userId);
                 return;
             }
-            // User is signed in, update cart item count
             updateCartItemCount(userId);
             console.log("User authenticated. User ID:", userId);
         } else {
@@ -33,23 +29,18 @@ auth.onAuthStateChanged(async (user) => {
 
 const cart = document.getElementById('cart');
 if (cart) {
-    // Add event listener to the cart button
     cart.addEventListener('click', handleCartClick);
 }
 
 function handleCartClick() {
     if (auth.currentUser) {
-        // User is signed in, redirect to cart page
         window.location.href = "../html/cart.html";
     } else {
-        // User is not logged in, display alert message
         window.alert('Please Login to view your cart.');
-        // Optionally, redirect to the login page
         window.location.href = "../html/login.html";
     }
 }
 
-// Function to update the cart item count in the UI
 async function updateCartItemCount(userId) {
     try {
         if (userId) {
@@ -157,15 +148,12 @@ async function saveProductToFirestore(product, productName) {
 // Function to fetch data and display it
 async function fetchDataAndDisplay() {
     try {
-        // Reference to the specific document with ID "cat" in the "product" collection
         const catDocRef = doc(collection(db, 'products'), 'cat');
         const dogDocRef = doc(collection(db, 'products'), 'dog');
         const birdDocRef = doc(collection(db, 'products'), 'birds');
         const fishDocRef = doc(collection(db, 'products'), 'fish&aquatics');
         const hamsterDocRef = doc(collection(db, 'products'), 'hamster&rabbits');
 
-
-        // Reference to the "dry food" subcollection under the "cat" document
         //CAT
         const catDryFoodCollectionRef = collection(catDocRef, 'dry food');
         const catWetFoodCollectionRef = collection(catDocRef, 'wet food');
@@ -192,14 +180,12 @@ async function fetchDataAndDisplay() {
 
         const limitCount = 2;
 
-        // Get the limited number of documents in the "dry food" subcollection
         //cat
         const catDryQuerySnapshot = await getDocs(query(catDryFoodCollectionRef, limit(limitCount)));
         const catWetQuerySnapshot = await getDocs(query(catWetFoodCollectionRef, limit(limitCount)));
         const catToyQuerySnapshot = await getDocs(query(catToyFoodCollectionRef, limit(limitCount)));
         const catTreatQuerySnapshot = await getDocs(query(catTreatFoodCollectionRef, limit(limitCount)));
         const catEssentialQuerySnapshot = await getDocs(query(catEssentialFoodCollectionRef, limit(limitCount)));
-        // Get the limited number of documents in the "dog" subcollection
         //dog
         const dogDryQuerySnapshot = await getDocs(query(dogDryFoodCollectionRef, limit(limitCount)));
         const dogWetQuerySnapshot = await getDocs(query(dogWetFoodCollectionRef, limit(limitCount)));
@@ -250,7 +236,6 @@ async function fetchDataAndDisplay() {
             const productType = doc.ref.parent.id;
             const productImage = doc.data().product_image;
         
-            // Construct the image URL directly
             const imageUrl = `/image/products/${foodType}/${productType}/${productImage}`;
         
             const productHTML = `
@@ -333,31 +318,26 @@ async function fetchDataAndDisplay() {
     }
 }
 
-// Call the function to fetch and display data
 fetchDataAndDisplay();
 
-// Initialize slide index, slides, and dots
 var slideIndex = 0;
 var slides = document.getElementsByClassName("mySlides");
 var dots = document.getElementsByClassName("dot");
-var slideInterval = 10000; // Adjust the interval (in milliseconds) between slides
+var slideInterval = 10000; 
 
-// Function to show the current slide
 function showSlide(n) {
-    // Hide all slides
     for (var i = 0; i < slides.length; i++) {
         slides[i].style.display = "none";
     }
-    // Remove "active" class from all dots
+
     for (var i = 0; i < dots.length; i++) {
         dots[i].classList.remove("active");
     }
-    // Show the desired slide and set corresponding dot as active
+
     slides[n].style.display = "block";
     dots[n].classList.add("active");
 }
 
-// Function to navigate to the previous slide
 function prevSlide() {
     slideIndex--;
     if (slideIndex < 0) {
@@ -366,7 +346,6 @@ function prevSlide() {
     showSlide(slideIndex);
 }
 
-// Function to navigate to the next slide
 function nextSlide() {
     slideIndex++;
     if (slideIndex >= slides.length) {
@@ -375,31 +354,23 @@ function nextSlide() {
     showSlide(slideIndex);
 }
 
-// Function to auto-slide to the next slide
 function autoSlide() {
     nextSlide();
     setTimeout(autoSlide, slideInterval);
 }
 
-// Event listener for the previous button
 document.querySelector(".carousel-control-prev").addEventListener("click", prevSlide);
 
-// Event listener for the next button
 document.querySelector(".carousel-control-next").addEventListener("click", nextSlide);
 
-// Loop through each dot and add a click event listener
 for (var i = 0; i < dots.length; i++) {
     dots[i].addEventListener("click", function () {
-        // Get the slide index associated with the clicked dot
         var slideIndex = parseInt(this.getAttribute("data-slide-to"));
-        // Show the corresponding slide
         showSlide(slideIndex);
     });
 }
 
-// Show the initial slide
 showSlide(slideIndex);
 
-// Start auto-sliding
 setTimeout(autoSlide, slideInterval);
 

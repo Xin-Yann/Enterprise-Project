@@ -1,9 +1,7 @@
 import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-// Initialize Firestore
 const db = getFirestore();
 
-// Declare yearSelect and monthSelect variables in the outer scope
 let yearSelect, monthSelect;
 
 async function fetchMonthlySalesData(year, month) {
@@ -73,8 +71,8 @@ function updateSalesReport() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    yearSelect = document.getElementById('year'); // Assign value to yearSelect
-    monthSelect = document.getElementById('month'); // Assign value to monthSelect
+    yearSelect = document.getElementById('year'); 
+    monthSelect = document.getElementById('month'); 
 
     // Populate the year dropdown with the last 3 years
     const currentYear = new Date().getFullYear();
@@ -93,13 +91,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         monthSelect.appendChild(monthOption);
     }
 
-    // Set default selected month to current month
     const currentMonth = new Date().getMonth() + 1;
     monthSelect.value = currentMonth;
 
-    // Display the sales report for the current month
     updateSalesReport();
 
-    // Event listener for the month select change
     monthSelect.addEventListener('change', updateSalesReport);
 });

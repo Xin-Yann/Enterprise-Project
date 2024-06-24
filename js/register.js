@@ -1,7 +1,6 @@
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-// Initialize Firebase Auth and Firestore
 const auth = getAuth();
 const db = getFirestore();
 
@@ -22,7 +21,7 @@ document.getElementById('signUpButton').addEventListener('click', async () => {
         // Check if any field is empty
         if (!name || !email || !password || !contact || !address || !state || !city || !post) {
             window.alert("Please fill in all the details.");
-            return; // Prevent further execution
+            return;
         }
 
         const uppercase = /[A-Z]/;
@@ -30,7 +29,7 @@ document.getElementById('signUpButton').addEventListener('click', async () => {
 
         if (password.length < 8 || !uppercase.test(password) || !lowercase.test(password)) {
             window.alert("Password must be at least 8 characters long and contain at least one uppercase and one lowercase character");
-            return; // prevent further execution
+            return; 
         }
 
         if (!checkbox.checked) {
@@ -40,10 +39,8 @@ document.getElementById('signUpButton').addEventListener('click', async () => {
 
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-        // Get the user ID (which is the auto-generated document ID in Firestore)
         const userId = userCredential.user.uid;
 
-        // Add a document to the "users" collection with the user ID as the auto-generated document ID
         const docRef = await addDoc(collection(db, 'users'), {
             userId: userId,
             name: name,

@@ -3,7 +3,6 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Initialize Firestore and Authentication
     const db = getFirestore();
     const auth = getAuth();
 
@@ -17,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             console.log(`Fetching details for email: ${email}`);
 
-            // Query the user's details document using the email
             const q = query(collection(db, 'users'), where('email', '==', email));
             const querySnapshot = await getDocs(q);
 
@@ -26,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const userData = doc.data();
                     console.log('User data fetched:', userData);
 
-                    // Populate form fields
                     document.getElementById('Name').value = userData.name || '';
                     document.getElementById('Email').value = userData.email || '';
                     document.getElementById('Contact').value = userData.contact || '';
@@ -45,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Ensure the user is authenticated before fetching details
     onAuthStateChanged(auth, (user) => {
         if (user) {
             const userId = getCurrentUserId();
@@ -65,18 +61,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const cart = document.getElementById('cart');
     if (cart) {
-        // Add event listener to the cart button
         cart.addEventListener('click', handleCartClick);
     }
 
     function handleCartClick() {
         if (auth.currentUser) {
-            // User is signed in, redirect to cart page
             window.location.href = "../html/cart.html";
         } else {
-            // User is not logged in, display alert message
             window.alert('Please Login to view your cart.');
-            // Optionally, redirect to the login page
             window.location.href = "../html/login.html";
         }
     }
@@ -145,15 +137,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
-
-    // Function to save the edited details
     async function saveEditedDetails(email) {
         if (!validateProfileDetails()) {
             return;
         }
 
         try {
-            // Query the user's details document using the email
             const q = query(collection(db, 'users'), where('email', '==', email));
             const querySnapshot = await getDocs(q);
 
@@ -161,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 querySnapshot.forEach(async (docSnapshot) => {
                     const docRef = doc(db, 'users', docSnapshot.id);
 
-                    // Get values from form fields
                     const updatedData = {
                         name: document.getElementById('Name').value,
                         email: document.getElementById('Email').value,
@@ -174,7 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     };
 
-                    // Update the document with the new data
                     await updateDoc(docRef, updatedData);
                     alert('User details updated successfully.');
                 });
@@ -186,8 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
-    // Add event listener to the save button
     const saveBtn = document.getElementById('save');
     if (saveBtn) {
         saveBtn.addEventListener('click', () => {

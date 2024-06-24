@@ -1,11 +1,8 @@
-// Initialize Firebase Auth and Firestore
 import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-// Get a reference to the Firestore database
 const db = getFirestore();
 
-// Get a reference to the Firebase Authentication service
 const auth = getAuth();
 
 document.getElementById('signIn').addEventListener('click', () => {
@@ -68,7 +65,6 @@ async function fetchStaffdata() {
   try {
       const staffsCollection = collection(db, 'staffs');
       const querySnapshot = await getDocs(staffsCollection);
-      // Process staff data as needed
   } catch (error) {
       console.error('Error fetching documents: ', error);
   }

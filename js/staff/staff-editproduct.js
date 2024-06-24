@@ -1,7 +1,5 @@
-// Import necessary Firebase modules
 import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-// Initialize Firestore
 const db = getFirestore();
 
 // Function to get query parameter by name
@@ -116,8 +114,6 @@ async function saveProductDetails() {
     }
 }
 
-// Event listener for "EDIT" button
 document.getElementById('edit').addEventListener('click', saveProductDetails);
 
-// Fetch and display product details on page load
 document.addEventListener('DOMContentLoaded', fetchAndDisplayProductDetails);
